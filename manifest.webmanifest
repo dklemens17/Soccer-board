@@ -1,0 +1,16 @@
+{
+  "name": "9v9 Tactics Board",
+  "short_name": "Tactics",
+  "description": "Drag players and the ball, sketch runs and passes, and save setups for 9v9 soccer.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#d0d6db",
+  "theme_color": "#d0d6db",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
