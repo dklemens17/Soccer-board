@@ -1,4 +1,4 @@
-/* Number 6 riddles — scenario data.
+/* Riddles for the 6 (defensive midfielder) — scenario data.
 
    Field coordinates are in yards on a 50 x 75 yard 9v9 field.
    x: 0 = our left touchline, 50 = our right touchline.
@@ -26,7 +26,7 @@ const P = (g, t, w, extra) => Object.assign({ g, t, w }, extra || {});
 const TOO_SAFE = w => P(1, 'Too safe', w);
 const FAR = P(0, 'Out of range', 'Way too far from goal. Keep the ball and build the attack.');
 
-window.CHAPTERS = [
+const CHAPTERS = [
   { name: 'Find the free player', blurb: 'You have the ball. Pick the best pass.' },
   { name: 'Get open', blurb: 'A teammate has the ball. Move so he can pass to you.' },
   { name: 'Guard the middle', blurb: 'They have the ball. Protect the space in front of our defenders.' },
@@ -35,7 +35,7 @@ window.CHAPTERS = [
   { name: 'Final third', blurb: 'Near their goal: pass, arrive, or shoot.' }
 ];
 
-window.RIDDLES = [
+const RIDDLES = [
 /* ---------------- 1. Find the free player ---------------- */
 { ch: 0, type: 'ball', title: 'Play forward',
   prompt: "You're the 6 and you have the ball. Nobody is pressing you. Who gets your pass?",
@@ -664,4 +664,5 @@ window.RIDDLES = [
   elsewhere: P(1, 'Too slow', 'Every touch gives their keeper time to get back. Shoot!'),
   best: { kind: 'shoot' } }
 ];
+window.RIDDLE_LIB.defineSet({ me: '6', chapters: CHAPTERS, riddles: RIDDLES });
 })();

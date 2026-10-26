@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="description" content="30 game situations for a number 6 in 9v9 soccer. Pick the pass, the run or the shot, and see how you did.">
+<meta name="description" content="30 game situations for every position in 9v9 soccer. Pick the pass, the run or the shot, and see how you did.">
 <meta name="theme-color" content="#d3d9de">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tactics">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Number 6 Riddles</title>
+<title>Soccer Riddles</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -51,7 +51,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,.tok:focus-visible{outl
 .modes{display:inline-flex;background:var(--frame-hi);border-radius:10px;padding:3px;box-shadow:inset 0 0 0 1px rgba(29,42,51,.16)}
 .modes a{padding:8px 12px 7px;border-radius:8px;font:800 17px/1 var(--display);color:var(--ink-2);text-decoration:none}
 .modes a[aria-current=page]{background:var(--ink);color:#fff}
-.score{margin-left:auto;border:0;background:var(--frame-hi);border-radius:9px;padding:8px 11px 7px;display:inline-flex;align-items:center;gap:6px;font:800 18px/1 var(--display);white-space:nowrap;box-shadow:inset 0 0 0 1px rgba(29,42,51,.16),0 1px 0 rgba(255,255,255,.75)}
+.posbtn{margin-left:auto;border:0;background:none;padding:0;display:grid;place-items:center;border-radius:50%}
+.pk{display:grid;place-items:center;border-radius:50%;color:var(--num);
+  background:radial-gradient(circle at 34% 27%,rgba(255,255,255,.55) 0,rgba(255,255,255,0) 42%),radial-gradient(circle at 50% 125%,rgba(0,0,0,.3),rgba(0,0,0,0) 62%),var(--kit);
+  box-shadow:0 0 0 2px var(--rim),0 2px 5px rgba(0,0,0,.3)}
+.posbtn .pk{width:38px;height:38px;font:800 21px/1 var(--display)}
+.pk span{transform:translateY(.05em)}
+.score{border:0;background:var(--frame-hi);border-radius:9px;padding:8px 11px 7px;display:inline-flex;align-items:center;gap:6px;font:800 18px/1 var(--display);white-space:nowrap;box-shadow:inset 0 0 0 1px rgba(29,42,51,.16),0 1px 0 rgba(255,255,255,.75)}
 .score svg{width:16px;height:16px;fill:var(--gold);stroke:#b98700;stroke-width:1}
 .score .of{font-size:14px;font-weight:700;color:var(--ink-2)}
 
@@ -171,6 +177,24 @@ button:focus-visible,a:focus-visible,input:focus-visible,.tok:focus-visible{outl
 .switch input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .18s}
 .switch input:checked{background:var(--ink)}
 .switch input:checked::after{transform:translateX(18px)}
+.switchpos{display:block;width:100%;margin:2px 0 4px;border:0;border-radius:10px;background:#eef2f4;padding:11px 12px;text-align:left;font:600 16px/1.2 var(--ui);color:var(--ink-2)}
+.switchpos b{color:var(--ink);font-weight:700}
+.formation{position:relative;margin:12px auto 6px;width:min(100%,380px);aspect-ratio:5/6.4;border-radius:14px;overflow:hidden;
+  background:repeating-linear-gradient(180deg,#3e8e47 0 12.5%,#37823f 12.5% 25%);box-shadow:inset 0 0 0 2px rgba(255,255,255,.45)}
+.formation::before{content:"";position:absolute;left:0;right:0;top:41%;border-top:2px solid rgba(255,255,255,.45)}
+.formation::after{content:"";position:absolute;left:24%;right:24%;bottom:0;height:15%;border:2px solid rgba(255,255,255,.45);border-bottom:0}
+.pos{position:absolute;z-index:1;transform:translate(-50%,-24px);border:0;background:none;padding:2px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.pos .pk{width:46px;height:46px;font:800 24px/1 var(--display)}
+html.land .formation{width:min(100%,300px)}
+html.land .pos .pk{width:40px;height:40px;font-size:21px}
+html.land .pos{transform:translate(-50%,-21px)}
+html.land .pos .nm{font-size:12.5px}
+.pos .nm{font:700 13.5px/1.05 var(--ui);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.65);white-space:nowrap}
+.pos .st{font:700 12.5px/1 var(--ui);color:#ffe58a;text-shadow:0 1px 2px rgba(0,0,0,.65);min-height:12px}
+.pos:disabled{cursor:default}
+.pos:disabled .pk{filter:grayscale(.85) brightness(1.1);opacity:.6}
+.pos:disabled .nm{opacity:.75}
+.pos[aria-current=true] .pk{box-shadow:0 0 0 2px var(--rim),0 0 0 6px #ffd23f,0 3px 6px rgba(0,0,0,.35)}
 .textbtn{border:0;background:transparent;padding:6px 0;font:700 15px/1 var(--ui);color:var(--g0);text-decoration:underline;text-underline-offset:3px}
 
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));z-index:30;transform:translate(-50%,8px);opacity:0;pointer-events:none;
@@ -180,7 +204,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,.tok:focus-visible{outl
 /* landscape: field sideways, riddle and tools in a column on the right */
 html.land body{display:grid;grid-template-columns:minmax(0,1fr) calc(var(--side) + env(safe-area-inset-right));grid-template-rows:auto minmax(0,1fr) auto}
 html.land .stage{grid-column:1;grid-row:1 / span 3;padding:max(10px,env(safe-area-inset-top)) 12px max(10px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
-html.land .rail{grid-column:2;grid-row:1;width:auto;margin:0;min-height:0;padding:max(10px,env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) 6px 0}
+html.land .rail{grid-column:2;grid-row:1;width:auto;margin:0;min-height:0;flex-wrap:wrap;row-gap:8px;padding:max(10px,env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) 6px 0}
 html.land .card{grid-column:2;grid-row:2;width:auto;margin:0 calc(10px + env(safe-area-inset-right)) 8px 0;align-self:start;max-height:100%;overflow:auto}
 html.land .card h1{font-size:21px}
 html.land .card p{font-size:15px}
@@ -202,6 +226,7 @@ html.land .levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 
 <header class="rail">
   <nav class="modes" aria-label="Mode"><a href="./">Board</a><a href="riddles.html" aria-current="page">Riddles</a></nav>
+  <button class="posbtn" id="posBtn" type="button" aria-label="Change position"><span class="pk us" id="posPk">6</span></button>
   <button class="score" id="scoreBtn" type="button" aria-label="Riddle list and stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg><span id="starTotal">0</span><span class="of">/ 90</span></button>
 </header>
 
@@ -248,10 +273,18 @@ html.land .levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
   </div>
 </section>
 
+<section class="sheet" id="posSheet" role="dialog" aria-modal="true" aria-labelledby="posTitle">
+  <div class="grab"></div>
+  <h2 id="posTitle" tabindex="-1">What position are you playing today?</h2>
+  <p class="note">Each position has 30 riddles, and your stars are saved for each one. You can switch anytime.<span id="soonNote"> Grey positions are coming soon.</span></p>
+  <div class="formation" id="formation"></div>
+</section>
+
 <section class="sheet" id="levelSheet" role="dialog" aria-modal="true" aria-labelledby="levelTitle">
   <div class="grab"></div>
   <div class="sheet-head"><h2 id="levelTitle" tabindex="-1">Riddles for the 6</h2><button class="close" type="button" data-close>Done</button></div>
-  <p class="note">Thirty game situations for a number 6. To pass, drag the ball: drop it on a teammate to play it to his feet, or in front of him to lead him into space. Get 2 stars on a riddle to unlock the next one.</p>
+  <button class="switchpos" type="button" id="switchPos">Playing <b id="switchPosName">the 6</b>. Change position</button>
+  <p class="note">Thirty game situations for <span id="levelWho">the 6</span>. To pass, drag the ball: drop it on a teammate to play it to his feet, or in front of him to lead him into space. Get 2 stars on a riddle to unlock the next one.</p>
   <div id="chapters"></div>
   <div class="foot">
     <label class="switch"><input type="checkbox" id="unlockAll"> Open every riddle (for coaches)</label>
@@ -261,15 +294,19 @@ html.land .levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="riddles-data.js"></script>
+<script src="riddles-core.js"></script>
 <script>
 (() => {
 'use strict';
 const W = 50, L = 75, M = 4, VW = W + 2 * M, VH = L + 2 * M;
 const PA = { d: 14, w: 36 }, GA = { d: 5, w: 16 }, SPOT = 10, CIRCLE = 8, GOAL = 6.5, GOAL_D = 2;
 const NS = 'http://www.w3.org/2000/svg';
-const PROG = 'tactics9v9.riddles.v1', BOARD = 'tactics9v9.board.v1';
-const R = window.RIDDLES, CH = window.CHAPTERS;
+const PROG = 'tactics9v9.riddles.v2', PROG_V1 = 'tactics9v9.riddles.v1', BOARD = 'tactics9v9.board.v1';
+let R = [], CH = [], ME = '6';
+const POSITIONS = window.POSITIONS;
+const posInfo = n => POSITIONS.find(p => p.n === n) || POSITIONS.find(p => p.n === '6');
+const meName = () => ME === '1' ? 'the keeper' : `the ${ME}`;
+const today = () => new Date().toLocaleDateString('en-CA');
 const CH_COLORS = ['#1f5fbf', '#23854c', '#b5462f', '#7a4bb3', '#b7791f', '#1d7f8c'];
 const INK = { us: '#ffd23f', them: '#ff7a59', pick: '#ffffff', best: '#7cffb2' };
 const NUMS = ['1', '3', '4', '2', '6', '10', '11', '9', '7'];
@@ -297,17 +334,24 @@ const starsSVG = (n, cls) => [0, 1, 2].map(i => `<svg viewBox="0 0 24 24" class=
 
 /* ---------- progress ---------- */
 function readProg() {
+  const fresh = { v: 2, position: '6', lastPick: '', unlockAll: false, sets: {} };
   try {
     const p = JSON.parse(localStorage.getItem(PROG));
-    if (p && typeof p === 'object') return { stars: p.stars || {}, unlockAll: !!p.unlockAll, last: Number.isInteger(p.last) ? p.last : 0 };
+    if (p && typeof p === 'object' && p.sets) return Object.assign(fresh, p);
   } catch {}
-  return { stars: {}, unlockAll: false, last: 0 };
+  try {
+    // carry over stars from the first version, which only had the 6
+    const old = JSON.parse(localStorage.getItem(PROG_V1));
+    if (old && old.stars) { fresh.sets['6'] = { stars: old.stars, last: Number.isInteger(old.last) ? old.last : 0 }; fresh.unlockAll = !!old.unlockAll; }
+  } catch {}
+  return fresh;
 }
 let prog = readProg();
 function saveProg() { try { localStorage.setItem(PROG, JSON.stringify(prog)); } catch {} }
-const starsAt = i => (prog.stars[i] == null ? -1 : prog.stars[i]);
+const cur = (n = ME) => prog.sets[n] || (prog.sets[n] = { stars: {}, last: 0 });
+const starsAt = i => (cur().stars[i] == null ? -1 : cur().stars[i]);
 const unlocked = i => i >= 0 && i < R.length && (prog.unlockAll || i === 0 || starsAt(i - 1) >= 2);
-const totalStars = () => R.reduce((s, _, i) => s + Math.max(0, starsAt(i)), 0);
+const totalStars = (n = ME) => Object.values(cur(n).stars).reduce((s, g) => s + Math.max(0, g), 0);
 
 /* ---------- field ---------- */
 function buildField() {
@@ -367,14 +411,13 @@ function buildTokens() {
   }
   ghostEl = document.createElement('div'); ghostEl.className = 'ghost'; ghostEl.hidden = true; tokensEl.prepend(ghostEl);
   ballEl = document.createElement('div'); ballEl.className = 'ball'; ballEl.innerHTML = ballSVG(); tokensEl.appendChild(ballEl);
-  tok.us['6'].setAttribute('aria-label', 'You, the 6. Drag to move.');
 }
 function applyColors() {
   let hk = '#1f5fbf', ak = '#c62f2f';
   try { const b = JSON.parse(localStorage.getItem(BOARD)); if (b && /^#[0-9a-f]{6}$/i.test(b.homeKit)) hk = b.homeKit; if (b && /^#[0-9a-f]{6}$/i.test(b.awayKit)) ak = b.awayKit; } catch {}
   const hg = pickGK(['#ffd400', '#22d1e6', '#ff5fa2', '#ff8a00', '#cfd4d8'], [hk, ak], null);
   const ag = pickGK(['#22d1e6', '#ff5fa2', '#ffd400', '#ff8a00', '#cfd4d8'], [hk, ak], hg);
-  const set = (k, v) => pitch.style.setProperty(k, v);
+  const set = (k, v) => document.documentElement.style.setProperty(k, v);
   set('--home-kit', hk); set('--home-num', textOn(hk)); set('--home-rim', rimOn(hk));
   set('--home-gk', hg); set('--home-gk-num', textOn(hg)); set('--home-gk-rim', rimOn(hg));
   set('--away-kit', ak); set('--away-num', textOn(ak)); set('--away-rim', rimOn(ak));
@@ -388,7 +431,7 @@ const tokYards = () => (parseFloat(pitch.style.getPropertyValue('--tok')) || 36)
 function footOf(team, n) {
   // where the ball sits when this player has it: just in front of him
   const p = pos[team][n], k = tokYards() * .5 + .35;
-  const down = team === 'them' || (team === 'us' && n === '6' && r.facing === 'back');
+  const down = team === 'them' || (team === 'us' && n === ME && r.facing === 'back');
   return [p[0] + k * .62, p[1] + (down ? 1 : -1) * k * .78];
 }
 function toField(e) {
@@ -426,27 +469,27 @@ function clonePos(o) { const c = {}; for (const k in o) c[k] = o[k].slice(); ret
 
 function loadRiddle(i) {
   idx = clamp(i, 0, R.length - 1); r = R[idx];
-  prog.last = idx; saveProg();
+  cur().last = idx; saveProg();
   hideSheet(true);
   const ch = r.ch;
   $('#chip').textContent = CH[ch].name; $('#chip').style.setProperty('--ch', CH_COLORS[ch]);
-  $('#kind').textContent = r.type === 'ball' ? 'On the ball' : (r.ball.team === 'us' ? 'Off the ball' : 'Defending');
+  $('#kind').textContent = r.kind || (r.type === 'ball' ? 'On the ball' : (r.ball.team === 'us' ? 'Off the ball' : 'Defending'));
   $('#count').textContent = `${idx + 1} / ${R.length}`;
   $('#title').textContent = r.title; $('#prompt').textContent = r.prompt;
   $('#hintText').textContent = r.hint; $('#hint').hidden = true; hintBtn.setAttribute('aria-pressed', 'false');
-  shootBtn.hidden = r.type !== 'ball';
+  shootBtn.hidden = r.type !== 'ball' || r.shoot === null;
   pitch.classList.toggle('onball', r.type === 'ball');
-  document.title = `${idx + 1}. ${r.title} | Number 6 Riddles`;
+  document.title = `${idx + 1}. ${r.title} | Riddles for ${meName()}`;
   resetScene();
 }
 function resetScene() {
   pos = { us: clonePos(r.us), them: clonePos(r.them) };
-  carrier = r.ball === '6' ? { team: 'us', n: '6' } : { team: r.ball.team, n: r.ball.n };
+  carrier = typeof r.ball === 'string' ? { team: 'us', n: r.ball } : { team: r.ball.team, n: r.ball.n };
   sel = null; mode = 'pick'; lastResult = null;
   for (const team of ['us', 'them']) for (const n of NUMS) {
     const el = tok[team][n]; el.classList.remove('pick', 'best', 'lift'); putEl(el, pos[team][n], 0);
   }
-  tok.us['6'].classList.add('me');
+  NUMS.forEach(n => tok.us[n].classList.toggle('me', n === ME));
   ballPos = footOf(carrier.team, carrier.n); putEl(ballEl, ballPos, 0);
   ghostEl.hidden = true;
   zoneInk.replaceChildren(); pickInk.replaceChildren(); sceneInk.replaceChildren();
@@ -460,17 +503,17 @@ function clearPick() {
   shootBtn.setAttribute('aria-pressed', 'false');
 }
 function resetSix() {
-  pos.us['6'] = r.us['6'].slice(); putEl(tok.us['6'], pos.us['6'], 0);
-  if (carrier.team === 'us' && carrier.n === '6') { ballPos = footOf('us', '6'); putEl(ballEl, ballPos, 0); }
+  pos.us[ME] = r.us[ME].slice(); putEl(tok.us[ME], pos.us[ME], 0);
+  if (carrier.team === 'us' && carrier.n === ME) { ballPos = footOf('us', ME); putEl(ballEl, ballPos, 0); }
 }
 function syncBall() {
-  ballEl.classList.toggle('aimable', mode === 'pick' && r.type === 'ball' && !!carrier && carrier.team === 'us' && carrier.n === '6');
+  ballEl.classList.toggle('aimable', mode === 'pick' && r.type === 'ball' && !!carrier && carrier.team === 'us' && carrier.n === ME);
 }
 function updateGo() {
   syncBall();
   if (mode === 'done') { goBtn.disabled = false; goBtn.textContent = 'See how you did'; return; }
   if (mode === 'anim') { goBtn.disabled = true; goBtn.textContent = 'Watch…'; return; }
-  if (!sel) { goBtn.disabled = true; goBtn.textContent = r.type === 'ball' ? 'Drag the ball to pass, drag the 6 to dribble, or shoot' : 'Drag the 6 to the best spot'; return; }
+  if (!sel) { goBtn.disabled = true; goBtn.textContent = r.type === 'ball' ? (shootBtn.hidden ? `Drag the ball to pass, or drag ${meName()} to dribble` : `Drag the ball to pass, drag ${meName()} to dribble, or shoot`) : `Drag ${meName()} to the best spot`; return; }
   goBtn.disabled = false;
   const who = n => n === '1' ? 'the keeper' : `the ${n}`;
   goBtn.textContent = sel.kind === 'pass'
@@ -500,23 +543,37 @@ const inGoal = T => T[1] < .9 && T[0] >= 21.5 && T[0] <= 28.5;
 const outOfPlay = T => T[0] < -.3 || T[0] > W + .3 || T[1] < -.3 || T[1] > L + .3;
 function readPass(T) {
   // Released on a teammate = a pass to his feet; anywhere else = a pass into space.
-  const [n, dR] = nearest('us', T, '6');
+  const [n, dR] = nearest('us', T, ME);
   if (dR <= FEET) return { feet: true, to: n, at: pos.us[n].slice() };
   return { feet: false, to: dR <= REACH ? n : null, at: T.slice() };
 }
+function autoFeet(n) {
+  // a pass to a teammate the riddle doesn't list: judge it from the picture
+  const to = pos.us[n], cut = laneBlocker(ballPos, to);
+  if (cut) return { g: 0, t: 'Intercepted', w: `Their ${nameOf(cut)} is in the way. That pass gets cut out.`, cut };
+  const [m, dO] = nearest('them', to);
+  if (dO < 4.6) return { g: 1, t: 'Marked', w: (`Their ${nameOf(m)} is right on your ${nameOf(n)}. ` + (r.otherNote || '')).trim() };
+  if (to[1] > pos.us[ME][1] + 5) return { g: 1, t: 'Too safe', w: ('Safe, but there was a better pass. ' + (r.otherNote || '')).trim() };
+  return { g: 1, t: 'Not the best', w: r.otherNote || 'That works, but there was a better pass. Look again.' };
+}
+function autoShot() {
+  const d = dist(pos.us[ME], [25, 0]);
+  if (d > 22) return { g: 0, t: 'Out of range', w: 'Way too far from goal. Keep the ball and build the attack.' };
+  return { g: 1, t: 'Not the best', w: 'You could shoot from there, but there was a better choice.' };
+}
 function judgePass(s) {
   const T = s.at;
-  if (s.feet) return Object.assign({}, r.pass[s.to] || { g: 1, t: 'Not quite', w: 'There was a better pass. Look again.' }, { to: s.to });
+  if (s.feet) return Object.assign({}, r.pass[s.to] || autoFeet(s.to), { to: s.to });
   if (outOfPlay(T)) return { g: 0, t: 'Out of play', w: 'That pass rolls out of bounds. Their ball.', loose: true };
   let z = null;
   for (const q of (r.lead || [])) if (dist(T, [q[0], q[1]]) <= q[2] && (!z || q[3] > z[3])) z = q;
   if (z) return { g: z[3], t: z[4], w: z[5], to: z[6], grab: z[7] || null };
   const cut = laneBlocker(ballPos, T);
   if (cut) return { g: 0, t: 'Intercepted', w: `Their ${nameOf(cut)} is in the way. That pass gets cut out.`, cut };
-  const [n, dR] = nearest('us', T, '6'), [m, dO] = nearest('them', T);
+  const [n, dR] = nearest('us', T, ME), [m, dO] = nearest('them', T);
   if (dR > REACH) return { g: 0, t: 'Nobody there', w: 'None of your teammates can get to that spot, so it goes straight to them.', grab: m };
   if (dO + 1 < dR) return { g: 0, t: 'They get there first', w: `Their ${nameOf(m)} is closer to that spot than your ${nameOf(n)}.`, grab: m };
-  const raw = r.pass[n] || { g: 1, t: 'Not quite', w: '' };
+  const raw = r.pass[n] || autoFeet(n);
   // a direct pass that would be cut out says nothing about a lead pass whose lane is clear
   const d = raw.cut ? { g: 1, t: 'Risky', w: `Their ${nameOf(raw.cut)} is close to that lane, so it's a risky pass.` } : raw;
   if (dR <= 4.5) return Object.assign({}, d, { to: n, cut: null });
@@ -555,9 +612,9 @@ function chooseShoot() {
 }
 function chooseSpot(p, animate) {
   clearPick();
-  const start = r.us['6'];
-  pos.us['6'] = p; putEl(tok.us['6'], p, animate ? 600 : 0);
-  if (carrier.team === 'us' && carrier.n === '6') { ballPos = footOf('us', '6'); putEl(ballEl, ballPos, animate ? 600 : 0); }
+  const start = r.us[ME];
+  pos.us[ME] = p; putEl(tok.us[ME], p, animate ? 600 : 0);
+  if (carrier.team === 'us' && carrier.n === ME) { ballPos = footOf('us', ME); putEl(ballEl, ballPos, animate ? 600 : 0); }
   ghostEl.hidden = false; putEl(ghostEl, start, 0);
   arrow(pickInk, start, p, 'pick', { dash: r.type === 'ball' ? 0 : 1, shorten: tokYards() * .55 });
   sel = { kind: r.type === 'ball' ? 'carry' : 'move', at: p };
@@ -566,7 +623,7 @@ function chooseSpot(p, animate) {
 
 function judge(s) {
   if (s.kind === 'pass') return judgePass(s);
-  if (s.kind === 'shoot') return r.shoot || { g: 0, t: 'Out of range', w: 'Way too far from goal.' };
+  if (s.kind === 'shoot') return r.shoot || autoShot();
   const zones = s.kind === 'carry' ? (r.carry || []) : r.zones;
   let best = null;
   for (const z of zones) if (dist(s.at, [z[0], z[1]]) <= z[2] && (!best || z[3] > best.g)) best = { g: z[3], t: z[4], w: z[5] };
@@ -606,8 +663,8 @@ async function play(s, a) {
     carrier = null; putEl(ballEl, end, 520); ballPos = end; await wait(640);
   } else {
     if (r.follow) { r.follow.forEach(f => { const p = [s.at[0], s.at[1] + f.dy]; pos.them[f.n] = p; putEl(tok.them[f.n], p, 520); }); await wait(600); }
-    if (s.kind === 'move' && carrier.team === 'us' && a.g >= 2) {
-      const to = (r.payoff && r.payoff.to) || '6';
+    if (s.kind === 'move' && carrier && carrier.team === 'us' && a.g >= 2 && !r.noPayoff) {
+      const to = (r.payoff && r.payoff.to) || ME;
       await wait(120); await passBall('us', to);
     }
   }
@@ -625,7 +682,7 @@ async function lockIn() {
   const a = judge(sel);
   await play(sel, a);
   if (a.g < 3) showAnswerOnField();
-  if (a.g > starsAt(idx)) { prog.stars[idx] = a.g; saveProg(); }
+  if (a.g > starsAt(idx)) { cur().stars[idx] = a.g; saveProg(); }
   renderScore();
   mode = 'done'; lastResult = a; updateGo();
   openResult(a, false);
@@ -656,6 +713,7 @@ function showSheet(sh) {
 }
 function hideSheet(silent) {
   if (!openSheet) return;
+  if (openSheet.id === 'posSheet' && prog.lastPick !== today()) { prog.lastPick = today(); saveProg(); }
   openSheet.classList.remove('open'); scrim.classList.remove('show'); openSheet = null;
   if (!silent) goBtn.focus({ preventScroll: true });
 }
@@ -689,12 +747,14 @@ function renderLevels() {
     return `<section class="chapter"><h3><i style="--ch:${CH_COLORS[ci]}"></i>${ci + 1}. ${c.name}</h3><p>${c.blurb}</p><div class="levels">${btns}</div></section>`;
   }).join('');
   $('#unlockAll').checked = prog.unlockAll;
+  $('#levelTitle').textContent = `Riddles for ${meName()}`; $('#levelWho').textContent = meName();
+  $('#switchPosName').textContent = `${meName()} (${posInfo(ME).name.toLowerCase()})`;
 }
 $('#chapters').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b && !b.disabled) loadRiddle(+b.dataset.i); });
 $('#unlockAll').addEventListener('change', e => { prog.unlockAll = e.target.checked; saveProg(); renderLevels(); });
 $('#resetProg').addEventListener('click', () => {
-  if (!confirm('Clear all stars and lock the riddles again?')) return;
-  prog = { stars: {}, unlockAll: false, last: 0 }; saveProg(); renderScore(); renderLevels(); loadRiddle(0); showLevels();
+  if (!confirm(`Clear your stars for ${meName()} and lock those riddles again?`)) return;
+  prog.sets[ME] = { stars: {}, last: 0 }; prog.unlockAll = false; saveProg(); renderScore(); renderLevels(); loadRiddle(0); showLevels();
 });
 function showLevels() { renderLevels(); showSheet(levelSheet); }
 $('#bestBtn').addEventListener('click', showBest);
@@ -710,7 +770,10 @@ let aim = null;
 const clampField = T => [clamp(T[0], -M + .5, W + M - .5), clamp(T[1], -M + .5, L + M - .5)];
 tokensEl.addEventListener('pointerdown', e => {
   if (mode !== 'pick') return;
-  if (e.target.closest('.ball.aimable')) {
+  // the ball's touch area overlaps the player; a touch near the player's middle means "move the player"
+  const meBox = tok.us[ME].getBoundingClientRect();
+  const onMe = Math.hypot(e.clientX - (meBox.left + meBox.width / 2), e.clientY - (meBox.top + meBox.height / 2)) < meBox.width * .45;
+  if (e.target.closest('.ball.aimable') && !onMe) {
     e.preventDefault();
     try { ballEl.setPointerCapture(e.pointerId); } catch {}
     resetSix(); clearPick(); sel = null; updateGo();
@@ -718,12 +781,12 @@ tokensEl.addEventListener('pointerdown', e => {
     ballEl.classList.add('aiming');
     return;
   }
-  const el = e.target.closest('.tok'); if (!el) return;
-  if (!(el.dataset.team === 'us' && el.dataset.n === '6')) return;
+  const el = onMe && r.type === 'ball' ? tok.us[ME] : e.target.closest('.tok'); if (!el) return;
+  if (!(el.dataset.team === 'us' && el.dataset.n === ME)) return;
   e.preventDefault();
   try { el.setPointerCapture(e.pointerId); } catch {}
   const p = toField(e);
-  drag = { id: e.pointerId, ox: pos.us['6'][0] - p[0], oy: pos.us['6'][1] - p[1], sx: e.clientX, sy: e.clientY, moved: false };
+  drag = { id: e.pointerId, ox: pos.us[ME][0] - p[0], oy: pos.us[ME][1] - p[1], sx: e.clientX, sy: e.clientY, moved: false };
   el.classList.add('lift');
 });
 tokensEl.addEventListener('pointermove', e => {
@@ -739,10 +802,10 @@ tokensEl.addEventListener('pointermove', e => {
   if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 5) return;
   if (!drag.moved) { drag.moved = true; clearPick(); sel = null; }
   const f = toField(e), p = clampPos([f[0] + drag.ox, f[1] + drag.oy]);
-  pos.us['6'] = p; putEl(tok.us['6'], p, 0);
-  if (carrier.team === 'us' && carrier.n === '6') { ballPos = footOf('us', '6'); putEl(ballEl, ballPos, 0); }
-  pickInk.replaceChildren(); ghostEl.hidden = false; putEl(ghostEl, r.us['6'], 0);
-  arrow(pickInk, r.us['6'], p, 'pick', { dash: r.type === 'ball' ? 0 : 1, shorten: tokYards() * .55 });
+  pos.us[ME] = p; putEl(tok.us[ME], p, 0);
+  if (carrier.team === 'us' && carrier.n === ME) { ballPos = footOf('us', ME); putEl(ballEl, ballPos, 0); }
+  pickInk.replaceChildren(); ghostEl.hidden = false; putEl(ghostEl, r.us[ME], 0);
+  arrow(pickInk, r.us[ME], p, 'pick', { dash: r.type === 'ball' ? 0 : 1, shorten: tokYards() * .55 });
 });
 function endDrag(e) {
   if (aim && e.pointerId === aim.id) {
@@ -754,11 +817,11 @@ function endDrag(e) {
   }
   if (!drag || e.pointerId !== drag.id) return;
   const moved = drag.moved; drag = null;
-  tok.us['6'].classList.remove('lift');
-  if (moved && dist(pos.us['6'], r.us['6']) >= 1.5) chooseSpot(pos.us['6'].slice(), false);
+  tok.us[ME].classList.remove('lift');
+  if (moved && dist(pos.us[ME], r.us[ME]) >= 1.5) chooseSpot(pos.us[ME].slice(), false);
   else {
     resetSix(); clearPick(); sel = null; updateGo();
-    if (e.type === 'pointerup') toast(r.type === 'ball' ? 'Drag the 6 to dribble. To pass, drag the ball.' : 'Drag the 6 to the spot you want.');
+    if (e.type === 'pointerup') toast(r.type === 'ball' ? `Drag ${meName()} to dribble. To pass, drag the ball.` : `Drag ${meName()} to the spot you want.`);
   }
 }
 tokensEl.addEventListener('pointerup', endDrag);
@@ -766,10 +829,10 @@ tokensEl.addEventListener('pointercancel', endDrag);
 tokensEl.addEventListener('click', e => {
   const el = e.target.closest('.tok'); if (!el || mode !== 'pick') return;
   const { team, n } = el.dataset;
-  if (team === 'us' && n === '6') return;
-  if (team === 'them') { toast(r.type === 'ball' ? "That's one of theirs. Drag the ball to a teammate, or into space." : 'Drag the 6 to a spot.'); return; }
+  if (team === 'us' && n === ME) return;
+  if (team === 'them') { toast(r.type === 'ball' ? "That's one of theirs. Drag the ball to a teammate, or into space." : `Drag ${meName()} to a spot.`); return; }
   if (r.type === 'ball') toast('Drag the ball to make the pass: drop it on him for his feet, or in front of him to lead him.');
-  else toast("You don't have the ball here. Drag the 6 to the best spot.");
+  else toast(`You don't have the ball here. Drag ${meName()} to the best spot.`);
 });
 pitch.addEventListener('click', e => {
   if (e.target.closest('.tok') || mode !== 'pick' || r.type !== 'move') return;
@@ -777,12 +840,12 @@ pitch.addEventListener('click', e => {
 });
 tokensEl.addEventListener('keydown', e => {
   const el = e.target.closest('.tok'); if (!el || mode !== 'pick' || el.dataset.team !== 'us') return;
-  if (el.dataset.n === '6') {
+  if (el.dataset.n === ME) {
     let d = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] }[e.key];
     if (!d) return;
     e.preventDefault(); if (land) d = [d[1], -d[0]];
     const k = e.shiftKey ? 3 : 1;
-    chooseSpot(clampPos([pos.us['6'][0] + d[0] * k, pos.us['6'][1] + d[1] * k]), false);
+    chooseSpot(clampPos([pos.us[ME][0] + d[0] * k, pos.us[ME][1] + d[1] * k]), false);
   } else if ((e.key === 'Enter' || e.key === ' ') && r.type === 'ball') { e.preventDefault(); choosePassAt(pos.us[el.dataset.n].slice()); }
 });
 pitch.addEventListener('contextmenu', e => e.preventDefault());
@@ -819,17 +882,67 @@ function fit() {
 }
 function relayout() { setOrientation(); fit(); }
 
+/* ---------- positions ---------- */
+const FORMATION = { '11': [17, 15], '9': [50, 10], '7': [83, 15], '10': [50, 31], '6': [50, 49], '3': [18, 64], '4': [50, 70], '2': [82, 64], '1': [50, 87] };
+const loaded = {};
+function loadScript(src) {
+  if (loaded[src]) return loaded[src];
+  return (loaded[src] = new Promise((ok, fail) => {
+    const el = document.createElement('script'); el.src = src; el.onload = ok;
+    el.onerror = () => { delete loaded[src]; el.remove(); fail(new Error(src)); };
+    document.head.appendChild(el);
+  }));
+}
+async function useSet(n, picked) {
+  const info = posInfo(n);
+  if (!window.RIDDLE_SETS[n]) {
+    try { await loadScript(info.file); } catch { toast(`Couldn't load the riddles for ${info.title}. Check your connection and try again.`); return false; }
+  }
+  const set = window.RIDDLE_SETS[n];
+  if (!set) { toast(`The riddles for ${info.title} aren't ready yet.`); return false; }
+  R = set.riddles; CH = set.chapters; ME = set.me;
+  prog.position = ME; if (picked) prog.lastPick = today(); saveProg();
+  NUMS.forEach(k => tok.us[k].setAttribute('aria-label', `Your ${k === '1' ? 'keeper' : 'number ' + k}`));
+  tok.us[ME].setAttribute('aria-label', `You, ${meName()}. Drag to move.`);
+  const pk = $('#posPk'); pk.textContent = ME; pk.classList.toggle('gk', ME === '1');
+  $('#posBtn').setAttribute('aria-label', `Playing ${meName()}. Change position`);
+  renderScore();
+  const st = cur(); loadRiddle(unlocked(st.last) ? st.last : 0);
+  return true;
+}
+function renderFormation() {
+  $('#formation').innerHTML = POSITIONS.map(p => {
+    const [x, y] = FORMATION[p.n], st = totalStars(p.n);
+    return `<button type="button" class="pos" data-n="${p.n}" style="left:${x}%;top:${y}%" aria-current="${p.n === ME}" ${p.soon ? 'disabled' : ''} aria-label="${p.name}, number ${p.n}${p.soon ? ', coming soon' : st ? `, ${st} stars` : ''}">
+      <span class="pk us${p.n === '1' ? ' gk' : ''}">${p.n}</span><span class="nm">${p.name}</span>${st && !p.soon ? `<span class="st">\u2605 ${st}</span>` : ''}</button>`;
+  }).join('');
+}
+function openPicker() { renderFormation(); $('#soonNote').hidden = !POSITIONS.some(p => p.soon); showSheet($('#posSheet')); }
+$('#formation').addEventListener('click', async e => {
+  const b = e.target.closest('[data-n]'); if (!b) return;
+  const n = b.dataset.n;
+  if (n === ME && R.length) { prog.lastPick = today(); saveProg(); hideSheet(); return; }
+  if (await useSet(n, true)) toast(`Riddles for ${meName()}. Good luck today!`);
+});
+$('#posBtn').addEventListener('click', openPicker);
+$('#switchPos').addEventListener('click', openPicker);
+
 /* ---------- start ---------- */
 buildField(); buildTokens(); applyColors();
 setOrientation(); fit();
-renderScore();
-const start = unlocked(prog.last) ? prog.last : 0;
-loadRiddle(start);
+(async () => {
+  const want = posInfo(prog.position || '6');
+  let ok = await useSet(want.soon ? '6' : want.n, false);
+  if (!ok && ME !== '6') ok = await useSet('6', false);
+  if (prog.lastPick !== today()) openPicker();
+})();
 addEventListener('resize', relayout);
 addEventListener('orientationchange', () => setTimeout(relayout, 60));
 if ('ResizeObserver' in window) new ResizeObserver(fit).observe(stage);
 addEventListener('storage', e => { if (e.key === BOARD) applyColors(); });
 window.__riddleDebug = {
+  open: async (n, i) => { if (n && n !== ME) await useSet(n, true); prog.unlockAll = true; prog.lastPick = today(); loadRiddle(i || 0); },
+  list: () => R, me: () => ME,
   load: i => loadRiddle(i),
   judgeAt: (x, y) => { const T = [x, y]; if (inGoal(T)) return { g: (r.shoot || {}).g, t: 'shot' }; return judgePass(Object.assign({ kind: 'pass' }, readPass(T))); }
 };
