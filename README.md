@@ -24,6 +24,8 @@ Live: https://dklemens17.github.io/Soccer-board/
 
 **Sounds.** The crowd is a real recording: *Free Crowd Cheering Sounds* by Gregor Quendel (https://opengameart.org/content/free-crowd-cheering-sounds), licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Changes: `sounds/stadium-cheer.mp3` is a 6.5-second cut of "03 - Strong cheering - I" and `sounds/stadium-crowd.mp3` a 10-second mono cut of "10 - Ambience", both faded, level-matched and re-encoded as MP3. The credit also appears in the trophy room. Everything else (the chant's singing, claps and drum, the whistles, the fanfare) is synthesized in the browser with Web Audio, and if the recordings can't load, a synthesized cheer stands in.
 
+**Music.** A quiet beat called "Pulse" plays under Puzzles and Learn, starting with the first tap. It has a soft kick and rim, a pad that breathes with the kick, and a gentle arpeggio, at 96 bpm. It's an original piece played live in the browser by `music.js`, so there's no recording to download. It follows a 32-bar form (a lighter start, a full section, open hats, then a breakdown without the kick) so it doesn't loop the same few seconds, and it sits about 14 dB under the cheers. It dips under every cheer and whistle, goes silent for the chant and the fanfares, and pauses when the page is hidden. The Music switch sits next to Sounds in the puzzle list, the trophy room and the Learn keys, and turning Sounds off silences it too. The Board stays quiet.
+
 ## Files
 
 Each position's puzzles and Learn plays are plain data in their own files, so they can be edited or added without touching the page code. (The puzzle files kept their original `riddles-` names, so saved progress and links keep working.)
@@ -41,4 +43,4 @@ Each position's puzzles and Learn plays are plain data in their own files, so th
 
 `riddles-core.js` lists the positions and holds the shared puzzle helpers, including the mirroring; the answer format is described at the top of `riddles-6.js`. `learn-core.js` does the same for Learn and describes the play format (steps, passes, freeze frames, questions and field marks).
 
-No build step: the pages are `index.html`, `riddles.html` and `learn.html`, plus the files above and the `sounds` folder.
+No build step: the pages are `index.html`, `riddles.html` and `learn.html`, plus the files above, `music.js` and the `sounds` folder.

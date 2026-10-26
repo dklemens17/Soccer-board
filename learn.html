@@ -188,6 +188,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
 .switchpos{display:block;width:100%;margin:2px 0 4px;border:0;border-radius:10px;background:#eef2f4;padding:11px 12px;text-align:left;font:600 16px/1.2 var(--ui);color:var(--ink-2)}
 .switchpos b{color:var(--ink);font-weight:700}
 .foot{margin-top:18px;padding-top:14px;border-top:1px solid var(--hair);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.switch.near{margin:0 auto 0 10px}
 .switch{display:inline-flex;align-items:center;gap:9px;font:600 15px/1.25 var(--ui);color:var(--ink-2);cursor:pointer}
 .switch input{appearance:none;-webkit-appearance:none;margin:0;flex:none;width:44px;height:26px;border-radius:13px;background:#c3cad0;position:relative;cursor:pointer;transition:background .18s}
 .switch input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .18s}
@@ -297,7 +298,8 @@ html.land .stamp{left:calc(50% - var(--side) / 2)}
   <button type="button" class="switchpos" id="switchPos">Learning <b id="switchPosName">the 6</b>. Switch position</button>
   <p class="note">Five jobs every <span id="keyWho">6</span> does. Watch each play. When it stops for a timeout, see what the player just did, and when it's a mistake, pick the better choice.</p>
   <div class="keys" id="keyList"></div>
-  <div class="foot"><label class="switch"><input type="checkbox" id="soundOn"> Sounds</label></div>
+  <div class="foot"><label class="switch"><input type="checkbox" id="soundOn"> Sounds</label>
+    <label class="switch near"><input type="checkbox" id="musicOn"> Music</label></div>
 </section>
 
 <section class="sheet" id="posSheet" role="dialog" aria-modal="true" aria-labelledby="posTitle">
@@ -311,6 +313,7 @@ html.land .stamp{left:calc(50% - var(--side) / 2)}
 
 <script src="riddles-core.js"></script>
 <script src="learn-core.js"></script>
+<script src="music.js"></script>
 <script>
 (() => {
 'use strict';
@@ -364,6 +367,13 @@ function soundOn() { try { const p = JSON.parse(localStorage.getItem(RIDDLES)); 
 function setSound(on) {
   try { const p = JSON.parse(localStorage.getItem(RIDDLES)) || { v: 2, sets: {} }; if (!p.sets) p.sets = {}; p.sound = on; localStorage.setItem(RIDDLES, JSON.stringify(p)); } catch {}
 }
+// so is the background music (music.js); here it plays a little softer, under the reading
+function musicOn() { try { const p = JSON.parse(localStorage.getItem(RIDDLES)); return !(p && p.music === false); } catch { return true; } }
+function setMusic(on) {
+  try { const p = JSON.parse(localStorage.getItem(RIDDLES)) || { v: 2, sets: {} }; if (!p.sets) p.sets = {}; p.music = on; if (on) p.sound = true; localStorage.setItem(RIDDLES, JSON.stringify(p)); } catch {}
+}
+function startMusic() { if (window.Music && soundOn() && musicOn()) { Music.setLevel(.8); Music.start(); } }
+function syncMusic() { $('#musicOn').checked = soundOn() && musicOn(); }
 function startPos() {
   if (lp.pos && window.LEARN_FILES[lp.pos]) return lp.pos;
   try { const p = JSON.parse(localStorage.getItem(RIDDLES)); const n = p && (window.LEARN_FILES[p.position] ? p.position : p.lastPos); if (window.LEARN_FILES[n]) return n; } catch {}
@@ -823,11 +833,19 @@ function renderKeys() {
   const d = doneOf(SET);
   $('#keyList').innerHTML = KEYS.map((k, i) => `<button type="button" class="keyrow" data-i="${i}" aria-current="${i === ki}" style="--ch:${KEY_COLORS[i % KEY_COLORS.length]}">
     <span class="num">${d[i] ? CHECK : i + 1}</span><span><b>${esc(k.key)}${d[i] ? '<span class="done">WATCHED</span>' : ''}</b><small>${esc(k.rule)}</small></span></button>`).join('');
-  $('#soundOn').checked = soundOn();
+  $('#soundOn').checked = soundOn(); syncMusic();
 }
 $('#keyList').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (!b) return; hideSheet(); loadKey(+b.dataset.i); });
 $('#keysBtn').addEventListener('click', () => { renderKeys(); showSheet($('#keySheet')); });
-$('#soundOn').addEventListener('change', e => { setSound(e.target.checked); if (e.target.checked) { Sound.unlock(); Sound.play('whistle'); } });
+$('#soundOn').addEventListener('change', e => {
+  setSound(e.target.checked); syncMusic();
+  if (e.target.checked) { Sound.unlock(); startMusic(); Sound.play('whistle'); } else if (window.Music) Music.stop(.3);
+});
+$('#musicOn').addEventListener('change', e => {
+  setMusic(e.target.checked); $('#soundOn').checked = soundOn(); syncMusic();
+  if (e.target.checked) { Sound.unlock(); startMusic(); } else if (window.Music) Music.stop(.4);
+});
+['touchend', 'pointerup', 'click', 'keydown'].forEach(ev => addEventListener(ev, startMusic, { capture: true, passive: true }));
 function renderFormation() {
   $('#formation').innerHTML = POSITIONS.map(p => {
     const [x, y] = FORMATION[p.n], d = doneCount(p.n);
@@ -927,6 +945,7 @@ const Sound = (() => {
   }
   function play(name) {
     if (!soundOn()) return;
+    if (window.Music) Music.duck(...(name === 'cheer' ? [2.4, .15] : [.5, .5]));
     const c = ensure(); if (!c) return;
     if (c.state === 'suspended') c.resume().catch(() => {});
     try { (name === 'cheer' ? cheer : whistle)(c, c.currentTime + .02); } catch {}

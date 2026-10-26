@@ -177,6 +177,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,.tok:focus-visible{outl
 .switch input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .18s}
 .switch input:checked{background:var(--ink)}
 .switch input:checked::after{transform:translateX(18px)}
+.switch.near{margin:0 auto 0 10px}
 .switchpos{display:block;width:100%;margin:2px 0 4px;border:0;border-radius:10px;background:#eef2f4;padding:11px 12px;text-align:left;font:600 16px/1.2 var(--ui);color:var(--ink-2)}
 .switchpos b{color:var(--ink);font-weight:700}
 .formation{position:relative;margin:12px auto 6px;width:min(100%,380px);aspect-ratio:5/6.4;border-radius:14px;overflow:hidden;
@@ -419,6 +420,7 @@ html.land .cele-reveal{margin-top:10px}
   <div class="foot">
     <label class="switch"><input type="checkbox" id="unlockAll"> Open every puzzle (for coaches)</label>
     <label class="switch"><input type="checkbox" class="soundOn"> Sounds</label>
+    <label class="switch"><input type="checkbox" class="musicOn"> Music</label>
     <button class="textbtn" type="button" id="resetProg">Reset stars</button>
   </div>
 </section>
@@ -442,6 +444,7 @@ html.land .cele-reveal{margin-top:10px}
   <p class="note">Finish every position in a group to earn its badge. The badge takes the lowest level in the group, so raise them all to make it gold.</p>
   <div class="badges" id="badges"></div>
   <div class="foot"><label class="switch"><input type="checkbox" class="soundOn"> Sounds</label>
+    <label class="switch near"><input type="checkbox" class="musicOn"> Music</label>
     <p class="credit">Crowd recordings: <a href="https://opengameart.org/content/free-crowd-cheering-sounds" target="_blank" rel="noopener">Free Crowd Cheering Sounds</a> by Gregor Quendel, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, trimmed.</p></div>
 </section>
 
@@ -470,6 +473,7 @@ html.land .cele-reveal{margin-top:10px}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="riddles-core.js"></script>
+<script src="music.js"></script>
 <script>
 (() => {
 'use strict';
@@ -984,11 +988,23 @@ function renderLevels() {
 }
 $('#chapters').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b && !b.disabled) loadRiddle(+b.dataset.i); });
 $('#unlockAll').addEventListener('change', e => { prog.unlockAll = e.target.checked; saveProg(); renderLevels(); });
-const syncSound = () => document.querySelectorAll('.soundOn').forEach(x => { x.checked = prog.sound !== false; });
+const syncSound = () => {
+  document.querySelectorAll('.soundOn').forEach(x => { x.checked = prog.sound !== false; });
+  document.querySelectorAll('.musicOn').forEach(x => { x.checked = prog.sound !== false && prog.music !== false; });
+};
 document.querySelectorAll('.soundOn').forEach(x => x.addEventListener('change', e => {
   prog.sound = e.target.checked; saveProg(); syncSound();
-  if (prog.sound) Sound.play('cheer'); else Sound.stop(.1);
+  if (prog.sound) { startMusic(); Sound.play('cheer'); } else { Sound.stop(.1); if (window.Music) Music.stop(.3); }
 }));
+// background music (music.js): a quiet beat under the game, on from the first tap; the switch is shared with Learn
+function startMusic() { if (window.Music && prog.sound !== false && prog.music !== false) Music.start(); }
+document.querySelectorAll('.musicOn').forEach(x => x.addEventListener('change', e => {
+  prog.music = e.target.checked;
+  if (prog.music) prog.sound = true;    // turning the music on turns the sounds back on too
+  saveProg(); syncSound();
+  if (prog.music) startMusic(); else if (window.Music) Music.stop(.4);
+}));
+['touchend', 'pointerup', 'click', 'keydown'].forEach(ev => addEventListener(ev, startMusic, { capture: true, passive: true }));
 $('#resetProg').addEventListener('click', () => {
   if (!confirm(`Clear your stars for ${setTitle()} and lock those puzzles again?`)) return;
   prog.sets[SET] = { stars: {}, last: 0 }; prog.unlockAll = false; prog.awards = computeAwards(); saveProg(); renderScore(); renderLevels(); loadRiddle(0); showLevels();
@@ -1536,9 +1552,12 @@ const Sound = (() => {
       claps(c, stand, fin + .1, 2.3, 90, .45);
     }
   };
+  // how long and how far the background music dips under each sound (the chant and the fanfare get the stage to themselves)
+  const DUCK = { whistle: [.5, .5], cheer: [2.4, .15], badge: [5.5, 0], chant: [11.5, 0] };
   // two channels, so the chant can keep going while the game makes its other sounds
   function play(name, ch = 'fx') {
     if (prog.sound === false) return;
+    if (window.Music) Music.duck(...(DUCK[name] || [1, .4]));
     const c = ensure(); if (!c) return;
     if (c.state === 'suspended') c.resume().catch(() => {});
     stop(.15, ch);
