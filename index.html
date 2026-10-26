@@ -28,7 +28,7 @@
   --focus:#1f5fbf;
   --display:'Big Shoulders Display','Avenir Next Condensed','Roboto Condensed','Arial Narrow',system-ui,sans-serif;
   --ui:'Big Shoulders Text','Avenir Next Condensed','Roboto Condensed','Arial Narrow',system-ui,sans-serif;
-  --tok:36px;
+  --tok:30px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
@@ -774,7 +774,7 @@ function fit() {
   pitch.style.left = (pl + aw / 2) + 'px'; pitch.style.top = (pt + ah / 2) + 'px';
   pitch.style.setProperty('--rot', land ? '90deg' : '0deg');
   pitch.style.setProperty('--unrot', land ? '-90deg' : '0deg');
-  pitch.style.setProperty('--tok', clamp(w * .095, 30, 54) + 'px');
+  pitch.style.setProperty('--tok', clamp(w * .0828, 25, 47) + 'px');
 }
 function relayout() { setOrientation(); fit(); }
 
