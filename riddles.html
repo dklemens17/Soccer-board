@@ -549,7 +549,7 @@ function readPass(T) {
 }
 function autoFeet(n) {
   // a pass to a teammate the riddle doesn't list: judge it from the picture
-  const to = pos.us[n], cut = laneBlocker(ballPos, to);
+  const to = pos.us[n], cut = r.air ? null : laneBlocker(ballPos, to);
   if (cut) return { g: 0, t: 'Intercepted', w: `Their ${nameOf(cut)} is in the way. That pass gets cut out.`, cut };
   const [m, dO] = nearest('them', to);
   if (dO < 4.6) return { g: 1, t: 'Marked', w: (`Their ${nameOf(m)} is right on your ${nameOf(n)}. ` + (r.otherNote || '')).trim() };
@@ -568,7 +568,7 @@ function judgePass(s) {
   let z = null;
   for (const q of (r.lead || [])) if (dist(T, [q[0], q[1]]) <= q[2] && (!z || q[3] > z[3])) z = q;
   if (z) return { g: z[3], t: z[4], w: z[5], to: z[6], grab: z[7] || null };
-  const cut = laneBlocker(ballPos, T);
+  const cut = r.air ? null : laneBlocker(ballPos, T);
   if (cut) return { g: 0, t: 'Intercepted', w: `Their ${nameOf(cut)} is in the way. That pass gets cut out.`, cut };
   const [n, dR] = nearest('us', T, ME), [m, dO] = nearest('them', T);
   if (dR > REACH) return { g: 0, t: 'Nobody there', w: 'None of your teammates can get to that spot, so it goes straight to them.', grab: m };
