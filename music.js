@@ -17,74 +17,82 @@
 const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
 function rng(seed) { let s = (seed >>> 0) || 1; return () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296; }
 
-/* ---------- instruments, built for one audio context and one style's mix ---------- */
+/* ---------- instruments, built for one audio context and one style's mix ----------
+   Kept light on purpose, so it runs on cheap tablets: each note is just a sound source and a volume
+   envelope, and the filters, distortion and stereo placement are built once and shared. No filter
+   moves while a note plays (those are costly to compute). */
 function instruments(c, out, verb, style) {
   const M = k => (style.mix && style.mix[k] != null ? style.mix[k] : 1);
   const noiseBuf = (() => { const b = c.createBuffer(1, c.sampleRate * 2, c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; })();
+  const noise = (t, len) => { const s = c.createBufferSource(); s.buffer = noiseBuf; s.start(t, Math.random() * 1.5); s.stop(t + len); return s; };
   // soft saturation: gives the kick and bass some harmonics, so they still come through on a phone speaker
   const warm = (() => { const n = 1024, cv = new Float32Array(n); for (let i = 0; i < n; i++) { const x = i / (n - 1) * 2 - 1; cv[i] = Math.tanh(2.2 * x) / Math.tanh(2.2); } return cv; })();
   const shaper = () => { const s = c.createWaveShaper(); s.curve = warm; return s; };
+  const filter = (type, f, q, to) => { const x = c.createBiquadFilter(); x.type = type; x.frequency.value = f; x.Q.value = q; if (to) x.connect(to); return x; };
+  const gain = (v, to) => { const g = c.createGain(); g.gain.value = v; if (to) g.connect(to); return g; };
+  const side = p => { if (!c.createStereoPanner) return out; const sp = c.createStereoPanner(); sp.pan.value = p; sp.connect(out); return sp; };
   const env = (t, peak, a, d, sustain = 0, hold = 0, rel = .05) => {
     const g = c.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + a);
     if (sustain) { g.gain.setTargetAtTime(peak * sustain, t + a, d / 3); g.gain.setValueAtTime(peak * sustain, t + a + hold); g.gain.linearRampToValueAtTime(0, t + a + hold + rel); }
     else g.gain.setTargetAtTime(0, t + a, d / 4);
     return g;
   };
-  const noise = (t, len) => { const s = c.createBufferSource(); s.buffer = noiseBuf; s.start(t, Math.random() * 1.5); s.stop(t + len); return s; };
-  const pan = (node, p) => { if (!c.createStereoPanner) return node; const sp = c.createStereoPanner(); sp.pan.value = p; node.connect(sp); return sp; };
-  const hatHp = style.hatHp || 7000;
+  const left = side(-.3), right = side(.3);
+  // shared buses
+  const kickBus = gain(M('kick')), kickSat = shaper(); kickBus.connect(kickSat); kickSat.connect(out);
+  const clickHp = filter('highpass', 1800, .7, out);
+  const hatHp = filter('highpass', style.hatHp || 7000, .7, right);
+  const rimBp = filter('bandpass', 2500, 3, out); rimBp.connect(verb);
+  const bassLp = filter('lowpass', style.bassTone || 700, .7, null), bassSat = shaper(); bassLp.connect(bassSat); bassSat.connect(out);
+  const pluckL = gain(1, left), pluckR = gain(1, right); pluckL.connect(verb); pluckR.connect(verb);
+  // the pluck's tone: a soft, rounded saw (a few harmonics fading off), made once
+  const H = 10, re = new Float32Array(H + 1), im = new Float32Array(H + 1);
+  for (let k = 1; k <= H; k++) im[k] = Math.pow(.62, k - 1) / k;
+  const pluckWave = c.createPeriodicWave(re, im);
   return {
     kick(t, v) {
-      v *= M('kick');
       const o = c.createOscillator(); o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(48, t + .1);
-      const g = c.createGain(); g.gain.setValueAtTime(.9, t); g.gain.exponentialRampToValueAtTime(.001, t + .4);
-      const sh = shaper(), lvl = c.createGain(); lvl.gain.value = v;
-      o.connect(g); g.connect(sh); sh.connect(lvl); lvl.connect(out); o.start(t); o.stop(t + .42);
+      const g = c.createGain(); g.gain.setValueAtTime(.9 * v, t); g.gain.exponentialRampToValueAtTime(.001, t + .4);
+      o.connect(g); g.connect(kickBus); o.start(t); o.stop(t + .42);
       // a short knock and a click on top, so the beat still reads on a phone speaker
+      v *= M('kick');
       const k = c.createOscillator(); k.type = 'triangle'; k.frequency.setValueAtTime(230, t); k.frequency.exponentialRampToValueAtTime(120, t + .06);
       const kg = c.createGain(); kg.gain.setValueAtTime(v * .55, t); kg.gain.exponentialRampToValueAtTime(.001, t + .08); k.connect(kg); kg.connect(out); k.start(t); k.stop(t + .1);
-      const n = noise(t, .02), hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1800;
-      const ng = c.createGain(); ng.gain.setValueAtTime(v * .4, t); ng.gain.exponentialRampToValueAtTime(.001, t + .015); n.connect(hp); hp.connect(ng); ng.connect(out);
+      const n = noise(t, .02), ng = c.createGain(); ng.gain.setValueAtTime(v * .4, t); ng.gain.exponentialRampToValueAtTime(.001, t + .015); n.connect(ng); ng.connect(clickHp);
     },
     hat(t, v, open) {
       v *= M('hat');
-      const n = noise(t, open ? .3 : .06), hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = hatHp;
-      const g = c.createGain(); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + (open ? .24 : .04));
-      n.connect(hp); hp.connect(g); pan(g, .25).connect(out);
+      const n = noise(t, open ? .3 : .06), g = c.createGain(); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + (open ? .24 : .04));
+      n.connect(g); g.connect(hatHp);
     },
     rim(t, v) {
       v *= M('rim');
       const o = c.createOscillator(); o.type = 'triangle'; o.frequency.value = 820;
-      const n = noise(t, .02), bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 2500; bp.Q.value = 3;
       const g = c.createGain(); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + .05);
-      o.connect(g); n.connect(bp); bp.connect(g); g.connect(out); g.connect(verb); o.start(t); o.stop(t + .06);
+      const n = noise(t, .02); n.connect(g); o.connect(g); g.connect(rimBp); g.connect(out); o.start(t); o.stop(t + .06);
     },
     bass(t, m, dur, v) {
       v *= M('bass');
       const f = mtof(m), o = c.createOscillator(), saw = c.createOscillator(); o.frequency.value = f; saw.type = 'sawtooth'; saw.frequency.value = f;
-      const sg = c.createGain(); sg.gain.value = .6;
-      const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = style.bassTone || 700; lp.Q.value = .7;
-      const g = env(t, v, .012, .5, .75, Math.max(.05, dur - .08), .08), sh = shaper();
-      o.connect(lp); saw.connect(sg); sg.connect(lp); lp.connect(g); g.connect(sh); sh.connect(out);
+      const g = env(t, v, .012, .5, .75, Math.max(.05, dur - .08), .08), sg = gain(.6, g);
+      o.connect(g); saw.connect(sg); g.connect(bassLp);
       [o, saw].forEach(x => { x.start(t); x.stop(t + dur + .15); });
     },
-    pluck(t, m, dur, v, bright = 2400) {
+    pluck(t, m, dur, v) {
       v *= M('pluck');
-      const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = mtof(m); o.detune.value = (Math.random() - .5) * 8;
-      const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 2; lp.frequency.setValueAtTime(bright, t); lp.frequency.exponentialRampToValueAtTime(380, t + .22);
-      const g = env(t, v, .004, .45, .25, Math.max(.03, dur - .05), .1);
-      o.connect(lp); lp.connect(g); const pn = pan(g, (Math.random() - .5) * .6); pn.connect(out); pn.connect(verb);
+      const o = c.createOscillator(); o.setPeriodicWave(pluckWave); o.frequency.value = mtof(m); o.detune.value = (Math.random() - .5) * 8;
+      const g = env(t, v, .004, .3, .2, Math.max(.03, dur - .05), .12);
+      o.connect(g); g.connect(Math.random() < .5 ? pluckL : pluckR);
       o.start(t); o.stop(t + dur + .3);
     },
     pad(t, notes, dur, v, duck) {
       v *= M('pad');
       const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1300; lp.Q.value = .4;
       const g = c.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .35); g.gain.setValueAtTime(v, t + dur - .3); g.gain.linearRampToValueAtTime(0, t + dur + .3);
-      const pump = c.createGain(); pump.gain.value = 1;
-      (duck || []).forEach(k => { pump.gain.setValueAtTime(1, k); pump.gain.linearRampToValueAtTime(.35, k + .02); pump.gain.linearRampToValueAtTime(1, k + .3); });
+      (duck || []).forEach(k => { g.gain.setValueAtTime(v, k); g.gain.linearRampToValueAtTime(v * .35, k + .02); g.gain.linearRampToValueAtTime(v, k + .3); });
       notes.forEach(m => [-7, 7].forEach(cents => { const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = mtof(m); o.detune.value = cents; o.connect(lp); o.start(t); o.stop(t + dur + .35); }));
-      lp.connect(g); g.connect(pump); pump.connect(out); pump.connect(verb);
-    },
+      lp.connect(g); g.connect(out); g.connect(verb);
+    }
   };
 }
 
@@ -97,7 +105,7 @@ const STYLES = {
   // steady and smooth: a soft pad that breathes with the kick and a gentle arpeggio on top
   pulse: {
     name: 'Pulse', bpm: 96, swing: .5, tone: 8000, hatHp: 7500, bassTone: 850,
-    mix: { kick: .38, rim: .9, hat: 1, bass: .1, pad: .075, pluck: .41 },
+    mix: { kick: .3, rim: .63, hat: 1.1, bass: .112, pad: .075, pluck: .33 },
     // D Bm G A
     chords: [[38, [54, 57, 62]], [35, [54, 59, 62]], [31, [55, 59, 62]], [33, [57, 61, 64]]],
     bar(I, b, T, r) {
@@ -112,22 +120,23 @@ const STYLES = {
       I.pad(T.at(0), notes, T.len(16), 1, kicks.map(i => T.at(i)));
       const arp = notes.concat(notes.map(m => m + 12)), seq = arp.concat(arp.slice(1, -1).reverse());
       const every = p ? 1 : 2;
-      for (let i = 0; i < 16; i += every) I.pluck(T.at(i), seq[(i + b * 2) % seq.length] + 12, T.len(.8), i % 4 === 0 ? 1 : .65, 1800);
+      for (let i = 0; i < 16; i += every) I.pluck(T.at(i), seq[(i + b * 2) % seq.length] + 12, T.len(.8), i % 4 === 0 ? 1 : .65);
     }
   }
 };
 
 /* ---------- playing it ---------- */
 function chain(c, dest, tone) {
-  // the music bus: a gentle low-pass for warmth, a little room, and a compressor to keep it even
+  // the music bus: a gentle low-pass for warmth and a little room. The room is two soft echoes, one
+  // each side, that feed back and darken as they fade (much cheaper than a convolution reverb).
   const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = tone; lp.Q.value = .5;
-  const comp = c.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 3; comp.attack.value = .01; comp.release.value = .2;
-  const out = c.createGain();
-  const n = Math.round(c.sampleRate * 1.6), ir = c.createBuffer(2, n, c.sampleRate);
-  for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-5.5 * i / n); }
-  const cv = c.createConvolver(); cv.buffer = ir; const wet = c.createGain(); wet.gain.value = .2;
-  const verb = c.createGain(); verb.connect(cv); cv.connect(wet); wet.connect(lp);
-  out.connect(lp); lp.connect(comp); comp.connect(dest);
+  const out = c.createGain(); out.connect(lp); lp.connect(dest);
+  const verb = c.createGain(), dark = c.createBiquadFilter(); dark.type = 'lowpass'; dark.frequency.value = 2200; verb.connect(dark);
+  [[.171, -.6], [.237, .6]].forEach(([time, p]) => {
+    const d = c.createDelay(1), fb = c.createGain(), wet = c.createGain(); d.delayTime.value = time; fb.gain.value = .42; wet.gain.value = .3;
+    dark.connect(d); d.connect(fb); fb.connect(d); d.connect(wet);
+    if (c.createStereoPanner) { const sp = c.createStereoPanner(); sp.pan.value = p; wet.connect(sp); sp.connect(lp); } else wet.connect(lp);
+  });
   return { out, verb };
 }
 function timing(style, t0) {
@@ -139,7 +148,8 @@ const VOLUME = .15;         // where the music sits under the effects: about -29
 let ac = null, master = null, timer = 0, nextBar = 0, barNo = 0, cur = null, I = null, rnd = rng(7), level = 1;
 function context() {
   const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
-  if (!ac) { try { ac = new AC(); } catch (e) { return null; } }
+  // background music doesn't need to react instantly, so ask for bigger buffers: more slack for a slow tablet
+  if (!ac) { try { ac = new AC({ latencyHint: 'playback' }); } catch (e) { try { ac = new AC(); } catch (e2) { return null; } } }
   if (ac.state === 'suspended' && !document.hidden) ac.resume().catch(() => {});
   return ac;
 }

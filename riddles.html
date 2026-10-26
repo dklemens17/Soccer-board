@@ -1319,7 +1319,7 @@ async function celebrateAll(events) { for (const e of events) await celebrate(sp
 /* ---------- sounds: recorded stadium crowd (Gregor Quendel, CC BY 4.0, see README), everything else made with Web Audio ---------- */
 const Sound = (() => {
   let ac = null, master = null, loading = null, attempts = 0;
-  const chans = {}, buffers = {}, FILES = { stadium: 'sounds/stadium-cheer.mp3', bed: 'sounds/stadium-crowd.mp3' };
+  const chans = {}, buffers = {}, FILES = { stadium: 'sounds/stadium-cheer.mp3', bed: 'sounds/stadium-crowd.mp3', chant: 'sounds/ole-chant.mp3' };
   const noiseOf = new WeakMap();
   // fetch the recording once; if it fails (offline), try again on a later tap, up to three times
   function load(c) {
@@ -1527,8 +1527,14 @@ const Sound = (() => {
       [392, 523.25, 659.25].forEach((f, i) => brass(c, bus, t + 2.05 + i * .12, f, .13, .1));
       [523.25, 659.25, 783.99, 1046.5].forEach(f => brass(c, bus, t + 2.42, f, 1.1, .07));
     },
-    // three first tries in a row: the cheer turns into the stand singing "o-lé" with claps and a drum, then a roar
+    // three first tries in a row: the stand singing "o-lé". Played from sounds/ole-chant.mp3, which was
+    // made from chantLive below: 32 synthesized voices and hundreds of claps are too much work for a
+    // cheap tablet to do live (it stutters or goes quiet), but a recording plays anywhere.
     chant(c, bus, t) {
+      if (!sample(c, bus, 'chant', t, { fadeIn: .01, fadeOut: .2 })) SOUNDS.cheer(c, bus, t);
+    },
+    // the live version, kept to remake the recording: __riddleDebug.sound('chantLive', 11.2, true)
+    chantLive(c, bus, t) {
       const B = 60 / 138, T = t + 1.0, A3 = 57, D4 = 62, E4 = 64, Fs4 = 66;
       const line = [[-.5, .5, 'o', A3], [0, 2, 'e', D4], [3.5, .5, 'o', A3], [4, 2, 'e', E4],
         [7.5, .5, 'o', A3], [8, .5, 'e', D4], [8.5, .5, 'o', A3], [9, .5, 'e', E4], [9.5, .5, 'o', A3], [10, 1.5, 'e', Fs4],
@@ -1576,10 +1582,10 @@ const Sound = (() => {
     }
   }
   // for checking a sound without speakers: render it and hand back a stereo WAV as base64
-  async function render(name, secs) {
+  async function render(name, secs, raw) {
     const rate = 44100, oc = new OfflineAudioContext(2, Math.round(rate * secs), rate);
     await load(ensure() || oc);
-    const bus = oc.createGain(); bus.connect(outTo(oc, oc.destination)); SOUNDS[name](oc, bus, .05);
+    const bus = oc.createGain(); bus.connect(raw ? oc.destination : outTo(oc, oc.destination)); SOUNDS[name](oc, bus, raw ? 0 : .05);
     const out = await oc.startRendering(), L = out.getChannelData(0), R = out.getChannelData(1), n = L.length;
     const buf = new DataView(new ArrayBuffer(44 + n * 4));
     const w = (o, str) => [...str].forEach((ch, i) => buf.setUint8(o + i, ch.charCodeAt(0)));
@@ -1787,7 +1793,7 @@ if ('ResizeObserver' in window) new ResizeObserver(fit).observe(stage);
 addEventListener('storage', e => { if (e.key === BOARD) applyColors(); });
 window.__riddleDebug = {
   open: async (n, i) => { if (n && n !== SET) await useSet(n, true); prog.unlockAll = true; prog.lastPick = today(); loadRiddle(i || 0); },
-  awards: () => computeAwards(), celebrate: e => celebrateAll([e]), trophies: () => showTrophies(), firstTry: s => firstTry(s), sound: (n, secs) => Sound.render(n, secs),
+  awards: () => computeAwards(), celebrate: e => celebrateAll([e]), trophies: () => showTrophies(), firstTry: s => firstTry(s), sound: (n, secs, raw) => Sound.render(n, secs, raw),
   setStars: (n, arr) => { cur(n).stars = Object.assign({}, arr); saveProg(); renderScore(); return checkAwards(); },
   list: () => R, me: () => ME,
   load: i => loadRiddle(i),
