@@ -36,7 +36,7 @@ window.POSITIONS = [
 
 // Sets that aren't one position. In these, each riddle says which player you are (its `me`).
 window.EXTRA_SETS = [
-  { n: 'sp', name: 'Set pieces', title: 'set pieces', short: 'SP', file: 'riddles-setpieces.js', varied: true, soon: true }
+  { n: 'sp', name: 'Set pieces', title: 'set pieces', short: 'SP', file: 'riddles-setpieces.js', varied: true }
 ];
 
 const SWAP = { '3': '2', '2': '3', '11': '7', '7': '11' };
