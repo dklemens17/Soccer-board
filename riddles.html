@@ -460,7 +460,7 @@ html.land .cele-reveal{margin-top:10px}
 <div class="ftry" id="ftry" hidden role="status" aria-label="First try!">
   <div class="ftry-bits" id="ftryBits" aria-hidden="true"></div>
   <div class="ftry-word" aria-hidden="true"><span>FIRST</span><span>TR<b class="y" style="animation-delay:.3s">Y</b><b class="y" style="animation-delay:.38s">Y</b><b class="y" style="animation-delay:.46s">Y</b><b class="y" style="animation-delay:.54s">Y</b>!</span></div>
-  <div class="ftry-sub">Right call, first time.</div>
+  <div class="ftry-sub" id="ftrySub">Right call, first time.</div>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -891,11 +891,13 @@ async function lockIn() {
     st.miss[idx] = (st.miss[idx] || 0) + 1;
     if (st.miss[idx] >= MAX_MISSES) { st.shown[idx] = true; capped = true; }
   }
+  // first tries: a first-ever attempt that scores three stars; a first attempt that doesn't ends the streak
   const nailed = firstEver && a.g === 3;
-  if (nailed) prog.firstTries = (prog.firstTries || 0) + 1;
+  if (firstEver) prog.ftStreak = nailed ? (prog.ftStreak || 0) + 1 : 0;
+  if (nailed) { prog.firstTries = (prog.firstTries || 0) + 1; prog.bestStreak = Math.max(prog.bestStreak || 0, prog.ftStreak); }
   saveProg(); renderScore();
   mode = 'done'; lastResult = a; lastCapped = capped; updateGo();
-  if (nailed) { await wait(200); await firstTry(); }
+  if (nailed) { await wait(200); await firstTry(prog.ftStreak); }
   const won = checkAwards();
   if (won.length) { await wait(400); await celebrateAll(won); renderScore(); }
   openResult(a, false, capped);
@@ -981,7 +983,7 @@ $('#unlockAll').addEventListener('change', e => { prog.unlockAll = e.target.chec
 const syncSound = () => document.querySelectorAll('.soundOn').forEach(x => { x.checked = prog.sound !== false; });
 document.querySelectorAll('.soundOn').forEach(x => x.addEventListener('change', e => {
   prog.sound = e.target.checked; saveProg(); syncSound();
-  if (prog.sound) Sound.play('whistle');
+  if (prog.sound) Sound.play('cheer'); else Sound.stop(.1);
 }));
 $('#resetProg').addEventListener('click', () => {
   if (!confirm(`Clear your stars for ${setTitle()} and lock those riddles again?`)) return;
@@ -1283,7 +1285,7 @@ function celebrate(s) {
     const set = (k, v) => cele.style.setProperty(k, v);
     set('--c', s.color); set('--oc', s.old); set('--ca', hexA(s.color, .3)); set('--cb', hexA(s.color, .22)); set('--cc', hexA(s.color, .8));
     cele.hidden = false; cele.classList.remove('play'); void cele.offsetWidth; cele.classList.add('play');
-    celeAt = Date.now(); cele.focus({ preventScroll: true }); Sound.play('badge');
+    celeAt = Date.now(); cele.focus({ preventScroll: true }); Sound.stop(.5, 'chant'); Sound.play('badge');
     celeDone = () => { clearTimeout(celeTimer); celeDone = null; Sound.stop(.4); cele.hidden = true; cele.classList.remove('play'); done(); };
     celeTimer = setTimeout(() => celeDone && celeDone(), 8000);
   });
@@ -1294,10 +1296,19 @@ cele.addEventListener('click', celeSkip);
 cele.addEventListener('keydown', e => { if (['Enter', ' ', 'Escape'].includes(e.key)) { e.preventDefault(); celeSkip(); } });
 async function celebrateAll(events) { for (const e of events) await celebrate(specFor(e)); }
 
-/* ---------- sounds: made on the fly with Web Audio, so there are no files to load ---------- */
+/* ---------- sounds: one recorded crowd (public domain, see README), everything else made with Web Audio ---------- */
 const Sound = (() => {
-  let ac = null, master = null, current = null;
+  let ac = null, master = null, loading = null;
+  const chans = {}, buffers = {}, FILES = { crowd: 'sounds/crowd-cheer.mp3' };
   const noiseOf = new WeakMap();
+  function load(c) {
+    if (!loading) loading = Promise.all(Object.entries(FILES).map(async ([k, url]) => {
+      if (buffers[k]) return;
+      const data = await (await fetch(url)).arrayBuffer();
+      buffers[k] = await new Promise((ok, no) => { const p = c.decodeAudioData(data, ok, no); if (p && p.then) p.then(ok, no); });
+    })).catch(() => { loading = null; });
+    return loading;
+  }
   function noise(c) {
     let b = noiseOf.get(c);
     if (!b) { b = c.createBuffer(1, c.sampleRate * 2, c.sampleRate); const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; noiseOf.set(c, b); }
@@ -1318,6 +1329,28 @@ const Sound = (() => {
     const c = ensure(); if (!c) return;
     if (c.state === 'suspended') c.resume().catch(() => {});
     const s = c.createBufferSource(); s.buffer = c.createBuffer(1, 1, 22050); s.connect(c.destination); s.start(0);
+    load(c);
+  }
+  // play the recording: level, speed, where in it to start, how long, fades
+  function sample(c, bus, k, t, o = {}) {
+    const b = buffers[k]; if (!b) return false;
+    const { gain = 1, rate = 1, from = 0, fadeIn = .03, fadeOut = .3, loop = false } = o, len = o.len || (b.duration - from) / rate;
+    const s = c.createBufferSource(); s.buffer = b; s.playbackRate.value = rate; s.loop = loop;
+    const g = c.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + fadeIn);
+    g.gain.setValueAtTime(gain, t + Math.max(fadeIn, len - fadeOut)); g.gain.linearRampToValueAtTime(0, t + len);
+    s.connect(g); g.connect(o.to || bus); s.start(t, from); s.stop(t + len + .05);
+    return true;
+  }
+  // a big open stand: a long, soft echo
+  const hallOf = new WeakMap();
+  function hall(c) {
+    let b = hallOf.get(c);
+    if (!b) {
+      const n = Math.round(c.sampleRate * 2.4), pre = Math.round(c.sampleRate * .03); b = c.createBuffer(2, n, c.sampleRate);
+      for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = pre; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-6.9 * (i - pre) / (n - pre)); }
+      hallOf.set(c, b);
+    }
+    const v = c.createConvolver(); v.buffer = b; return v;
   }
   const env = (g, t, peak, rise, hold, end) => {
     g.gain.setValueAtTime(.0001, t);
@@ -1372,60 +1405,166 @@ const Sound = (() => {
   }
   // a referee's pea whistle: a high tone with the pea's fast warble, plus breath
   function pea(c, bus, t, len, level) {
-    const o = c.createOscillator(); o.frequency.setValueAtTime(3100, t); o.frequency.linearRampToValueAtTime(2950, t + len);
-    const fm = c.createOscillator(); fm.frequency.value = 32; const fmg = c.createGain(); fmg.gain.value = 180; fm.connect(fmg); fmg.connect(o.frequency);
+    const o = c.createOscillator(); o.frequency.setValueAtTime(2850, t); o.frequency.linearRampToValueAtTime(2700, t + len);
+    const fm = c.createOscillator(); fm.frequency.value = 32; const fmg = c.createGain(); fmg.gain.value = 140; fm.connect(fmg); fmg.connect(o.frequency);
     const am = c.createGain(); am.gain.value = .7;
     const amo = c.createOscillator(); amo.frequency.value = 32; const amg = c.createGain(); amg.gain.value = .3; amo.connect(amg); amg.connect(am.gain);
     const n = c.createBufferSource(); n.buffer = noise(c);
     const nb = c.createBiquadFilter(); nb.type = 'bandpass'; nb.frequency.value = 3000; nb.Q.value = 3;
     const ng = c.createGain(); ng.gain.value = .35;
-    const g = c.createGain(); env(g, t, level, .015, len - .03, len);
+    const g = c.createGain(); env(g, t, level, .02, len - .03, len);
     o.connect(am); am.connect(g); n.connect(nb); nb.connect(ng); ng.connect(g); g.connect(bus);
     for (const x of [o, fm, amo]) { x.start(t); x.stop(t + len + .02); }
     n.start(t, Math.random()); n.stop(t + len + .02);
   }
+  const hz = m => 440 * Math.pow(2, (m - 69) / 12);
+  // the shape of the mouth for "o", the "l" and "é": [frequency, sharpness, level] for three formants
+  const VOWEL = {
+    o: [[480, 5, 1], [860, 8, .7], [2600, 12, .25]],
+    l: [[360, 5, .7], [1250, 8, .25], [2500, 12, .1]],
+    e: [[540, 5, 1], [1850, 10, 1], [2650, 12, .6]]
+  };
+  // move a voice from one syllable to the next: pitch scoops up to the note, the mouth reshapes, the level follows
+  function syllables(o, g, bps, line, t0, lag, loud, throat, oct, spread) {
+    line.forEach(([s, d, vow, m, up], i) => {
+      const t = t0 + s + lag + (Math.random() - .5) * spread, f = hz(m + oct), next = line[i + 1], tied = next && Math.abs(next[0] - (s + d)) < .01;
+      if (o) {
+        o.frequency.setValueAtTime(f * .93, t); o.frequency.exponentialRampToValueAtTime(f, t + .07);
+        if (!tied) { o.frequency.setValueAtTime(f, t + d - .12); o.frequency.exponentialRampToValueAtTime(f * .82, t + d + .06); }
+      }
+      bps.forEach(([bp, fg], k) => {
+        if (vow === 'e') { bp.frequency.setTargetAtTime(VOWEL.l[k][0] * throat, t - .02, .01); bp.frequency.setTargetAtTime(VOWEL.e[k][0] * throat, t + .04, .025); fg.gain.setTargetAtTime(VOWEL.e[k][2], t + .04, .03); }
+        else { bp.frequency.setTargetAtTime(VOWEL.o[k][0] * throat, t - .01, .015); fg.gain.setTargetAtTime(VOWEL.o[k][2], t, .02); }
+      });
+      if (vow === 'e') { g.gain.setTargetAtTime(loud * .45, t, .015); g.gain.setTargetAtTime(loud * 1.15, t + .05, .03); }
+      else g.gain.setTargetAtTime(loud, t, .02);
+      g.gain.setTargetAtTime(loud * (up ? 1.5 : .85), t + Math.min(.2, d * .4), d * .5);
+      g.gain.setTargetAtTime(tied ? loud * .5 : 0, t + d - (tied ? .03 : .07), tied ? .015 : .05);
+    });
+  }
+  // a stand singing a line: each voice a bit off the note and off the beat, with its own throat, spread left to right
+  function sing(c, bus, t0, line, n, level) {
+    const last = line[line.length - 1], end = t0 + last[0] + last[1] + .5;
+    for (let v = 0; v < n; v++) {
+      const oct = Math.random() < .22 ? 12 : 0, throat = .9 + Math.random() * .2, lag = Math.random() * .045, loud = level * (.55 + Math.random() * .45);
+      const o = c.createOscillator(); o.type = 'sawtooth'; o.detune.value = (Math.random() - .5) * 100;
+      const vib = c.createOscillator(); vib.frequency.value = 4.5 + Math.random() * 2; const vg = c.createGain(); vg.gain.value = 8 + Math.random() * 14; vib.connect(vg); vg.connect(o.detune);
+      const g = c.createGain(); g.gain.value = 0;
+      const pan = c.createStereoPanner ? c.createStereoPanner() : null; if (pan) pan.pan.value = Math.random() * 1.7 - .85;
+      const bps = VOWEL.o.map(([f, q, a]) => { const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = q * .7; bp.frequency.value = f * throat; const fg = c.createGain(); fg.gain.value = a; o.connect(bp); bp.connect(fg); fg.connect(g); return [bp, fg]; });
+      const body = c.createBiquadFilter(); body.type = 'lowpass'; body.frequency.value = 650; const bg = c.createGain(); bg.gain.value = .25; o.connect(body); body.connect(bg); bg.connect(g);
+      g.connect(pan || bus); if (pan) pan.connect(bus);
+      syllables(o, g, bps, line, t0, lag, loud, throat, oct, .02);
+      o.start(t0 - .2); o.stop(end); vib.start(t0 - .2); vib.stop(end);
+    }
+  }
+  // the breath and rasp of a shouting stand: noise shaped into the same vowels
+  function shout(c, bus, t0, line, level) {
+    const last = line[line.length - 1], end = t0 + last[0] + last[1] + .5;
+    const src = c.createBufferSource(); src.buffer = noise(c); src.loop = true;
+    const g = c.createGain(); g.gain.value = 0;
+    const bps = VOWEL.o.map(([f, q, a]) => { const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = q * .5; bp.frequency.value = f; const fg = c.createGain(); fg.gain.value = a; src.connect(bp); bp.connect(fg); fg.connect(g); return [bp, fg]; });
+    g.connect(bus); syllables(null, g, bps, line, t0, .02, level, 1, 0, 0);
+    src.start(t0 - .2, Math.random()); src.stop(end);
+  }
+  // the whole stand clapping together: lots of claps, a few hundredths of a second apart
+  function clapHit(c, bus, t, n, level) {
+    for (let i = 0; i < n; i++) {
+      const at = t + (Math.random() + Math.random() + Math.random() - 1.5) * .02;
+      const s = c.createBufferSource(); s.buffer = noise(c);
+      const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 900 + Math.random() * 1500; bp.Q.value = 1.6;
+      const g = c.createGain(); g.gain.setValueAtTime(level * (.4 + Math.random() * .6), at); g.gain.exponentialRampToValueAtTime(.0005, at + .035 + Math.random() * .03);
+      s.connect(bp); bp.connect(g); g.connect(bus); s.start(at, Math.random() * 1.8, .08);
+    }
+  }
+  // a big bass drum in the stand
+  function drum(c, bus, t, level) {
+    const o = c.createOscillator(); o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(52, t + .16);
+    const o2 = c.createOscillator(); o2.type = 'triangle'; o2.frequency.setValueAtTime(190, t); o2.frequency.exponentialRampToValueAtTime(95, t + .12);
+    const g = c.createGain(); g.gain.setValueAtTime(level, t); g.gain.exponentialRampToValueAtTime(.001, t + .55);
+    const g2 = c.createGain(); g2.gain.setValueAtTime(level * .5, t); g2.gain.exponentialRampToValueAtTime(.001, t + .2);
+    const n = c.createBufferSource(); n.buffer = noise(c); const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 900;
+    const ng = c.createGain(); ng.gain.setValueAtTime(level * .4, t); ng.gain.exponentialRampToValueAtTime(.001, t + .05);
+    o.connect(g); o2.connect(g2); n.connect(lp); lp.connect(ng); [g, g2, ng].forEach(x => x.connect(bus));
+    o.start(t); o.stop(t + .6); o2.start(t); o2.stop(t + .25); n.start(t, Math.random()); n.stop(t + .08);
+  }
   const SOUNDS = {
-    // first try: a quick, bright cheer
+    // first try: the crowd goes up
     cheer(c, bus, t) {
+      if (sample(c, bus, 'crowd', t, { from: .45, gain: 1, fadeIn: .06, fadeOut: .5 })) return;
       roar(c, bus, t, 2.2, .5, 550, .12); roar(c, bus, t, 2.2, .5, 1100, .12); roar(c, bus, t, 2.2, .22, 2200, .12);
       voices(c, bus, t + .05, 1.6, .09); claps(c, bus, t + .1, 2, 100, .75);
     },
-    // a wrong choice: tweet, tweeeet
-    whistle(c, bus, t) { pea(c, bus, t, .2, .17); pea(c, bus, t + .28, .5, .17); },
-    // badges and levels: a deep roar that builds to the flash, then a fanfare
+    // a wrong choice: a short, soft tweet, tweeeet
+    whistle(c, bus, t) { pea(c, bus, t, .18, .09); pea(c, bus, t + .26, .42, .09); },
+    // badges and levels: a roar that builds to the flash, then the crowd and a fanfare
     badge(c, bus, t) {
-      roar(c, bus, t, 4.6, .32, 450, 2.0); roar(c, bus, t, 4.6, .22, 900, 2.0); roar(c, bus, t + 1.95, 2.7, .3, 1400, .12);
-      claps(c, bus, t + 2.05, 2.4, 130, .45);
+      roar(c, bus, t, 3.0, .32, 450, 2.0); roar(c, bus, t, 3.0, .22, 900, 2.0);
+      if (!sample(c, bus, 'crowd', t + 1.9, { from: .5, rate: .94, gain: .95, fadeIn: .05, fadeOut: .7 })) {
+        roar(c, bus, t + 1.95, 2.7, .3, 1400, .12); claps(c, bus, t + 2.05, 2.4, 130, .45);
+      }
       [392, 523.25, 659.25].forEach((f, i) => brass(c, bus, t + 2.05 + i * .12, f, .13, .1));
       [523.25, 659.25, 783.99, 1046.5].forEach(f => brass(c, bus, t + 2.42, f, 1.1, .07));
+    },
+    // three first tries in a row: the cheer turns into the stand singing "o-lé" with claps and a drum, then a roar
+    chant(c, bus, t) {
+      const B = 60 / 138, T = t + 1.0, A3 = 57, D4 = 62, E4 = 64, Fs4 = 66;
+      const line = [[-.5, .5, 'o', A3], [0, 2, 'e', D4], [3.5, .5, 'o', A3], [4, 2, 'e', E4],
+        [7.5, .5, 'o', A3], [8, .5, 'e', D4], [8.5, .5, 'o', A3], [9, .5, 'e', E4], [9.5, .5, 'o', A3], [10, 1.5, 'e', Fs4],
+        [11.5, .5, 'o', A3], [12, 3.4, 'e', D4, true]].map(([s, d, v, m, up]) => [s * B, d * B, v, m, up]);
+      const wet = hall(c), damp = c.createBiquadFilter(); damp.type = 'lowpass'; damp.frequency.value = 3200;
+      const send = c.createGain(); send.gain.value = .55; send.connect(wet); wet.connect(damp); damp.connect(bus);
+      const stand = c.createGain(); stand.connect(bus); stand.connect(send);
+      // the cheer that starts it eases back as the singing begins, and the crowd keeps buzzing underneath
+      const duck = c.createGain(); duck.connect(bus); duck.gain.setValueAtTime(1, t); duck.gain.setValueAtTime(1, T - .4); duck.gain.linearRampToValueAtTime(.3, T + .4);
+      if (!sample(c, bus, 'crowd', t, { to: duck, from: .45, fadeIn: .06, fadeOut: .4 })) roar(c, duck, t, 3.2, .5, 700, .12);
+      if (!sample(c, bus, 'crowd', t + 2.6, { to: stand, from: 1.2, rate: .9, gain: .14, len: T + 15.4 * B - t - 2.6, loop: true, fadeIn: .6, fadeOut: .4 })) roar(c, stand, t + 2.6, 5.4, .12, 600, .6);
+      sing(c, stand, T, line, 32, .06);
+      shout(c, stand, T, line, .3);
+      [0, 2, 4, 6, 8, 10].forEach(b => drum(c, stand, T + b * B, .22));
+      [2, 2.5, 3, 6, 6.5, 7, 8, 9, 10, 11].forEach(b => clapHit(c, stand, T + b * B, 26, .55));
+      [12, 13, 13.5, 14, 14.5, 14.75, 15, 15.25].forEach((b, i) => drum(c, stand, T + b * B, .14 + i * .025));
+      // and the roar at the end
+      const fin = T + 15.4 * B;
+      drum(c, stand, fin, .35);
+      if (!sample(c, bus, 'crowd', fin, { from: 1.0, gain: 1, fadeIn: .04, len: 2.6, fadeOut: .9 })) roar(c, bus, fin, 2.6, .5, 900, .1);
+      claps(c, stand, fin + .1, 2.3, 90, .45);
     }
   };
-  function play(name) {
+  // two channels, so the chant can keep going while the game makes its other sounds
+  function play(name, ch = 'fx') {
     if (prog.sound === false) return;
     const c = ensure(); if (!c) return;
     if (c.state === 'suspended') c.resume().catch(() => {});
-    stop(.15);
+    stop(.15, ch);
     const bus = c.createGain(); bus.connect(master);
     try { SOUNDS[name](c, bus, c.currentTime + .03); } catch {}
-    current = bus;
+    chans[ch] = bus;
   }
-  function stop(fade = .3) {
-    if (!current || !ac) return;
-    const b = current, g = b.gain, t = ac.currentTime; current = null;
-    g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(0, t + fade);
-    setTimeout(() => { try { b.disconnect(); } catch {} }, (fade + .1) * 1000);
+  // stop one channel, or all of them
+  function stop(fade = .3, ch) {
+    if (!ac) return;
+    for (const k of ch ? [ch] : Object.keys(chans)) {
+      const b = chans[k]; if (!b) continue; delete chans[k];
+      const g = b.gain, t = ac.currentTime;
+      g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(0, t + fade);
+      setTimeout(() => { try { b.disconnect(); } catch {} }, (fade + .1) * 1000);
+    }
   }
-  // for checking a sound without speakers: render it and hand back a WAV as base64
+  // for checking a sound without speakers: render it and hand back a stereo WAV as base64
   async function render(name, secs) {
-    const rate = 44100, oc = new OfflineAudioContext(1, Math.round(rate * secs), rate);
+    const rate = 44100, oc = new OfflineAudioContext(2, Math.round(rate * secs), rate);
+    await load(ensure() || oc);
     const bus = oc.createGain(); bus.connect(outTo(oc, oc.destination)); SOUNDS[name](oc, bus, .05);
-    const d = (await oc.startRendering()).getChannelData(0), buf = new DataView(new ArrayBuffer(44 + d.length * 2));
+    const out = await oc.startRendering(), L = out.getChannelData(0), R = out.getChannelData(1), n = L.length;
+    const buf = new DataView(new ArrayBuffer(44 + n * 4));
     const w = (o, str) => [...str].forEach((ch, i) => buf.setUint8(o + i, ch.charCodeAt(0)));
-    w(0, 'RIFF'); buf.setUint32(4, 36 + d.length * 2, true); w(8, 'WAVEfmt '); buf.setUint32(16, 16, true); buf.setUint16(20, 1, true); buf.setUint16(22, 1, true);
-    buf.setUint32(24, rate, true); buf.setUint32(28, rate * 2, true); buf.setUint16(32, 2, true); buf.setUint16(34, 16, true); w(36, 'data'); buf.setUint32(40, d.length * 2, true);
-    let peak = 0; for (let i = 0; i < d.length; i++) { const v = Math.max(-1, Math.min(1, d[i])); peak = Math.max(peak, Math.abs(v)); buf.setInt16(44 + i * 2, v * 32767, true); }
+    w(0, 'RIFF'); buf.setUint32(4, 36 + n * 4, true); w(8, 'WAVEfmt '); buf.setUint32(16, 16, true); buf.setUint16(20, 1, true); buf.setUint16(22, 2, true);
+    buf.setUint32(24, rate, true); buf.setUint32(28, rate * 4, true); buf.setUint16(32, 4, true); buf.setUint16(34, 16, true); w(36, 'data'); buf.setUint32(40, n * 4, true);
+    let peak = 0;
+    for (let i = 0; i < n; i++) for (const [j, d] of [[0, L], [1, R]]) { const v = Math.max(-1, Math.min(1, d[i])); peak = Math.max(peak, Math.abs(v)); buf.setInt16(44 + i * 4 + j * 2, v * 32767, true); }
     let bin = ''; const u = new Uint8Array(buf.buffer); for (let i = 0; i < u.length; i += 32768) bin += String.fromCharCode.apply(null, u.subarray(i, i + 32768));
-    return { peak, wav: btoa(bin) };
+    return { peak, wav: btoa(bin), sampled: !!buffers.crowd };
   }
   ['touchend', 'pointerup', 'click', 'keydown'].forEach(ev => addEventListener(ev, unlock, { capture: true, passive: true }));
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(.05); });
@@ -1435,7 +1574,9 @@ const Sound = (() => {
 /* first try */
 const ftry = $('#ftry');
 const BIT_COLORS = ['#ffd23f', '#7cffb2', '#ff7a59', '#22d1e6', '#ffffff', '#5b8ef0'];
-function firstTry() {
+// streak: how many first tries in a row; every third one gets the crowd singing
+function firstTry(streak = 1) {
+  $('#ftrySub').textContent = streak >= 3 ? `${streak} in a row. Olé!` : streak === 2 ? 'Two in a row. One more and the crowd sings.' : 'Right call, first time.';
   return new Promise(done => {
     $('#ftryBits').innerHTML = Array.from({ length: 48 }, () => {
       const ang = Math.random() * Math.PI * 2, d = 110 + Math.random() * 210;
@@ -1443,10 +1584,10 @@ function firstTry() {
         `--t:${(1.1 + Math.random() * .8).toFixed(2)}s;--d:${(.1 + Math.random() * .25).toFixed(2)}s;--c:${BIT_COLORS[Math.floor(Math.random() * BIT_COLORS.length)]}"></i>`;
     }).join('');
     ftry.hidden = false; ftry.classList.remove('play'); void ftry.offsetWidth; ftry.classList.add('play');
-    Sound.play('cheer');
+    if (streak >= 3 && streak % 3 === 0) Sound.play('chant', 'chant'); else Sound.play('cheer');
     const at = Date.now();
     const end = () => { if (ftry.hidden) return; clearTimeout(timer); ftry.removeEventListener('click', skip); ftry.hidden = true; ftry.classList.remove('play'); done(); };
-    const skip = () => { if (Date.now() - at > 400) { Sound.stop(); end(); } };
+    const skip = () => { if (Date.now() - at > 400) { Sound.stop(.3, 'fx'); end(); } };
     ftry.addEventListener('click', skip);
     const timer = setTimeout(end, calm ? 1500 : 2400);
   });
@@ -1469,7 +1610,9 @@ function renderTrophies() {
   }).join('');
   $('#cardName').value = prog.name || '';
   const ft = prog.firstTries || 0;
-  $('#ftStat').hidden = !ft; $('#ftStat').textContent = `First tries: ${ft}. That's ${ft === 1 ? 'one riddle' : `${ft} riddles`} you got right the very first time.`;
+  const best = prog.bestStreak || 0;
+  $('#ftStat').hidden = !ft; $('#ftStat').textContent = `First tries: ${ft}. That's ${ft === 1 ? 'one riddle' : `${ft} riddles`} you got right the very first time.` +
+    (best >= 2 ? ` Best run: ${best} in a row.` : '');
 }
 $('#lineup').addEventListener('click', e => {
   const b = e.target.closest('[data-n]'); if (!b) return;
@@ -1620,7 +1763,7 @@ if ('ResizeObserver' in window) new ResizeObserver(fit).observe(stage);
 addEventListener('storage', e => { if (e.key === BOARD) applyColors(); });
 window.__riddleDebug = {
   open: async (n, i) => { if (n && n !== SET) await useSet(n, true); prog.unlockAll = true; prog.lastPick = today(); loadRiddle(i || 0); },
-  awards: () => computeAwards(), celebrate: e => celebrateAll([e]), trophies: () => showTrophies(), firstTry: () => firstTry(), sound: (n, secs) => Sound.render(n, secs),
+  awards: () => computeAwards(), celebrate: e => celebrateAll([e]), trophies: () => showTrophies(), firstTry: s => firstTry(s), sound: (n, secs) => Sound.render(n, secs),
   setStars: (n, arr) => { cur(n).stars = Object.assign({}, arr); saveProg(); renderScore(); return checkAwards(); },
   list: () => R, me: () => ME,
   load: i => loadRiddle(i),

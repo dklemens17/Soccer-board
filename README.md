@@ -4,7 +4,9 @@ A 9v9 soccer tactics board for phones. Drag players and the ball, sketch runs an
 
 Live: https://dklemens17.github.io/Soccer-board/
 
-**Riddles** (`riddles.html`): 30 game situations for every position on the field, plus 30 set pieces, in six chapters each. Each day the page asks which position you're playing, and you can switch anytime. Pass (to feet or into space), move, dribble, shoot, or kick it out, and get graded with stars, an explanation and a coach's rule. Stars are saved per position. Getting a riddle right on the very first try plays a "First tryyyy!" burst. After three misses on a riddle, the page shows the right answer and opens the next riddle, so nobody gets stuck. Sounds (a cheer for a first try, a referee's whistle for a wrong choice, a stadium roar and fanfare for new levels and badges) are generated in the browser, with an on/off switch in the riddle list and the trophy room.
+**Riddles** (`riddles.html`): 30 game situations for every position on the field, plus 30 set pieces, in six chapters each. Each day the page asks which position you're playing, and you can switch anytime. Pass (to feet or into space), move, dribble, shoot, or kick it out, and get graded with stars, an explanation and a coach's rule. Stars are saved per position. Getting a riddle right on the very first try plays a "First tryyyy!" burst with a crowd cheer, and three first tries in a row gets the stand singing an "o-lé" chant (again at six, nine and so on; a first attempt that misses resets the run). After three misses on a riddle, the page shows the right answer and opens the next riddle, so nobody gets stuck. A soft referee's whistle marks a wrong choice, and new levels and badges get a roar and a fanfare. Sounds can be switched off in the riddle list or the trophy room.
+
+The crowd cheer is a real recording: [Crowd Cheering](https://freesound.org/people/SoundsExciting/sounds/365132/) by SoundsExciting on Freesound, public domain (CC0), trimmed to `sounds/crowd-cheer.mp3`. Everything else (the chant's singing, claps and drum, the whistle, the fanfare) is synthesized in the browser with Web Audio, and if the recording can't load, a synthesized cheer stands in.
 
 Each position's riddles are plain data (player positions, graded answers, feedback) in their own file, so they can be edited or added without touching the page code:
 
@@ -23,4 +25,4 @@ Each position's riddles are plain data (player positions, graded answers, feedba
 
 `riddles-core.js` lists the positions and holds the shared helpers, including the mirroring. The answer format is described at the top of `riddles-6.js`.
 
-No build step: the board is `index.html`, the riddles are `riddles.html` plus the files above.
+No build step: the board is `index.html`, the riddles are `riddles.html` plus the files above and the `sounds` folder.
