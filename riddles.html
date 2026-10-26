@@ -545,6 +545,10 @@ function readPass(T) {
   // Released on a teammate = a pass to his feet; anywhere else = a pass into space.
   const [n, dR] = nearest('us', T, ME);
   if (dR <= FEET) return { feet: true, to: n, at: pos.us[n].slice() };
+  // a long ball into a planned space names the runner it was meant for
+  let z = null;
+  for (const q of (r.lead || [])) if (dist(T, [q[0], q[1]]) <= q[2] && (!z || q[3] > z[3])) z = q;
+  if (z && z[6] && pos.us[z[6]] && dR > REACH) return { feet: false, to: z[6], at: T.slice() };
   return { feet: false, to: dR <= REACH ? n : null, at: T.slice() };
 }
 function autoFeet(n) {

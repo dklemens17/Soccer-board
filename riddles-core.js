@@ -25,7 +25,7 @@ LIB.FAR = LIB.P(0, 'Out of range', 'Way too far from goal. Keep the ball and bui
 window.POSITIONS = [
   { n: '1',  name: 'Keeper',          title: 'the keeper',  file: 'riddles-gk.js', soon: true },
   { n: '3',  name: 'Left defender',   title: 'the 3',       file: 'riddles-wide-cb.js', soon: true },
-  { n: '4',  name: 'Center back',     title: 'the 4',       file: 'riddles-cb.js', soon: true },
+  { n: '4',  name: 'Center back',     title: 'the 4',       file: 'riddles-cb.js' },
   { n: '2',  name: 'Right defender',  title: 'the 2',       file: 'riddles-wide-cb.js', soon: true },
   { n: '6',  name: 'Defensive mid',   title: 'the 6',       file: 'riddles-6.js' },
   { n: '10', name: 'Attacking mid',   title: 'the 10',      file: 'riddles-10.js' },
