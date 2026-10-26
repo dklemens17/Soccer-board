@@ -51,7 +51,7 @@ const RIDDLES = [
   best: { kind: 'move', at: [29,22] } },
 
 { ch: 0, type: 'move', title: 'Blind side',
-  prompt: 'Your 11 has the ball on the left wing. Their defenders are all watching him. Drag the 9 to get free.',
+  prompt: 'Your 11 has the ball on the left wing. Their defenders are all watching the ball. Drag the 9 to get free.',
   hint: 'Which way are their defenders looking? Where can’t they see?',
   lesson: "Defenders watch the ball. Move where they can't see you: behind them, on the far side.",
   us:   { 1:[25,70], 3:[13,50], 4:[25,54], 2:[37,50], 6:[24,40], 10:[18,31], 11:[8,30], 9:[22,22.5], 7:[43,26] },
@@ -68,7 +68,7 @@ const RIDDLES = [
 
 { ch: 0, type: 'move', title: 'Stay onside', startsOffside: true,
   prompt: "Your 6 is about to play a pass forward. You're standing past their last defender. Drag the 9 to the right spot.",
-  hint: 'Find their last defender. Is any part of you past him?',
+  hint: 'Find their last defender. Is any part of you past that line?',
   lesson: 'Stay level with their last defender until the pass is played. Then go.',
   us:   { 1:[25,70], 3:[12,56], 4:[25,57], 2:[38,56], 6:[24,44], 10:[34,34], 11:[6,30], 9:[29,20], 7:[44,30] },
   them: { 1:[25,4], 2:[13,26], 4:[25,25], 3:[37,26], 6:[19,34], 10:[28,49], 9:[31,56], 7:[9,40], 11:[41,40] },
@@ -81,7 +81,7 @@ const RIDDLES = [
   elsewhere: P(1, 'Not quite', 'Get level with their last defender: onside, but as close to goal as you can.'),
   best: { kind: 'move', at: [29,27.5] } },
 
-{ ch: 0, type: 'move', title: 'Drag him away', noPayoff: true,
+{ ch: 0, type: 'move', title: 'Drag your marker away', noPayoff: true,
   prompt: 'Your 10 has the ball just outside their box. Their 4 is marking you tight and blocking the middle. Drag the 9.',
   hint: 'Their 4 follows you everywhere. What happens to the middle if you leave it?',
   lesson: 'Sometimes your best run is for a teammate. Drag a defender away and open space.',
@@ -92,7 +92,7 @@ const RIDDLES = [
   zones: [
     [32, 15.5, 4, 3, 'Pro spot', 'Their 4 followed you out to the side, and now the middle is open. Your 10 can drive at goal or shoot.'],
     [18, 15.5, 4, 3, 'Pro spot', 'Their 4 followed you out to the side, and now the middle is open. Your 10 can drive at goal or shoot.'],
-    [25, 19.5, 2.5, 0, 'In the way', 'You came toward your 10 and brought their 4 with you. Now you’re both blocking his path.'],
+    [25, 19.5, 2.5, 0, 'In the way', 'You came toward your 10 and brought their 4 with you. Now you’re both blocking the 10’s path.'],
     [25, 7, 3, 0, 'Offside', "You're behind their last defender. Offside!"]
   ],
   elsewhere: P(1, 'Not quite', 'Pull their 4 out of the middle so your 10 has a clear path.'),
@@ -116,13 +116,13 @@ const RIDDLES = [
   otherNote: 'Lay it off short to the player facing forward.',
   shoot: P(0, 'Facing the wrong way', "You're facing your own goal with a defender on you."),
   carry: [],
-  elsewhere: P(0, 'Turned into him', 'With their 4 tight on your back, turning loses the ball.'),
+  elsewhere: P(0, 'Turned into trouble', 'With their 4 tight on your back, turning loses the ball.'),
   best: { kind: 'pass', to: '10' } },
 
-{ ch: 1, type: 'ball', title: 'He gave you room', facing: 'back',
+{ ch: 1, type: 'ball', title: 'Room to turn', facing: 'back',
   prompt: 'You got the ball with your back to goal, but their 4 stayed back. Look over your shoulder. What now?',
   hint: 'How close is their 4?',
-  lesson: 'Defender standing off you? Turn and face him. Defender tight? Lay it off.',
+  lesson: 'Defender standing off you? Turn and face the defender. Defender tight? Lay it off.',
   us:   { 1:[25,70], 3:[13,52], 4:[25,54], 2:[37,52], 6:[26,45], 10:[20,36], 11:[7,28], 9:[24,27], 7:[43,28] },
   them: { 1:[25,3], 2:[13,14], 4:[24,15], 3:[36,14], 6:[31,38], 10:[17,48], 9:[31,54], 7:[9,36], 11:[41,36] },
   ball: '9',
@@ -132,48 +132,48 @@ const RIDDLES = [
   },
   otherNote: 'Their 4 stayed back. You had time to turn.',
   shoot: P(0, 'Facing the wrong way', 'Turn first. You can’t shoot facing your own goal.'),
-  carry: [[25, 20.5, 4.5, 3, 'Pro choice', 'Their 4 gave you room, so you turned and faced him. Now you can run at him, pass, or shoot.'],
-          [24, 16.5, 2.4, 0, 'Into him', 'You dribbled straight into their 4.']],
+  carry: [[25, 20.5, 4.5, 3, 'Pro choice', 'Their 4 gave you room, so you turned to face their 4. Now you can dribble at the defender, pass, or shoot.'],
+          [24, 16.5, 2.4, 0, 'Into their 4', 'You dribbled straight into their 4.']],
   elsewhere: P(1, 'Not quite', 'Turn toward their goal. You had time.'),
   best: { kind: 'carry', at: [25,20.5] } },
 
-{ ch: 1, type: 'ball', title: 'Into his path', facing: 'back',
+{ ch: 1, type: 'ball', title: 'Into the run', facing: 'back',
   prompt: "Your back is to goal and their 4 is tight. Your 10 is sprinting past you on the right. Make the pass.",
   hint: 'Where will your 10 be when the ball gets there?',
-  lesson: 'Teammate running past you? Lay it into the space in front of him, not to where he was.',
+  lesson: 'Teammate running past you? Lay it into the space ahead, not to where the runner was.',
   us:   { 1:[25,70], 3:[13,52], 4:[25,54], 2:[37,52], 6:[25,40], 10:[29,28], 11:[7,24], 9:[25,22], 7:[44,26] },
   them: { 1:[25,3], 2:[14,14], 4:[25,17.5], 3:[39,14], 6:[19,34], 10:[17,45], 9:[31,52], 7:[9,31], 11:[42,32] },
   ball: '9',
   arrows: [{ team: 'us', from: [29.5,27], to: [32.5,21.5], dash: 1 }],
   pass: {
-    10: P(1, 'Behind him', "He's sprinting past you. A pass to where he is now arrives behind him."),
+    10: P(1, 'Behind the run', "The 10 is sprinting past you. A pass to where the 10 is now arrives behind the run."),
     6:  P(2, 'Good', 'Safe, but your 10 was running into space in front of you.')
   },
   lead: [
-    [32.5, 22.5, 3.2, 3, 'Pro choice', 'You laid it into the space in front of your 10. He runs onto it facing goal, past their 4.', '10'],
+    [32.5, 22.5, 3.2, 3, 'Pro choice', 'You laid it into the space in front of your 10. The 10 runs onto it facing goal, past their 4.', '10'],
     [33, 13, 3, 1, 'Overhit', 'Too far. Their 3 cuts across and gets it.', '10', '3']
   ],
-  otherNote: 'Your 10 is running past you. Use him.',
+  otherNote: 'Your 10 is running past you. Use that run.',
   shoot: P(0, 'Facing the wrong way', "You're facing your own goal with a defender on you."),
   carry: [],
-  elsewhere: P(0, 'Turned into him', 'With their 4 tight on your back, turning loses the ball.'),
+  elsewhere: P(0, 'Turned into trouble', 'With their 4 tight on your back, turning loses the ball.'),
   best: { kind: 'pass', to: '10', at: [32.5,22.5] } },
 
 { ch: 1, type: 'ball', title: 'Spread it wide',
   prompt: 'You dropped into midfield and turned with the ball. Who do you find?',
-  hint: 'Look wide. Who has open grass in front of him?',
-  lesson: 'Facing forward in the middle? Look wide. If your winger has grass in front of him, play it into his path.',
+  hint: 'Look wide. Who has open grass ahead?',
+  lesson: 'Facing forward in the middle? Look wide. If your winger has grass ahead, play it into the run.',
   us:   { 1:[25,70], 3:[13,55], 4:[25,57], 2:[37,55], 6:[24,46], 10:[30,26], 11:[6,25], 9:[24,34], 7:[44,25] },
   them: { 1:[25,3], 2:[15,17], 4:[25,16], 3:[36,17], 6:[29,21.5], 10:[20,41], 9:[29,50], 7:[10,36], 11:[42,30] },
   ball: '9',
   arrows: [{ team: 'them', from: [20,41], to: [22,38.5] }],
   pass: {
-    11: P(2, 'Good', "Good idea, but there's open grass in front of him. Play it into that space so he can run onto it."),
+    11: P(2, 'Good', "Good idea, but there's open grass in front of the 11. Play it into that space to run onto."),
     10: P(1, 'Marked', 'Their 6 is right on your 10.'),
     7:  P(1, 'Marked', 'Their 11 is close to your 7. The left side is wide open.')
   },
   lead: [
-    [5.5, 18, 4, 3, 'Pro choice', "You played it into the open grass in front of your 11. He runs onto it at full speed.", '11'],
+    [5.5, 18, 4, 3, 'Pro choice', "You played it into the open grass in front of your 11. The 11 runs onto it at full speed.", '11'],
     [8, 8, 3.5, 1, 'Overhit', 'Too far. Their 2 or their keeper gets there first.', '11', '2']
   ],
   shoot: FAR,
@@ -183,19 +183,19 @@ const RIDDLES = [
 
 { ch: 1, type: 'ball', title: 'Release the runner',
   prompt: "You turned in midfield. Their defenders are high, and your 11 is already sprinting in behind them. Make the pass.",
-  hint: 'Pass to where he will be, not where he is.',
-  lesson: 'When a teammate is already sprinting in behind, pass into the space in front of him.',
+  hint: 'Pass to where the runner will be, not where the runner is.',
+  lesson: 'When a teammate is already sprinting in behind, pass into the space ahead.',
   us:   { 1:[25,70], 3:[13,55], 4:[25,57], 2:[37,55], 6:[25,44], 10:[31,27], 11:[9,24], 9:[25,31], 7:[43,27] },
   them: { 1:[25,4], 2:[14,22.5], 4:[25,22], 3:[36,22.5], 6:[28,36.5], 10:[18,44], 9:[31,51], 7:[8,34], 11:[42,33] },
   ball: '9',
   arrows: [{ team: 'us', from: [9.3,22], to: [11,13], dash: 1 }, { team: 'them', from: [28,36.5], to: [26.6,34] }],
   pass: {
-    11: P(1, 'Behind him', "He's already sprinting. A pass to where he is now arrives behind him."),
+    11: P(1, 'Behind the run', "The 11 is already sprinting. A pass to where the 11 is now arrives behind the run."),
     7:  P(2, 'Good', 'Open, but your 11 was running in behind them. That was the killer pass.'),
     10: P(1, 'Marked', 'Their 3 and 4 are close to your 10.')
   },
   lead: [
-    [11, 12.5, 4.5, 3, 'Pro choice', "You put it into the space in front of your 11. He's in behind their defenders with a run at goal.", '11', null, true],
+    [11, 12.5, 4.5, 3, 'Pro choice', "You put it into the space in front of your 11. The 11 is in behind their defenders with a run at goal.", '11', null, true],
     [15, 4, 3, 1, 'Overhit', 'Too long. Their keeper comes out and collects it.', '11', '1']
   ],
   shoot: FAR,
@@ -219,7 +219,7 @@ const RIDDLES = [
   },
   shoot: P(3, 'Pro choice', 'Central, 14 yards out, nobody in the way. You hit the target, low and hard.'),
   carry: [[24, 9, 3, 2, 'Okay', 'Getting closer works, but their 4 is chasing you. Shoot early.']],
-  elsewhere: P(1, 'Not quite', 'Their 4 is catching up. Every touch gives him time. Shoot!'),
+  elsewhere: P(1, 'Not quite', 'Their 4 is catching up. Every touch gives their 4 time. Shoot!'),
   best: { kind: 'shoot' } },
 
 { ch: 2, type: 'ball', title: 'Keeper came out',
@@ -239,41 +239,41 @@ const RIDDLES = [
   elsewhere: P(1, 'Not quite', 'The keeper is closing you down. Look across the box.'),
   best: { kind: 'pass', to: '7' } },
 
-{ ch: 2, type: 'ball', title: 'Go around him',
+{ ch: 2, type: 'ball', title: 'Go around the keeper',
   prompt: "You're through on goal and their keeper is rushing straight at you. What do you do?",
-  hint: 'How close is he? What happens if you shoot right now?',
-  lesson: 'Keeper rushing at you? Go around him. Keeper staying home? Pick a corner and place it.',
+  hint: 'How close is the keeper? What happens if you shoot right now?',
+  lesson: 'Keeper rushing at you? Go around. Keeper staying home? Pick a corner and place it.',
   us:   { 1:[25,70], 3:[13,48], 4:[25,50], 2:[37,48], 6:[24,38], 10:[20,28], 11:[8,24], 9:[24,17], 7:[42,24] },
   them: { 1:[24.5,10.5], 2:[12,20], 4:[26,22.5], 3:[38,20], 6:[30,32], 10:[17,40], 9:[30,48], 7:[8,31], 11:[42,32] },
   ball: '9',
   arrows: [{ team: 'them', from: [25,5], to: [24.7,9.3] }],
   pass: {},
   otherNote: "You're through on goal. Finish it yourself.",
-  shoot: P(1, 'Saved', "He's right on top of you, so the shot hits him. When the keeper rushes out, go around him.", { end: [24.5,11.5] }),
-  carry: [[31, 12, 3, 3, 'Pro choice', 'He rushed out and committed himself, so you went around him. Open goal!'],
-          [18, 12, 3, 3, 'Pro choice', 'He rushed out and committed himself, so you went around him. Open goal!'],
-          [24.5, 12.5, 2.2, 0, 'Into the keeper', 'You dribbled straight into him.']],
+  shoot: P(1, 'Saved', "The keeper is right on top of you, so the shot hits the keeper. When the keeper rushes out, go around.", { end: [24.5,11.5] }),
+  carry: [[31, 12, 3, 3, 'Pro choice', 'The keeper rushed out and was committed, so you went around. Open goal!'],
+          [18, 12, 3, 3, 'Pro choice', 'The keeper rushed out and was committed, so you went around. Open goal!'],
+          [24.5, 12.5, 2.2, 0, 'Into the keeper', 'You dribbled straight into the keeper.']],
   elsewhere: P(1, 'Not quite', 'Their 4 is chasing. Go around the keeper, to one side.'),
   best: { kind: 'carry', at: [31,12] } },
 
 { ch: 2, type: 'ball', title: 'Place it',
-  prompt: "You're through on goal. Their keeper stayed on his line. What do you do?",
-  hint: 'He stayed home. Where is the goal open?',
-  lesson: 'Keeper staying on his line? Pick a corner and place it. Keeper rushing out? Go around him.',
+  prompt: "You're through on goal. Their keeper stayed on the goal line. What do you do?",
+  hint: 'The keeper stayed home. Where is the goal open?',
+  lesson: 'Keeper staying on the line? Pick a corner and place it. Keeper rushing out? Go around.',
   us:   { 1:[25,70], 3:[13,48], 4:[25,50], 2:[37,48], 6:[24,36], 10:[19,27], 11:[8,22], 9:[25,13], 7:[42,22] },
   them: { 1:[25,1.6], 2:[13,19], 4:[27,18], 3:[38,18], 6:[30,30], 10:[17,38], 9:[30,47], 7:[8,30], 11:[42,30] },
   ball: '9',
   arrows: [{ team: 'them', from: [28,21], to: [27.3,18.6] }],
   pass: {},
   otherNote: "You're through on goal. Finish it yourself.",
-  shoot: P(3, 'Pro choice', 'He stayed on his line, so you picked a corner and placed it low, past his reach.', { end: [22.6,-1.2] }),
-  carry: [[25, 8, 3, 2, 'Okay', 'Getting closer works, but their 4 is chasing. Place it before he catches you.']],
+  shoot: P(3, 'Pro choice', 'The keeper stayed on the line, so you picked a corner and placed it low, out of reach.', { end: [22.6,-1.2] }),
+  carry: [[25, 8, 3, 2, 'Okay', 'Getting closer works, but their 4 is chasing. Place it before their 4 catches up.']],
   elsewhere: P(1, 'Not quite', "Every touch lets their 4 catch up. You're in range: place it."),
   best: { kind: 'shoot' } },
 
 { ch: 2, type: 'ball', title: "Don't be greedy",
   prompt: "You're in the box, but their 4 is right between you and the goal. Look up before you shoot.",
-  hint: 'Can your shot get past him? Who is free?',
+  hint: 'Can your shot get past their 4? Who is free?',
   lesson: 'Shot blocked and a teammate wide open? Pass it in.',
   us:   { 1:[25,70], 3:[13,45], 4:[25,47], 2:[37,45], 6:[24,32], 10:[27,21], 11:[17,10.5], 9:[31,10], 7:[44,18] },
   them: { 1:[26,2], 2:[11,15], 4:[29,6.5], 3:[37,8], 6:[31,25], 10:[20,34], 9:[31,47.5], 7:[8,24], 11:[40,26] },
@@ -344,15 +344,15 @@ const RIDDLES = [
   arrows: [{ team: 'us', from: [24.2,18.5], to: [24.9,2.5], dash: 1 }],
   zones: [
     [28, 5.5, 3, 3, 'Pro spot', "You followed the shot toward goal. If the keeper spills it, you're first to the rebound."],
-    [31, 12, 3, 1, 'Watching', "You stood and watched. If he spills it, their defenders get there first."],
+    [31, 12, 3, 1, 'Watching', "You stood and watched. If the keeper spills it, their defenders get there first."],
     [24, 13, 2.5, 1, 'In the way', "You ran into the path of your 10's shot."]
   ],
   elsewhere: P(1, 'Not quite', 'Follow the shot toward the keeper, ready for a rebound.'),
   best: { kind: 'move', at: [28,5.5] } },
 
-{ ch: 3, type: 'move', title: 'Take him with you', run: true,
+{ ch: 3, type: 'move', title: 'Take your marker with you', run: true,
   prompt: 'Your 7 is at the end line about to pull it back. Your 10 is waiting at the edge of the box. Their 4 is marking you in the middle. Drag the 9.',
-  hint: 'Their 4 follows you. Who gets free if you take him away?',
+  hint: 'Their 4 follows you. Who gets free if you take their 4 away?',
   lesson: 'Your run can make space for someone else. Drag your defender away from the danger zone.',
   us:   { 1:[25,68], 3:[13,42], 4:[25,44], 2:[37,42], 6:[24,28], 10:[26,20], 11:[14,12], 9:[25,13], 7:[44,5] },
   them: { 1:[25,2.2], 2:[15,7], 4:[25,9], 3:[40,13], 6:[31,25], 10:[20,32], 9:[31,45], 7:[8,24], 11:[41,22] },
@@ -375,27 +375,27 @@ const RIDDLES = [
   them: { 1:[25,3], 2:[12,16], 4:[25,14], 3:[38,16], 6:[25,28.5], 10:[19,40], 9:[27,52], 7:[10,40], 11:[40,40] },
   ball: { team: 'them', n: '4' },
   zones: [
-    [20, 16.8, 3, 3, 'Pro spot', "You pressed with a curve and blocked the pass to their 2. Now he has to go the other way, where your 7 is waiting."],
-    [25, 19, 2.5, 2, 'Good', 'Good pressure, but straight at him leaves their 2 free for an easy pass.'],
-    [14, 18.5, 3, 1, 'Wrong player', 'Their 4 has the ball. Now he just passes to their 3.'],
+    [20, 16.8, 3, 3, 'Pro spot', "You pressed with a curve and blocked the pass to their 2. Now their 4 has to go the other way, where your 7 is waiting."],
+    [25, 19, 2.5, 2, 'Good', 'Good pressure, but straight at their 4 leaves their 2 free for an easy pass.'],
+    [14, 18.5, 3, 1, 'Wrong player', 'Their 4 has the ball. Now their 4 just passes to their 3.'],
     [31, 25, 3, 1, 'Too far', 'From there you’re not pressing anyone.']
   ],
   elsewhere: P(1, 'Not quite', 'Press their 4, but come from the side that blocks the pass to their 2.'),
   best: { kind: 'move', at: [20,16.8] } },
 
 { ch: 4, type: 'move', title: 'Pounce', kind: 'Pressing',
-  prompt: 'Their 4 got the ball with his back to you, facing his own goal. Drag the 9.',
-  hint: 'He can’t see you. How fast can you get there?',
-  lesson: "A defender with his back to you is in trouble. Close him down fast before he turns.",
+  prompt: 'Their 4 got the ball facing their own goal, with you behind. Drag the 9.',
+  hint: 'Their 4 can’t see you. How fast can you get there?',
+  lesson: "A defender facing away from you is in trouble. Close in fast, before the turn.",
   us:   { 1:[25,70], 3:[12,56], 4:[25,58], 2:[38,56], 6:[24,44], 10:[23,32], 11:[10,30], 9:[30,22], 7:[40,30] },
   them: { 1:[25,3], 2:[12,17], 4:[24,13], 3:[37,17], 6:[25,27], 10:[19,40], 9:[27,52], 7:[10,40], 11:[40,40] },
   ball: { team: 'them', n: '4' },
   zones: [
-    [25.5, 16.8, 2.4, 3, 'Pro spot', "His back is to you, so you closed him down fast. He can't turn, and he might give it away."],
-    [30, 22, 3, 1, 'Watching', 'You gave him time to turn around and pass.'],
-    [25, 26, 3, 1, 'Too far', 'From there you’re not putting him under any pressure.']
+    [25.5, 16.8, 2.4, 3, 'Pro spot', "Their 4 couldn't see you, so you closed in fast. No time to turn, and the ball might come loose."],
+    [30, 22, 3, 1, 'Watching', 'You gave their 4 time to turn around and pass.'],
+    [25, 26, 3, 1, 'Too far', 'From there you’re not putting their 4 under any pressure.']
   ],
-  elsewhere: P(1, 'Not quite', 'Get right up behind him before he turns.'),
+  elsewhere: P(1, 'Not quite', 'Get right up behind their 4 before the turn.'),
   best: { kind: 'move', at: [25.5,16.8] } },
 
 { ch: 4, type: 'move', title: "Don't press alone", kind: 'Pressing',
@@ -407,14 +407,14 @@ const RIDDLES = [
   ball: { team: 'them', n: '4' },
   zones: [
     [25, 21.5, 3, 3, 'Pro spot', "Your team is waiting in midfield, so you didn't press alone. You stood in front of their 6 so their 4 can't pass into the middle."],
-    [25, 17.5, 2.4, 1, 'Pressing alone', 'Pressing alone just tires you out. He passes around you to their 2 or 3.'],
+    [25, 17.5, 2.4, 1, 'Pressing alone', 'Pressing alone just tires you out. Their 4 passes around you to their 2 or 3.'],
     [34, 22, 3, 1, 'Out of the play', 'From there their 4 can pass straight into their 6.']
   ],
   elsewhere: P(1, 'Not quite', 'Block the pass from their 4 into their 6.'),
   best: { kind: 'move', at: [25,21.5] } },
 
 { ch: 4, type: 'move', title: 'Lock them on one side', kind: 'Pressing',
-  prompt: 'Their 2 has the ball on your left. Your 11 is pressing him. Drag the 9.',
+  prompt: 'Their 2 has the ball on your left. Your 11 is pressing. Drag the 9.',
   hint: 'Your 11 is on the ball. What pass would let them escape?',
   lesson: 'When your team presses on one side, block the pass back across. Keep them trapped.',
   us:   { 1:[25,70], 3:[12,56], 4:[25,58], 2:[38,56], 6:[22,44], 10:[23,35], 11:[13,28], 9:[32,24], 7:[39,30] },
@@ -423,7 +423,7 @@ const RIDDLES = [
   arrows: [{ team: 'us', from: [13,29], to: [12.6,26] }],
   zones: [
     [19, 19.3, 2.8, 3, 'Pro spot', "You blocked the pass back across to their 4. Their 2 is trapped by the sideline and your 11."],
-    [25, 20, 2.4, 2, 'Good', 'Close to their 4, but their 2 can still pass across to him.'],
+    [25, 20, 2.4, 2, 'Good', 'Close to their 4, but their 2 can still pass across to their 4.'],
     [32, 24, 3, 1, 'Too far', 'Their 2 switches it to their 4 and they escape the press.']
   ],
   elsewhere: P(1, 'Not quite', 'Stand in the pass from their 2 to their 4.'),
@@ -438,8 +438,8 @@ const RIDDLES = [
   ball: { team: 'them', n: '1' },
   zones: [
     [20.5, 8.7, 2.4, 3, 'Pro spot', "You curved your run to cut off their 4. The keeper can only go to their 3, and your 7 is waiting."],
-    [25, 10.5, 2.4, 2, 'Good', 'Good pressure, but straight at him lets him pass to either defender.'],
-    [27, 21, 3, 1, 'Too far', 'From there the keeper has all the time he wants.']
+    [25, 10.5, 2.4, 2, 'Good', 'Good pressure, but straight at the keeper allows a pass to either defender.'],
+    [27, 21, 3, 1, 'Too far', 'From there the keeper has all the time in the world.']
   ],
   elsewhere: P(1, 'Not quite', 'Press the keeper, curving to block the pass to their 4.'),
   best: { kind: 'move', at: [20.5,8.7] } },
@@ -455,46 +455,46 @@ const RIDDLES = [
   zones: [
     [30, 18, 3.5, 3, 'Pro spot', 'You ran into the channel between their 4 and 3. Neither one knows who should take you.'],
     [19.5, 18, 3.5, 3, 'Pro spot', 'You ran into the channel between their 2 and 4. Neither one knows who should take you.'],
-    [25, 22, 2.4, 1, 'Into him', 'Running straight at their 4 makes him easy to pick you up.'],
+    [25, 22, 2.4, 1, 'Into their 4', 'Running straight at their 4 makes you easy to pick up.'],
     [25, 32, 3, 1, 'Standing still', "It's a counterattack. Run!"]
   ],
   elsewhere: P(1, 'Not quite', 'Run between two of their defenders.'),
   best: { kind: 'move', at: [30,18] } },
 
-{ ch: 5, type: 'move', title: 'Help him first',
-  prompt: "Your 6 has the ball, but their 10 is all over him. He can't look up. Drag the 9.",
-  hint: 'Can he see a run in behind right now?',
+{ ch: 5, type: 'move', title: 'Help the 6 first',
+  prompt: "Your 6 has the ball, but their 10 is all over the 6. No time to look up. Drag the 9.",
+  hint: 'Can the 6 see a run in behind right now?',
   lesson: 'Teammate under pressure? Come short and help. Teammate with time? Run in behind.',
   us:   { 1:[25,70], 3:[12,58], 4:[25,59], 2:[38,58], 6:[25,46], 10:[33,31], 11:[7,32], 9:[26,26], 7:[44,32] },
   them: { 1:[25,4], 2:[13,20], 4:[25,20], 3:[37,20], 6:[30,36], 10:[21,48.5], 9:[29,55], 7:[10,42], 11:[41,44] },
   ball: { team: 'us', n: '6' },
   arrows: [{ team: 'them', from: [19.5,49.3], to: [22.2,47.6] }],
   zones: [
-    [24, 33.5, 3.5, 3, 'Pro spot', "Your 6 is under pressure and can't look up, so you came short and gave him an easy pass."],
-    [27, 14, 4, 1, 'Too early', "He can't see your run with a defender on him. Help him first."],
-    [26, 26, 2.5, 1, 'Standing still', 'He needs help right now.']
+    [24, 33.5, 3.5, 3, 'Pro spot', "Your 6 is under pressure and can't look up, so you came short and gave the 6 an easy pass."],
+    [27, 14, 4, 1, 'Too early', "The 6 can't see your run with a defender right there. Help first."],
+    [26, 26, 2.5, 1, 'Standing still', 'The 6 needs help right now.']
   ],
   elsewhere: P(1, 'Not quite', 'Come short so your 6 has an easy pass.'),
   best: { kind: 'move', at: [24,33.5] } },
 
 { ch: 5, type: 'ball', title: 'Two against one',
   prompt: "Counterattack! Their 4 has stepped up to stop you, and your 7 is sprinting down the right. What now?",
-  hint: 'Their 4 came to you. Who did he leave?',
-  lesson: '2 v 1: when the defender comes to you, pass to the free teammate, into his path.',
+  hint: 'Their 4 came to you. Who got left?',
+  lesson: '2 v 1: when the defender comes to you, pass to the free teammate, into the run.',
   us:   { 1:[25,70], 3:[13,56], 4:[25,57], 2:[37,56], 6:[25,44], 10:[20,36], 11:[10,28], 9:[24,26], 7:[36,26] },
   them: { 1:[25,4], 2:[13,22], 4:[24,21], 3:[40,32], 6:[28,46], 10:[18,48], 9:[30,55], 7:[9,40], 11:[42,42] },
   ball: '9',
   arrows: [{ team: 'us', from: [36.3,24.5], to: [36.7,16.5], dash: 1 }, { team: 'them', from: [24,19.3], to: [24,21.6] }],
   pass: {
-    7:  P(2, 'Good', 'Right idea, but play it in front of him so he runs onto it without slowing down.'),
+    7:  P(2, 'Good', 'Right idea, but play it in front of the 7, who can run onto it without slowing down.'),
     11: P(1, 'Marked', 'Their 2 is near your 11, and your 7 was free.')
   },
   lead: [
-    [36, 15, 4, 3, 'Pro choice', 'Their 4 came to you, so you slipped it into the space in front of your 7. He is through on goal.', '7', null, true],
+    [36, 15, 4, 3, 'Pro choice', 'Their 4 came to you, so you slipped it into the space in front of your 7. The 7 is through on goal.', '7', null, true],
     [37, 6, 3, 1, 'Overhit', 'Too long. Their keeper comes out and gets it.', '7', '1']
   ],
   shoot: P(0, 'Out of range', 'Still 26 yards out, with their 4 right in front of you.'),
-  carry: [[24, 18.5, 2.6, 0, 'Into him', 'He already stepped up to you. Dribbling into him loses it.']],
+  carry: [[24, 18.5, 2.6, 0, 'Into their 4', 'Their 4 already stepped up to you. Dribbling into the defender loses it.']],
   elsewhere: P(1, 'Not quite', 'Their 4 committed to you. Use your 7.'),
   best: { kind: 'pass', to: '7', at: [36,15] } },
 
@@ -506,7 +506,7 @@ const RIDDLES = [
   them: { 1:[25,2.5], 2:[14,16], 4:[27.5,10], 3:[37,13], 6:[26,31], 10:[19,40], 9:[30,50], 7:[9,30], 11:[41,30] },
   ball: '9',
   pass: {
-    10: P(3, 'Pro choice', "Their 4 blocked your shot, so you laid it back to your 10. He's arriving unmarked with a clear shot."),
+    10: P(3, 'Pro choice', "Their 4 blocked your shot, so you laid it back to your 10. The 10 is arriving unmarked with a clear shot."),
     7:  P(1, 'Wide', 'Out wide gives their defenders time to get back. Your 10 was free in the middle.')
   },
   shoot: P(1, 'Blocked', 'Their 4 was right in the way. Your 10 was free behind you.', { end: [27.5,11] }),
@@ -516,8 +516,8 @@ const RIDDLES = [
 
 { ch: 5, type: 'ball', title: 'Across the keeper',
   prompt: "You're through on goal from the right side. Their keeper is guarding the near post. Your 11 is marked.",
-  hint: 'Which side of the goal is he guarding?',
-  lesson: 'From an angle, the keeper guards the near post. Shoot across him to the far post.',
+  hint: 'Which side of the goal is the keeper guarding?',
+  lesson: 'From an angle, the keeper guards the near post. Shoot across the keeper to the far post.',
   us:   { 1:[25,70], 3:[13,48], 4:[25,50], 2:[37,48], 6:[25,34], 10:[24,22], 11:[17,9], 9:[34,10], 7:[44,22] },
   them: { 1:[27.5,3.2], 2:[15,4.5], 4:[36,15.5], 3:[40,9], 6:[28,26], 10:[19,36], 9:[30,47], 7:[9,30], 11:[41,30] },
   ball: '9',
@@ -525,7 +525,7 @@ const RIDDLES = [
     11: P(1, 'Marked', 'Their 2 is on your 11, and you had the shot.'),
     10: P(1, 'Backwards', 'Back to the edge of the box when you were through on goal?')
   },
-  shoot: P(3, 'Pro choice', 'The keeper was guarding the near post, so you shot across him into the far corner.', { end: [22.6,-1.2] }),
+  shoot: P(3, 'Pro choice', 'The keeper was guarding the near post, so you shot across the keeper into the far corner.', { end: [22.6,-1.2] }),
   carry: [],
   elsewhere: P(1, 'Not quite', "Their 4 is chasing. You're in range: shoot across the keeper."),
   best: { kind: 'shoot' } }

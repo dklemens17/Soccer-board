@@ -21,23 +21,23 @@ const RIDDLES = [
 { ch: 0, type: 'ball', me: '7', kind: 'Corner kick', restart: 'corner', noCarry: true, air: true, title: 'Near post',
   prompt: 'Corner kick from the right. Your 9 is sprinting to the near post.',
   hint: 'Where will your 9 be when the ball gets there?',
-  lesson: 'Teammate attacking the near post? Whip it into the space in front of him, before their keeper can come.',
+  lesson: 'Teammate attacking the near post? Whip it into the space ahead, before their keeper can come.',
   us:   { 1:[25,70], 3:[13,40], 4:[25,42], 2:[38,38], 6:[26,22], 10:[18,13], 11:[14,7], 9:[31,11], 7:[51.8,-1.6] },
   them: { 1:[25,1.6], 2:[16,3.5], 4:[24,6], 3:[34.5,7.5], 6:[22.5,14.5], 10:[33,19], 9:[25,46], 7:[12,44], 11:[38,44] },
   ball: '7', ballAt: CORNER_R,
   arrows: [{ team: 'us', from: [30.6,10], to: [29.6,5.8], dash: 1 }],
   pass: {
-    9:  P(1, 'Behind him', "He's running to the near post. Put it in front of him."),
+    9:  P(1, 'Behind the run', "The 9 is running to the near post. Put it in front of the run."),
     10: P(1, 'Crowded', 'Their 6 is on your 10, and their 4 is right there.'),
     11: P(1, 'Marked', 'Their 2 is right on your 11 at the back post.'),
     6:  P(1, 'Too safe', 'Back to the edge of the box wastes the corner. Your 9 was attacking the near post.')
   },
   lead: [
-    [29.5, 4, 2.6, 3, 'Pro choice', 'Your 9 attacked the near post, so you whipped it into the space in front of him. He gets there before their keeper.', '9', null, true],
+    [29.5, 4, 2.6, 3, 'Pro choice', 'Your 9 attacked the near post, so you whipped it into the space ahead. The 9 gets there before their keeper.', '9', null, true],
     [24, 10, 2.5, 0, 'Into the crowd', 'Their 4 and 6 are waiting there. They head it away.', '10', '4']
   ],
   shoot: null,
-  elsewhere: P(1, 'Not quite', 'Your 9 is attacking the near post. Find him.'),
+  elsewhere: P(1, 'Not quite', 'Your 9 is attacking the near post. Find that run.'),
   best: { kind: 'pass', to: '9', at: [29.5,4] } },
 
 { ch: 0, type: 'ball', me: '7', kind: 'Corner kick', restart: 'corner', noCarry: true, title: 'Take it short',
@@ -48,7 +48,7 @@ const RIDDLES = [
   them: { 1:[25,1.6], 2:[18.5,4.4], 4:[28,4.4], 3:[33,6], 6:[23,13], 10:[33,14], 11:[38,10], 9:[25,46], 7:[12,44] },
   ball: '7', ballAt: CORNER_R,
   pass: {
-    10: P(3, 'Pro choice', 'Their box was packed and your 10 was free, so you took it short. Now their defenders have to come out to him.'),
+    10: P(3, 'Pro choice', 'Their box was packed and your 10 was free, so you took it short. Now their defenders have to come out to the 10.'),
     9:  P(0, 'Marked', 'Their 4 is right on your 9, and their keeper is close.'),
     11: P(0, 'Marked', 'Their 2 is right on your 11.'),
     6:  P(1, 'Not the best', 'A long pass back to the edge of the box. Your 10 was free right next to you.')
@@ -90,8 +90,8 @@ const RIDDLES = [
   elsewhere: P(1, 'Not quite', 'Find the space away from the crowd.'),
   best: { kind: 'move', at: [16.5,5.5] } },
 
-{ ch: 0, type: 'ball', me: '11', kind: 'Corner kick', restart: 'corner', noCarry: true, air: true, title: 'Find the free man',
-  prompt: 'Corner kick from the left. Your 4 came up for it, and nobody picked him up.',
+{ ch: 0, type: 'ball', me: '11', kind: 'Corner kick', restart: 'corner', noCarry: true, air: true, title: 'Find the free player',
+  prompt: 'Corner kick from the left. Your 4 came up for it, and nobody picked up the 4.',
   hint: 'Who is free, running at the ball?',
   lesson: 'Find the free player attacking the ball. Big defenders who come up for corners often get forgotten.',
   us:   { 1:[25,70], 3:[13,40], 2:[37,40], 6:[25,22], 4:[22,15], 9:[31,8.5], 10:[15,7], 7:[38,10], 11:[-1.8,-1.6] },
@@ -99,14 +99,14 @@ const RIDDLES = [
   ball: '11', ballAt: CORNER_L,
   arrows: [{ team: 'us', from: [22.2,14], to: [23,10.6], dash: 1 }],
   pass: {
-    4:  P(2, 'Good', 'Right player, but he is running in. Put it in front of him.'),
+    4:  P(2, 'Good', 'Right player, but the 4 is running in. Put it in front of the run.'),
     9:  P(1, 'Marked', 'Their 4 is right on your 9.'),
     10: P(1, 'Marked', 'Their 2 is right on your 10.'),
     7:  P(1, 'Marked', 'Their 3 is right on your 7.'),
     6:  P(1, 'Too safe', 'Your 4 was free, attacking the middle of the box.')
   },
   lead: [
-    [23.5, 9, 2.8, 3, 'Pro choice', 'Nobody picked up your 4, so you put it into the space in front of him. He attacks it at full speed.', '4', null, true]
+    [23.5, 9, 2.8, 3, 'Pro choice', 'Nobody picked up your 4, so you put it into the space ahead. The 4 attacks it at full speed.', '4', null, true]
   ],
   shoot: null,
   elsewhere: P(1, 'Not quite', 'Find the free player attacking the ball.'),
@@ -114,16 +114,16 @@ const RIDDLES = [
 
 /* ---------------- 2. Their corners ---------------- */
 { ch: 1, type: 'move', me: '4', kind: 'Corner kick', restart: 'corner', title: 'Goal side',
-  prompt: "Corner kick to them from our left. Their 9 is at the penalty spot, and you're in front of him. Drag the 4.",
-  hint: 'Where should you be: in front of him, or between him and our goal?',
-  lesson: 'On their corner, mark goal side and ball side. He has to go through you to reach the ball.',
+  prompt: "Corner kick to them from our left. Their 9 is at the penalty spot, and you're in front of their 9. Drag the 4.",
+  hint: 'Where should you be: in front of their 9, or between their 9 and our goal?',
+  lesson: 'On their corner, mark goal side and ball side. The attacker has to go through you to reach the ball.',
   us:   { 1:[25.5,73.5], 3:[21.2,72.3], 4:[24,58.8], 2:[33,68], 6:[29,57], 10:[17,58], 11:[10,50], 9:[25,44], 7:[40,52] },
   them: { 1:[25,4], 7:[-1.8,76.6], 9:[25,65], 4:[33,63.5], 3:[17,62], 10:[30,53], 6:[24,50], 2:[8,62], 11:[40,60] },
   ball: { team: 'them', n: '7' }, ballAt: THEIR_CORNER,
   zones: [
-    [23.6, 68.2, 2.3, 3, 'Pro spot', 'You got goal side of their 9, on the ball side. He has to go through you to reach the cross.'],
-    [24.5, 60.5, 2.6, 0, 'Wrong side', 'In front of him? The cross goes over you to him.'],
-    [27.5, 67.5, 1.4, 1, 'Far side', 'Goal side, but on his far side. A cross from our left reaches him first.']
+    [23.6, 68.2, 2.3, 3, 'Pro spot', 'You got goal side of their 9, on the ball side. Their 9 has to go through you to reach the cross.'],
+    [24.5, 60.5, 2.6, 0, 'Wrong side', 'In front of their 9? The cross goes over you to their 9.'],
+    [27.5, 67.5, 1.4, 1, 'Far side', 'Goal side, but on the far side. A cross from our left reaches their 9 first.']
   ],
   elsewhere: P(1, 'Not quite', 'Get between their 9 and our goal, on the side of the ball.'),
   best: { kind: 'move', at: [23.6,68.2] } },
@@ -146,7 +146,7 @@ const RIDDLES = [
 { ch: 1, type: 'move', me: '9', kind: 'Corner kick', restart: 'corner', title: 'Stay up',
   prompt: 'Corner kick to them. You came all the way back into our box. Drag the 9.',
   hint: 'When we win the ball, who do we pass to?',
-  lesson: "On their corner, one forward stays up. He's the outlet for the clearance, and he keeps their defenders busy.",
+  lesson: "On their corner, one forward stays up. That forward is the outlet for the clearance, and keeps their defenders busy.",
   us:   { 1:[25.5,73.5], 3:[21.2,72.3], 4:[24.2,68], 2:[33,68], 6:[29,57], 10:[17,58], 11:[10,50], 7:[40,52], 9:[22,61] },
   them: { 1:[25,4], 7:[-1.8,76.6], 9:[25.5,64.6], 4:[33,63.5], 3:[17,62], 10:[30,53], 6:[24,50], 2:[8,62], 11:[40,60] },
   ball: { team: 'them', n: '7' }, ballAt: THEIR_CORNER,
@@ -166,7 +166,7 @@ const RIDDLES = [
   ball: '6',
   arrows: [{ team: 'us', from: [11.6,50.5], to: [10.2,45], dash: 1 }],
   pass: {
-    9:  P(2, 'Good', 'Right idea: look forward. But he has open grass behind their 6. Play it into that space.'),
+    9:  P(2, 'Good', 'Right idea: look forward. But the 9 has open grass behind their 6. Play it into that space.'),
     10: P(1, 'Slow', 'Sideways, and their players get back.'),
     7:  P(1, 'Slow', 'Sideways, and their players get back.'),
     4:  TOO_SAFE('Their players are still in our box. Look forward.'),
@@ -184,17 +184,17 @@ const RIDDLES = [
   best: { kind: 'pass', to: '9', at: [24,30] } },
 
 { ch: 1, type: 'move', me: '10', kind: 'Corner kick', restart: 'corner', title: 'Edge of our box',
-  prompt: 'Corner kick to them. Their 6 is waiting at the edge of our box, and nobody is on him. Drag the 10.',
+  prompt: 'Corner kick to them. Their 6 is waiting at the edge of our box, and nobody is on their 6. Drag the 10.',
   hint: 'Where does a cleared corner usually land?',
   lesson: 'On their corner, someone marks the player at the edge of the box. The clearance and the cutback go there.',
   us:   { 1:[25.5,73.5], 3:[21.2,72.3], 4:[24.2,68], 2:[33,68], 6:[33,57.5], 10:[18.5,65], 11:[10,50], 9:[25,44], 7:[40,52] },
   them: { 1:[25,4], 7:[-1.8,76.6], 9:[25.5,64.6], 4:[33,63.5], 3:[15,61.5], 6:[25,56.5], 10:[34,53.5], 2:[8,62], 11:[41,61] },
   ball: { team: 'them', n: '7' }, ballAt: THEIR_CORNER,
   zones: [
-    [25, 59.8, 2.4, 3, 'Pro spot', "Their 6 was waiting at the edge of the box. You picked him up, goal side, so the cutback or the clearance can't find him free."],
+    [25, 59.8, 2.4, 3, 'Pro spot', "Their 6 was waiting at the edge of the box. You picked up their 6, goal side, so the cutback or the clearance can't find their 6 free."],
     [18.5, 65, 2, 1, 'Crowded', 'Your teammates have the players in the box. Their 6 is free at the edge of it.']
   ],
-  elsewhere: P(1, 'Not quite', 'Pick up their 6, goal side of him.'),
+  elsewhere: P(1, 'Not quite', 'Pick up their 6, goal side.'),
   best: { kind: 'move', at: [25,59.8] } },
 
 /* ---------------- 3. Our free kicks ---------------- */
@@ -245,8 +245,8 @@ const RIDDLES = [
   ball: '7', ballAt: [44,14],
   arrows: [{ team: 'us', from: [27,12.6], to: [26,8.6], dash: 1 }, { team: 'us', from: [20.8,12.6], to: [22.4,9], dash: 1 }],
   pass: {
-    9:  P(1, 'To his feet?', 'He is about to run in behind. Put it in the space in front of him.'),
-    4:  P(1, 'To his feet?', 'He is about to run in behind. Put it in the space in front of him.'),
+    9:  P(1, 'To feet?', 'The 9 is about to run in behind. Put it in the space ahead.'),
+    4:  P(1, 'To feet?', 'The 4 is about to run in behind. Put it in the space ahead.'),
     11: P(1, 'Marked', 'Their 2 is right on your 11.'),
     10: P(1, 'Marked', 'Their 10 is right on your 10.'),
     6:  TOO_SAFE('Backwards, from a free kick near their box?')
@@ -261,7 +261,7 @@ const RIDDLES = [
 
 { ch: 2, type: 'move', me: '9', kind: 'Free kick', restart: 'freekick', air: true, startsOffside: true, title: 'Stay onside',
   prompt: "Free kick to us on the right wing. You're standing behind their defenders. Drag the 9.",
-  hint: 'Find their last defender. Are you past him?',
+  hint: 'Find their last defender. Are you past that line?',
   lesson: 'Offside counts on free kicks. Stay level with their last defender until the ball is kicked, then attack it.',
   us:   { 1:[25,70], 3:[13,45], 2:[37,45], 6:[26,25], 10:[34,16], 11:[13,13.5], 4:[20.5,13.5], 9:[26,6], 7:[46.5,15.8] },
   them: { 1:[25,2], 2:[17,11], 4:[23.5,11], 3:[30,11], 6:[37.3,9.3], 10:[31,18.5], 9:[26,40], 7:[11,41.5], 11:[39,41] },
@@ -282,14 +282,14 @@ const RIDDLES = [
   them: { 1:[25,3], 6:[23.2,24], 10:[26.8,24], 4:[25,13], 2:[15,17], 3:[40,20], 9:[25,46], 7:[12,48], 11:[38,47] },
   ball: '10', ballAt: [25,32],
   pass: {
-    11: P(2, 'Good', 'Good idea, but he has grass in front of him. Play it into the space.'),
+    11: P(2, 'Good', 'Good idea, but the 11 has grass ahead. Play it into the space.'),
     9:  P(1, 'Marked', 'Their 4 is right behind your 9, and the wall is in the way.'),
     7:  P(1, 'Marked', 'Their 3 is right on your 7.'),
     6:  TOO_SAFE('Backwards? Your 11 was free in space.'),
     4:  TOO_SAFE('Backwards? Your 11 was free in space.')
   },
   lead: [
-    [6, 18, 3.5, 3, 'Pro choice', 'Too far to score from, so you found your 11 in space. He can attack their defense from there.', '11', null, true]
+    [6, 18, 3.5, 3, 'Pro choice', 'Too far to score from, so you found your 11 in space. The 11 can attack their defense from there.', '11', null, true]
   ],
   shoot: P(1, 'Too far', 'From 32 yards, that shot almost never beats the keeper. Keep the ball.'),
   elsewhere: P(1, 'Not quite', 'Find the free teammate.'),
@@ -330,13 +330,13 @@ const RIDDLES = [
 { ch: 3, type: 'move', me: '3', kind: 'Free kick', restart: 'freekick', title: 'Back post runner',
   prompt: 'Free kick to them on our right wing. Their 7 is sneaking toward the back post. Drag the 3.',
   hint: 'Where is their 7 going? Get there first.',
-  lesson: 'Wide free kick against us? Watch the runner on the far side. Get to the back post first, goal side of him.',
+  lesson: 'Wide free kick against us? Watch the runner on the far side. Get to the back post first, goal side of the runner.',
   us:   { 1:[26,72.5], 3:[11,58], 4:[25,64], 2:[31,63.5], 6:[21,60], 10:[37,61.5], 11:[14,50], 9:[25,42], 7:[40,48] },
   them: { 1:[25,4], 11:[46.6,56.4], 9:[25,60.5], 4:[31,60], 7:[13.5,62.5], 3:[19,56], 10:[30,52], 2:[12,46], 6:[25,48] },
   ball: { team: 'them', n: '11' }, ballAt: [44,58],
   arrows: [{ team: 'them', from: [13.8,63], to: [16.6,66.8], dash: 1 }],
   zones: [
-    [17.5, 69, 2, 3, 'Pro spot', 'Their 7 was sneaking to the back post, so you got there first, goal side of him.'],
+    [17.5, 69, 2, 3, 'Pro spot', 'Their 7 was sneaking to the back post, so you got there first, goal side of their 7.'],
     [11, 58, 2.2, 1, 'Ball watching', 'Their 7 ran right past you to the back post.']
   ],
   elsewhere: P(1, 'Not quite', 'Beat their 7 to the back post.'),
@@ -377,36 +377,36 @@ const RIDDLES = [
 { ch: 4, type: 'ball', me: '3', kind: 'Throw-in', restart: 'throw', range: 20, noCarry: true, air: true, title: 'Down the line',
   prompt: 'Throw-in to us on the left, near halfway. Your 11 is sprinting down the line.',
   hint: 'Where will your 11 be when the ball gets there?',
-  lesson: 'Teammate running down the line? Throw it into the space in front of him, so he runs onto it.',
+  lesson: 'Teammate running down the line? Throw it into the space ahead, to run onto.',
   us:   { 1:[25,70], 4:[25,52], 2:[38,50], 3:[-1.6,42.7], 6:[12,44], 10:[20,32], 11:[6,36], 9:[25,20], 7:[42,28] },
   them: { 1:[25,4], 2:[13,31], 4:[25,24], 3:[38,24], 6:[17,40], 10:[24,45], 9:[27,48.5], 7:[8,46.5], 11:[38,40] },
   ball: '3', ballAt: [-0.3,40],
   arrows: [{ team: 'us', from: [6,34.6], to: [4.6,30.6], dash: 1 }],
   pass: {
-    11: P(2, 'Good', 'He is free, but he is running down the line. Throw it into the space in front of him.'),
+    11: P(2, 'Good', 'The 11 is free and running down the line. Throw it into the space ahead.'),
     6:  P(1, 'Marked', 'Their 7 is right on your 6.')
   },
   lead: [
-    [4, 29, 3, 3, 'Pro choice', 'Your 11 was sprinting down the line, so you threw it into the space in front of him. He runs onto it.', '11', null, true]
+    [4, 29, 3, 3, 'Pro choice', 'Your 11 was sprinting down the line, so you threw it into the space ahead. The 11 runs onto it.', '11', null, true]
   ],
   shoot: null,
-  elsewhere: P(1, 'Not quite', 'Your 11 is running down the line. Use him.'),
+  elsewhere: P(1, 'Not quite', 'Your 11 is running down the line. Use that run.'),
   best: { kind: 'pass', to: '11', at: [4,29] } },
 
-{ ch: 4, type: 'ball', me: '2', kind: 'Throw-in', restart: 'throw', range: 20, noCarry: true, air: true, title: 'To his feet',
-  prompt: 'Throw-in to us on the right. Your 7 came short, but their 3 is right behind him.',
+{ ch: 4, type: 'ball', me: '2', kind: 'Throw-in', restart: 'throw', range: 20, noCarry: true, air: true, title: 'To feet',
+  prompt: 'Throw-in to us on the right. Your 7 came short, but their 3 is right behind.',
   hint: 'Where is their 3? What happens to a throw over your 7’s head?',
-  lesson: 'Defender right behind your teammate? Throw it to his feet so he can lay it back. A throw over his head goes straight to the defender.',
+  lesson: 'Defender right behind your teammate? Throw it to feet, for an easy lay-back. A throw over the top goes straight to the defender.',
   us:   { 1:[25,70], 3:[12,48], 4:[25,50], 6:[30,38], 2:[51.6,32.7], 7:[44,33], 10:[38,26], 9:[25,15], 11:[8,22] },
   them: { 1:[25,3], 3:[44.5,28.5], 6:[37,22], 11:[40,38.5], 10:[31,30], 4:[25,19], 2:[12,18], 9:[25,44], 7:[12,40] },
   ball: '2', ballAt: [50.3,30],
   arrows: [{ team: 'us', from: [44,28.6], to: [44,32], dash: 1 }],
   pass: {
-    7:  P(3, 'Pro choice', 'He came short with their 3 behind him, so you threw it to his feet. He can lay it back to you.'),
+    7:  P(3, 'Pro choice', 'The 7 came short with their 3 right behind, so you threw it to feet. The 7 can lay it back to you.'),
     10: P(1, 'Marked', 'Their 6 is right on your 10.')
   },
   lead: [
-    [46.5, 24, 3, 0, 'Into his path', 'Their 3 is right behind your 7. A throw down the line goes straight to him.', '7', '3']
+    [46.5, 24, 3, 0, 'Into the run', 'Their 3 is right behind your 7. A throw down the line goes straight to their 3.', '7', '3']
   ],
   shoot: null,
   elsewhere: P(1, 'Not quite', 'Your 7 came short for it.'),
@@ -420,9 +420,9 @@ const RIDDLES = [
   them: { 1:[25,4], 9:[14,62.5], 7:[13,54], 10:[20,52], 2:[10,44], 11:[38,55], 6:[26,46], 4:[25,28], 3:[38,32] },
   ball: '3', ballAt: [-0.3,62],
   pass: {
-    11: P(3, 'Pro choice', 'You threw it forward, down the line to your 11. Away from our goal, and he is free.'),
+    11: P(3, 'Pro choice', 'You threw it forward, down the line to your 11. Away from our goal, and the 11 is free.'),
     6:  P(1, 'Marked', 'Their 7 is right on your 6.'),
-    4:  P(0, 'Across our box', 'A throw across the front of our goal with their 9 right there. If he steals it, he scores.')
+    4:  P(0, 'Across our box', 'A throw across the front of our goal with their 9 right there. Steal it there, and their 9 scores.')
   },
   shoot: null,
   elsewhere: P(1, 'Not quite', 'Throw it forward.'),
@@ -445,16 +445,16 @@ const RIDDLES = [
   best: { kind: 'move', at: [8.5,45.5] } },
 
 { ch: 4, type: 'move', me: '7', kind: 'Throw-in', restart: 'throw', title: 'Their throw-in',
-  prompt: 'Throw-in to them on our right. Their 11 is waiting near the line, and nobody is on him. Drag the 7.',
+  prompt: 'Throw-in to them on our right. Their 11 is waiting near the line, and nobody is on their 11. Drag the 7.',
   hint: 'Who is the easy throw going to?',
   lesson: 'On their throw-in, mark the closest player tight, goal side. Make the easy throw a hard one.',
   us:   { 1:[25,71], 3:[13,57], 4:[25,59], 2:[37,58], 6:[28,48], 10:[24,38], 11:[10,38], 9:[25,25], 7:[38,40] },
   them: { 1:[25,4], 3:[51.6,47.3], 11:[44,46], 10:[36,50], 9:[27,53], 6:[30,40], 7:[12,48], 2:[12,30], 4:[25,21] },
   ball: { team: 'them', n: '3' }, ballAt: [50.3,50],
   zones: [
-    [45.4, 49.3, 2.3, 3, 'Pro spot', 'You marked their 11 tight, goal side. A throw to his feet has you right behind him.'],
+    [45.4, 49.3, 2.3, 3, 'Pro spot', 'You marked their 11 tight, goal side. A throw to feet has you right behind.'],
     [38, 40, 2.4, 1, 'Too far', 'Their 11 is free for an easy throw.'],
-    [43, 42.5, 1.6, 0, 'Wrong side', 'In front of him? He spins you and runs down the line.']
+    [43, 42.5, 1.6, 0, 'Wrong side', 'In front of their 11? One spin and their 11 is away down the line.']
   ],
   elsewhere: P(1, 'Not quite', 'Mark their 11 tight, goal side.'),
   best: { kind: 'move', at: [45.4,49.3] } },
@@ -468,7 +468,7 @@ const RIDDLES = [
   them: { 1:[25,4], 9:[25.5,59.5], 7:[15,58], 11:[38,59], 10:[21,50], 6:[28,40], 2:[11,36], 4:[25,24], 3:[38,36] },
   ball: '1', ballAt: [20,71.5],
   pass: {
-    3:  P(3, 'Pro choice', 'Your 3 split wide and nobody was near him, so you passed it to him. Short, simple, and we keep the ball.'),
+    3:  P(3, 'Pro choice', 'Your 3 split wide and nobody was near, so you passed it to the 3. Short, simple, and we keep the ball.'),
     4:  P(1, 'Pressed', 'Their 9 is right on your 4.'),
     2:  P(1, 'Marked', 'Their 11 is ready to jump on your 2.'),
     6:  P(1, 'Marked', 'Their 10 is right on your 6.'),
@@ -538,9 +538,9 @@ const RIDDLES = [
     3:  P(1, 'Pressed', 'Their 7 is right on your 3.'),
     2:  P(1, 'Pressed', 'Their 11 is right on your 2.'),
     6:  P(1, 'Marked', 'Their 10 is right on your 6.'),
-    9:  P(1, 'To his feet?', 'Their 4 is right behind your 9. The space is behind their defenders.'),
+    9:  P(1, 'To feet?', 'Their 4 is right behind your 9. The space is behind their defenders.'),
     10: P(1, 'Marked', 'Their 6 and 4 are close to your 10.'),
-    11: P(1, 'To his feet?', 'Their 2 is right on your 11. The space is behind him.'),
+    11: P(1, 'To feet?', 'Their 2 is right on your 11. The space is behind their 2.'),
     7:  P(1, 'Marked', 'Their 3 is right on your 7.')
   },
   lead: [

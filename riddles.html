@@ -414,7 +414,7 @@ html.land .cele-reveal{margin-top:10px}
   <div class="sheet-head"><h2 id="levelTitle" tabindex="-1">Puzzles for the 6</h2><button class="close" type="button" data-close>Done</button></div>
   <button class="switchpos" type="button" id="switchPos">Playing <b id="switchPosName">the 6</b>. Change position</button>
   <div class="tierline" id="tierLine"></div>
-  <p class="note">Thirty game situations for <span id="levelWho">the 6</span>. To pass, drag the ball: drop it on a teammate to play it to his feet, or in front of him to lead him into space. Get 2 stars on a puzzle to unlock the next one.</p>
+  <p class="note">Thirty game situations for <span id="levelWho">the 6</span>. To pass, drag the ball: drop it on a teammate to play it to feet, or in front of a teammate to lead the run into space. Get 2 stars on a puzzle to unlock the next one.</p>
   <div id="chapters"></div>
   <div class="foot">
     <label class="switch"><input type="checkbox" id="unlockAll"> Open every puzzle (for coaches)</label>
@@ -608,7 +608,7 @@ function putEl(el, p, ms) {
 }
 const tokYards = () => (parseFloat(pitch.style.getPropertyValue('--tok')) || 36) / (pitch.clientWidth || 1) * VW;
 function footOf(team, n) {
-  // where the ball sits when this player has it: just in front of him, or on its spot for a set piece
+  // where the ball sits when this player has it: just in front of the player, or on its spot for a set piece
   const p = pos[team][n], k = tokYards() * .5 + .35;
   if (r.ballAt) {
     const c = typeof r.ball === 'string' ? ['us', r.ball] : [r.ball.team, r.ball.n];
@@ -735,7 +735,7 @@ function laneBlocker(a, b) {
 const inGoal = T => T[1] < .9 && T[0] >= 21.5 && T[0] <= 28.5;
 const outOfPlay = T => T[0] < -.3 || T[0] > W + .3 || T[1] < -.3 || T[1] > L + .3;
 function readPass(T) {
-  // Released on a teammate = a pass to his feet; anywhere else = a pass into space.
+  // Released on a teammate = a pass to feet; anywhere else = a pass into space.
   const [n, dR] = nearest('us', T, ME);
   if (dR <= FEET) return { feet: true, to: n, at: pos.us[n].slice() };
   // a long ball into a planned space names the runner it was meant for
@@ -778,9 +778,9 @@ function judgePass(s) {
   // a direct pass that would be cut out says nothing about a lead pass whose lane is clear
   const d = raw.cut ? { g: 1, t: 'Risky', w: `Their ${nameOf(raw.cut)} is close to that lane, so it's a risky pass.` } : raw;
   if (dR <= 4.5) return Object.assign({}, d, { to: n, cut: null });
-  if (d.g >= 3) return { g: 2, t: 'Good', w: `Your ${nameOf(n)} can get it, but he was free where he stood. A pass to his feet was simpler.`, to: n };
+  if (d.g >= 3) return { g: 2, t: 'Good', w: `Your ${nameOf(n)} can get it, but was free right there. A pass to feet was simpler.`, to: n };
   if (T[1] < pos.us[n][1] - 2) return Object.assign({}, d, { to: n, cut: null });
-  return { g: Math.min(d.g, 1), t: 'Makes him chase it', w: (`Your ${nameOf(n)} can get there, but making him run sideways or back doesn't help him. ` + (r.leadNote || '')).trim(), to: n };
+  return { g: Math.min(d.g, 1), t: 'Makes your teammate chase', w: (`Your ${nameOf(n)} can get there, but running sideways or back for it doesn't help. ` + (r.leadNote || '')).trim(), to: n };
 }
 function reticle(group, p, color, rad) {
   const g = document.createElementNS(NS, 'g');
@@ -1020,7 +1020,7 @@ tokensEl.addEventListener('pointerdown', e => {
   }
   const el = onMe && r.type === 'ball' ? tok.us[ME] : e.target.closest('.tok'); if (!el) return;
   if (!(el.dataset.team === 'us' && el.dataset.n === ME)) return;
-  if (r.noCarry && r.type === 'ball') { e.preventDefault(); toast(r.restart === 'throw' ? "It's a throw-in. Drag the ball to throw it: onto a teammate, or into the space in front of him." : "It's a set piece. Drag the ball to play it."); return; }
+  if (r.noCarry && r.type === 'ball') { e.preventDefault(); toast(r.restart === 'throw' ? "It's a throw-in. Drag the ball to throw it: onto a teammate, or into the space ahead of one." : "It's a set piece. Drag the ball to play it."); return; }
   e.preventDefault();
   try { el.setPointerCapture(e.pointerId); } catch {}
   const p = toField(e);
@@ -1050,7 +1050,7 @@ function endDrag(e) {
     const T = clampField(toField(e)), moved = aim.moved; aim = null;
     ballEl.classList.remove('aiming');
     if (moved && e.type === 'pointerup' && dist(T, ballPos) >= 3) choosePassAt(T);
-    else { clearPick(); sel = null; updateGo(); if (e.type === 'pointerup') toast('Drag the ball where you want the pass to go: onto a teammate, or into the space in front of him.'); }
+    else { clearPick(); sel = null; updateGo(); if (e.type === 'pointerup') toast('Drag the ball where you want the pass to go: onto a teammate, or into the space ahead of one.'); }
     return;
   }
   if (!drag || e.pointerId !== drag.id) return;
@@ -1069,7 +1069,7 @@ tokensEl.addEventListener('click', e => {
   const { team, n } = el.dataset;
   if (team === 'us' && n === ME) return;
   if (team === 'them') { toast(r.type === 'ball' ? "That's one of theirs. Drag the ball to a teammate, or into space." : `Drag ${meName()} to a spot.`); return; }
-  if (r.type === 'ball') toast('Drag the ball to make the pass: drop it on him for his feet, or in front of him to lead him.');
+  if (r.type === 'ball') toast('Drag the ball to make the pass: drop it on a teammate to play to feet, or in front of one to lead the run.');
   else toast(`You don't have the ball here. Drag ${meName()} to the best spot.`);
 });
 pitch.addEventListener('click', e => {
