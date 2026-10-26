@@ -28,7 +28,7 @@ window.POSITIONS = [
   { n: '4',  name: 'Center back',     title: 'the 4',       file: 'riddles-cb.js', soon: true },
   { n: '2',  name: 'Right defender',  title: 'the 2',       file: 'riddles-wide-cb.js', soon: true },
   { n: '6',  name: 'Defensive mid',   title: 'the 6',       file: 'riddles-6.js' },
-  { n: '10', name: 'Attacking mid',   title: 'the 10',      file: 'riddles-10.js', soon: true },
+  { n: '10', name: 'Attacking mid',   title: 'the 10',      file: 'riddles-10.js' },
   { n: '11', name: 'Left wing',       title: 'the 11',      file: 'riddles-wing.js', soon: true },
   { n: '9',  name: 'Striker',         title: 'the 9',       file: 'riddles-9.js' },
   { n: '7',  name: 'Right wing',      title: 'the 7',       file: 'riddles-wing.js', soon: true }
