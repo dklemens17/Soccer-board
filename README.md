@@ -13,11 +13,11 @@ Live: https://dklemens17.github.io/Soccer-board/
 | Position | Keys |
 | --- | --- |
 | Keeper | Set your angle · Sweep behind our backs · Start the attack fast · Close down the breakaway · Own your 6-yard box |
-| 3 and 2 | Show him down the line · Tuck in · Support the winger · Open up to the field · Recovery run |
+| 3 and 2 | Push the winger down the line · Tuck in · Support the winger · Open up to the field · Recovery run |
 | 4 | Cover behind the 3 and 2 · Step up together · Don't let their 9 turn · Play through their press · When in doubt, clear it |
 | 6 | Get out of their shadow · Check your shoulder · Switch the play · Protect the middle · Stay home, slow the counter |
 | 10 | Find the pocket · Open up on the half-turn · Arrive late at the top of the box · Pass and go · Press first |
-| 11 and 7 | Stay wide · Take him on · Run in behind · Attack the far post · Track back |
+| 11 and 7 | Stay wide · Take on your defender · Run in behind · Attack the far post · Track back |
 | 9 | Time your run in behind · Hold it up · Attack the near post · Shoot early · Press from the front |
 
 **Trophies.** Each position earns a level ring in Puzzles: bronze for clearing all 30, silver at 75 stars, gold at all 90. Groups of positions earn badges (The Wall, Engine Room, Front Three, Both Flanks, Both Wings, The Spine, Complete Player), each at the lowest level in its group. The player card rates Passing, Vision, Movement, Defending, Attacking and Keeping from your stars across every position, and can be saved as a picture. Every new level, badge and card upgrade plays a full-screen celebration. Tap the stars button to open the trophy room.

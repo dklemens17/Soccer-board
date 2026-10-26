@@ -13,62 +13,62 @@ const KEYS = [
     },
     steps: [
       { snap: 's0', t: 1.2, us: { 11: [15, 27] }, them: { 2: [14, 21], 6: [23, 27.5] }, say: 'The {11} drifts inside toward the ball...' },
-      { t: .9, pass: 'us:4', say: '...and the 6 has nothing forward, so he plays it back.' },
+      { t: .9, pass: 'us:4', say: '...and the 6 has nothing forward, so it goes back.' },
       { freeze: 'bad',
-        text: 'He drifted into the middle. Their {t2} came inside with him, the middle is crowded, and the whole {left} side is empty.',
+        text: 'The {11} drifted into the middle. Their {t2} followed, the middle is crowded, and the whole {left} side is empty.',
         marks: [{ z: [6, 24, 6], c: 'good' }, { h: ['them:2'], c: 'bad' }],
         options: [
           { t: 'Stay wide, right on the {left} sideline', ok: true,
-            why: 'Staying wide drags their {t2} out with him. That opens a gap in the middle, or a free pass down the line.' },
+            why: 'Staying wide drags their {t2} out too. That opens a gap in the middle, or a free pass down the line.' },
           { t: 'Come even closer to the ball',
-            why: 'That brings his defender with him and makes the middle even more crowded.' },
+            why: 'That brings the defender along and makes the middle even more crowded.' },
           { t: 'Run into the box',
             why: "There's no ball to run onto yet. First the team needs space to get it forward." }
         ],
         rewind: 's0',
         fix: [
-          { t: 1.2, us: { 11: [4, 26], 10: [16, 26] }, them: { 2: [7, 21.5] }, say: 'This time the {11} stays wide, and their {t2} has to go with him...' },
+          { t: 1.2, us: { 11: [4, 26], 10: [16, 26] }, them: { 2: [7, 21.5] }, say: 'This time the {11} stays wide, and their {t2} has to follow...' },
           { t: 1.0, pass: 'us:10', face: { 'us:10': 'up' }, say: '...which opens a gap, and the 6 finds the 10 in it.' }
         ],
-        after: { text: 'By staying wide he pulled their {t2} out of the middle. That opened a gap, and the 6 could play forward through it.',
+        after: { text: 'By staying wide, the {11} pulled their {t2} out of the middle. That opened a gap, and the 6 could play forward through it.',
           marks: [{ h: ['them:2'], c: 'them' }] } }
     ]
   },
 
   {
-    key: 'Take him on',
-    rule: 'When you get the ball one on one with space in front of you, run at the defender fast. Make him back up, then go past him.',
-    intro: 'The {11} is about to get the ball on the {left} with only their {t2} in front of him. Watch what he does.',
+    key: 'Take on your defender',
+    rule: 'When you get the ball one on one with space in front of you, run at the defender fast. Make the defender back up, then go past.',
+    intro: 'The {11} is about to get the ball on the {left} with only their {t2} in front. Watch what the {11} does.',
     start: {
       us: { 1: [25, 66], 3: [11, 48], 4: [25, 52], 2: [39, 48], 6: [25, 40], 10: [24, 28], 11: [6, 30], 9: [26, 16], 7: [43, 22] },
       them: { 1: [25, 3], 2: [9, 19], 4: [24, 12], 3: [36, 13], 6: [26, 23], 10: [21, 34], 7: [13, 38], 9: [28, 44], 11: [36, 32] },
       ball: 'us:6'
     },
     steps: [
-      { t: 1.0, pass: 'us:11', face: { 'us:11': 'up' }, them: { 2: [8, 22] }, say: "The 6 finds the {11} out wide. It's just him and their {t2}." },
-      { snap: 's1', t: 1.0, us: { 11: [6, 29] }, them: { 2: [8, 25.5], 6: [15, 24] }, say: 'He stops the ball and waits...' },
+      { t: 1.0, pass: 'us:11', face: { 'us:11': 'up' }, them: { 2: [8, 22] }, say: "The 6 finds the {11} out wide. It's one on one with their {t2}." },
+      { snap: 's1', t: 1.0, us: { 11: [6, 29] }, them: { 2: [8, 25.5], 6: [15, 24] }, say: 'The {11} stops the ball and waits...' },
       { t: 1.0, them: { 6: [11.5, 27.5] }, us: { 11: [5.5, 29.5] }, say: '...and their 6 comes over to help.' },
-      { t: .8, pass: 'us:6', say: "Now it's two against one, so he passes it back." },
+      { t: .8, pass: 'us:6', say: "Now it's two against one, so the {11} passes it back." },
       { freeze: 'bad',
-        text: 'He had their {t2} one on one with space to run into, but he stopped and waited. That gave their 6 time to come across, and the chance was gone.',
+        text: 'The {11} had their {t2} one on one with space to run into, but stopped and waited. That gave their 6 time to come across, and the chance was gone.',
         marks: [{ z: [7, 20, 5], c: 'good' }, { h: ['them:6'], c: 'bad' }],
         options: [
           { t: "Run at their {t2} straight away, while it's one on one", ok: true,
-            why: 'Running at a defender makes him back up and guess. Going early, before help arrives, is when one on one works.' },
+            why: 'Running at a defender forces the defender to back up and guess. Going early, before help arrives, is when one on one works.' },
           { t: 'Pass it back to the 6 straight away',
-            why: 'Safe, but he had the best chance on the field: one defender, with space behind him.' },
+            why: 'Safe, but the {11} had the best chance on the field: one defender, with space behind.' },
           { t: 'Wait for the {3} to come and help',
             why: 'Waiting lets their help arrive too. The one on one was there right now.' }
         ],
         rewind: 's1',
         fix: [
-          { t: 1.0, us: { 11: [7, 23.5] }, them: { 2: [8, 19] }, say: 'This time he runs straight at their {t2}, who backs off...' },
-          { t: .8, us: { 11: [4, 17] }, them: { 2: [9, 19.5] }, say: '...then knocks it past him down the line...' },
+          { t: 1.0, us: { 11: [7, 23.5] }, them: { 2: [8, 19] }, say: 'This time the {11} runs straight at their {t2}, who backs off...' },
+          { t: .8, us: { 11: [4, 17] }, them: { 2: [9, 19.5] }, say: '...then knocks it past and races down the line...' },
           { t: 1.0, us: { 11: [6, 9], 9: [25, 11], 10: [23, 19] }, them: { 2: [8, 15], 4: [21, 9], 1: [22.5, 3.5] }, say: '...gets to the end line...' },
           { t: .8, pass: 'us:10', say: '...and cuts it back to the 10.' },
           { t: .6, shot: [27.3, -.8], goal: true, say: 'Goal!' }
         ],
-        after: { text: 'He ran at their {t2} while it was one on one. The defender had to back off, and once the {11} was past him, the whole box opened up.',
+        after: { text: 'The {11} ran at their {t2} while it was one on one. The defender had to back off, and once the {11} got past, the whole box opened up.',
           marks: [{ h: ['them:2'], c: 'them' }] } }
     ]
   },
@@ -83,30 +83,30 @@ const KEYS = [
       ball: 'us:10'
     },
     steps: [
-      { snap: 's0', t: 1.0, us: { 11: [8, 31] }, them: { 2: [9.5, 27.2] }, say: 'The {11} comes short, asking for it to his feet...' },
-      { t: .8, pass: 'us:11', face: { 'us:11': 'right' }, say: '...the 10 plays it to him, with their {t2} right behind.' },
+      { snap: 's0', t: 1.0, us: { 11: [8, 31] }, them: { 2: [9.5, 27.2] }, say: 'The {11} comes short, asking for it to feet...' },
+      { t: .8, pass: 'us:11', face: { 'us:11': 'right' }, say: '...the 10 plays it in, with their {t2} right behind.' },
       { t: .6, pass: 'them:2', them: { 2: [8, 29] }, us: { 11: [10, 32] }, close: 1, say: 'Their {t2} steps in and nicks it.' },
       { t: .8, them: { 2: [5, 36] }, say: 'Ball lost.' },
       { freeze: 'bad',
-        text: 'He came short to the ball with their {t2} right on his back. The defender saw it coming and stepped in. Behind their {t2} was all that space.',
+        text: 'The {11} came short to the ball with their {t2} right behind. The defender saw it coming and stepped in. Behind their {t2} was all that space.',
         marks: [{ z: [9, 13, 6], c: 'good' }, { h: ['them:2'], c: 'bad' }],
         options: [
           { t: 'Spin and run in behind their {t2}', ok: true,
-            why: 'Their {t2} was watching the ball. A run behind him is hard to track, and the 10 was facing forward, ready to play it.' },
+            why: 'Their {t2} was watching the ball. A run behind the defender is hard to track, and the 10 was facing forward, ready to play it.' },
           { t: 'Come even shorter',
-            why: 'Coming closer just drags the defender with him into the crowd.' },
+            why: 'Coming closer just drags the defender along into the crowd.' },
           { t: 'Stand still and wait',
-            why: 'Standing still makes him easy to mark. Runs are what pull defenders apart.' }
+            why: 'A player standing still is easy to mark. Runs are what pull defenders apart.' }
         ],
         rewind: 's0',
         fix: [
-          { t: .5, us: { 11: [7, 28.5] }, them: { 2: [9.5, 24.2] }, say: 'This time he fakes coming short...' },
+          { t: .5, us: { 11: [7, 28.5] }, them: { 2: [9.5, 24.2] }, say: 'This time the {11} fakes coming short...' },
           { t: .6, us: { 11: [5, 21] }, say: '...then spins in behind their {t2}...' },
-          { t: .8, us: { 11: [12, 13] }, pass: 'us:11', pd: .1, say: '...and the 10 slides it into his path.' },
+          { t: .8, us: { 11: [12, 13] }, pass: 'us:11', pd: .1, say: '...and the 10 slides it into the run.' },
           { t: .8, us: { 11: [16, 7] }, them: { 2: [12, 16], 4: [21, 10], 1: [23, 3.5] }, say: 'In on goal...' },
-          { t: .6, shot: [22.3, -.8], goal: true, say: '...and he finishes it.' }
+          { t: .6, shot: [22.3, -.8], goal: true, say: '...and finishes it.' }
         ],
-        after: { text: 'While their {t2} was watching the ball, he spun in behind him. The 10 was facing forward, so the pass was easy.',
+        after: { text: 'While their {t2} was watching the ball, the {11} spun in behind. The 10 was facing forward, so the pass was easy.',
           marks: [{ h: ['them:2'], c: 'them' }] } }
     ]
   },
@@ -126,23 +126,23 @@ const KEYS = [
       { t: 1.0, pass: [17, 6], air: true, say: '...so when the cross comes over, nobody is at the far post.' },
       { t: .7, pass: 'them:2', them: { 2: [16, 8.8] }, say: 'Their {t2} clears it.' },
       { freeze: 'bad',
-        text: 'He stayed out on the sideline. The cross went over everyone to the far post, and nobody was there to meet it.',
+        text: 'The {11} stayed out on the sideline. The cross went over everyone to the far post, and nobody was there to meet it.',
         marks: [{ z: [17, 6, 3.5], c: 'good' }, { h: ['them:2'], c: 'bad' }],
         options: [
           { t: 'Run into the box toward the far post', ok: true,
             why: 'Crosses that beat the first defenders drop at the far post. A winger arriving there scores a lot of goals.' },
           { t: 'Stay wide in case the ball comes back out',
-            why: 'Our backs and the 6 handle that. When the ball is on the other wing, his job is to get into the box.' },
+            why: 'Our backs and the 6 handle that. When the ball is on the other wing, the job is to get into the box.' },
           { t: 'Run to the near post too',
             why: 'Our 9 is already there. Two players at the near post leaves the far post empty.' }
         ],
         rewind: 's1',
         fix: [
           { t: 1.0, us: { 11: [15, 9] }, them: { 2: [19.5, 12] }, say: 'This time the {11} cuts inside, toward the far post...' },
-          { t: 1.0, pass: 'us:11', air: true, us: { 11: [16, 6.5] }, say: '...and the {7} crosses it right to him.' },
+          { t: 1.0, pass: 'us:11', air: true, us: { 11: [16, 6.5] }, say: '...and the {7} crosses it right there.' },
           { t: .5, shot: [24, -.8], goal: true, say: 'Goal!' }
         ],
-        after: { text: 'With the ball on the other wing, he got into the box and attacked the far post. The cross went over everyone, and he was there.',
+        after: { text: 'With the ball on the other wing, the {11} got into the box and attacked the far post. The cross went over everyone, and the {11} was there.',
           marks: [{ z: [17, 6, 3.5], c: 'good' }] } }
     ]
   },
@@ -158,18 +158,18 @@ const KEYS = [
     },
     steps: [
       { snap: 's0', t: 1.0, pass: 'them:7', say: 'Their 6 plays it out to their {t7}.' },
-      { t: 1.2, them: { 2: [6, 40] }, us: { 11: [12, 31] }, say: 'Their {t2} sprints forward past the {11}, who just watches him go.' },
+      { t: 1.2, them: { 2: [6, 40] }, us: { 11: [12, 31] }, say: 'Their {t2} sprints forward past the {11}, who just watches.' },
       { t: 1.0, them: { 2: [5, 52], 7: [12, 50] }, us: { 3: [10, 55] }, say: 'Now our {3} has two of them to deal with...' },
       { t: .8, pass: 'them:2', say: '...their {t7} slips it to their {t2}...' },
-      { t: .9, pass: 'them:9', air: true, them: { 9: [21, 60] }, say: '...and he crosses it into our box.' },
+      { t: .9, pass: 'them:9', air: true, them: { 9: [21, 60] }, say: '...and their {t2} crosses it into our box.' },
       { freeze: 'bad',
-        text: 'He watched their {t2} run past him. That left our {3} alone against two of them, and they got the cross in.',
+        text: 'The {11} watched their {t2} run past. That left our {3} alone against two of them, and they got the cross in.',
         marks: [{ a: ['us:11', [6, 47]], c: 'good', dash: 1 }, { h: ['them:2'], c: 'bad' }],
         options: [
           { t: 'Sprint back and stay with their {t2}', ok: true,
             why: 'Then our {3} only has their {t7} to worry about, and their {t2} has no free run.' },
           { t: 'Stay up the field, ready for a counter',
-            why: "If they score, there's no counter. When they attack down his side, he helps first." },
+            why: "If they score, there's no counter. When they attack down your side, help first." },
           { t: 'Run back to the middle of our box',
             why: 'Our 4 and {2} cover the middle. The danger is their {t2} running free down the line.' }
         ],
@@ -177,10 +177,10 @@ const KEYS = [
         fix: [
           { t: 1.0, pass: 'them:7', say: 'Same start...' },
           { t: 1.2, them: { 2: [6, 40] }, us: { 11: [5, 44] }, say: 'This time the {11} sprints back with their {t2}...' },
-          { t: 1.0, them: { 7: [12, 50], 2: [5, 48] }, us: { 11: [4.5, 52], 3: [10, 55] }, say: '...and stays between him and our goal.' },
+          { t: 1.0, them: { 7: [12, 50], 2: [5, 48] }, us: { 11: [4.5, 52], 3: [10, 55] }, say: '...and stays between their {t2} and our goal.' },
           { t: 1.0, pass: 'them:10', say: 'With nobody free, their {t7} has to play it back.' }
         ],
-        after: { text: 'He sprinted back and stayed with their {t2}. Our {3} only had one player to deal with, and they had to go backward.',
+        after: { text: 'The {11} sprinted back and stayed with their {t2}. Our {3} only had one player to deal with, and they had to go backward.',
           marks: [{ h: ['us:11', 'us:3'], c: 'good' }] } }
     ]
   }

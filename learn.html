@@ -295,7 +295,7 @@ html.land .stamp{left:calc(50% - var(--side) / 2)}
   <div class="grab"></div>
   <div class="sheet-head"><h2 id="keyTitle" tabindex="-1">Keys for the 6</h2><button class="close" type="button" data-close>Done</button></div>
   <button type="button" class="switchpos" id="switchPos">Learning <b id="switchPosName">the 6</b>. Switch position</button>
-  <p class="note">Five jobs every <span id="keyWho">6</span> does. Watch each play. When it stops for a timeout, see what the player just did, and when it's a mistake, pick what he should have done.</p>
+  <p class="note">Five jobs every <span id="keyWho">6</span> does. Watch each play. When it stops for a timeout, see what the player just did, and when it's a mistake, pick the better choice.</p>
   <div class="keys" id="keyList"></div>
   <div class="foot"><label class="switch"><input type="checkbox" id="soundOn"> Sounds</label></div>
 </section>
@@ -447,7 +447,7 @@ const FACES = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const teamDir = team => team === 'us' ? [0, -1] : [0, 1];
 const dirOf = (team, n) => S.dir[team + ':' + n] || teamDir(team);
 function footAt(p, d) {
-  // the ball sits just in front of the player, a little to his right foot
+  // the ball sits just in front of the player, a little to the right foot
   const k = tokYards() * .5 + .35, f = norm(d), side = [-f[1], f[0]];
   return [p[0] + f[0] * k * .78 + side[0] * k * .62, p[1] + f[1] * k * .78 + side[1] * k * .62];
 }
@@ -562,7 +562,7 @@ function cone(p, target, cls) {
   if (cls) g.setAttribute('class', cls);
   return g;
 }
-// the shadow a player casts: the area behind him, seen from the ball, where a pass can't reach
+// the shadow a player casts: the area behind, seen from the ball, where a pass can't reach
 function shadow(b, src, len) {
   const d = norm([b[0] - src[0], b[1] - src[1]]), n = [-d[1], d[0]], r0 = R_TOK() * .95, spread = r0 / Math.max(3, dist(b, src));
   const w1 = r0 + len * spread, e = [b[0] + d[0] * len, b[1] + d[1] * len];
@@ -575,7 +575,7 @@ function drawMarks(fz) {
   clearMarks();
   const rt = R_TOK();
   let dimmed = false;
-  // what the player just did: his run, and the passes he made or got
+  // what the player just did: the run, and the passes made or received
   if (fz.trail !== false) {
     if (trail.length > 1 && dist(trail[0], trail[trail.length - 1]) > 1.5) {
       const pts = trail.slice(); const [, b] = trim(pts[pts.length - 2], pts[pts.length - 1], 0, rt + .6); pts[pts.length - 1] = b;
@@ -673,7 +673,7 @@ async function freeze(fz) {
     await userTap(); if (my !== gen) return false;
     endFreeze(); return true;
   }
-  // a mistake: ask what he should have done
+  // a mistake: ask what the player should have done
   // first what went wrong, then the question (two short panels leave more of the field in view)
   openPanel({ tag: TAG_STOP, kind: 'bad', head: headFor(fz), text: fz.text, focus: focusOf(fz),
     actions: [{ label: `${fz.ask || `What should ${nameOf(ME)} have done?`} \u2192`, primary: true, go: () => panelDone && panelDone(true) }] });

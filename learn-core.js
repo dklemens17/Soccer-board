@@ -16,7 +16,7 @@
 
    A step (everything optional; listed players move together over t seconds):
      { t: 1, us: { '6': [x, y] }, them: { '9': [x, y] },
-       pass: 'us:10' | [x, y],    // the ball goes to that player (where he ends this step) or to a spot
+       pass: 'us:10' | [x, y],    // the ball goes to that player (where that player ends this step) or to a spot
        pd: .3,                    // pass leaves this far into the step (0 to 1)
        air: true,                 // a lofted pass or cross (goes over players)
        shot: [x, y], goal: true,  // a shot; goal plays the crowd
