@@ -517,7 +517,7 @@ function updateGo() {
   goBtn.disabled = false;
   const who = n => n === '1' ? 'the keeper' : `the ${n}`;
   goBtn.textContent = sel.kind === 'pass'
-      ? (sel.feet ? (sel.to === '1' ? 'Pass to the keeper' : `Pass to the ${sel.to}\u2019s feet`) : sel.to ? `Pass into space for ${who(sel.to)}` : 'Pass into space')
+      ? (sel.feet ? (sel.to === '1' ? 'Pass to the keeper' : `Pass to the ${sel.to}\u2019s feet`) : outOfPlay(sel.at) ? 'Kick it out of play' : sel.to ? `Pass into space for ${who(sel.to)}` : 'Pass into space')
     : sel.kind === 'shoot' ? 'Shoot!' : sel.kind === 'carry' ? 'Dribble there' : 'Lock in this spot';
 }
 
@@ -568,7 +568,7 @@ function autoShot() {
 function judgePass(s) {
   const T = s.at;
   if (s.feet) return Object.assign({}, r.pass[s.to] || autoFeet(s.to), { to: s.to });
-  if (outOfPlay(T)) return { g: 0, t: 'Out of play', w: 'That pass rolls out of bounds. Their ball.', loose: true };
+  if (outOfPlay(T)) return Object.assign({ g: 0, t: 'Out of play', w: 'That pass rolls out of bounds. Their ball.' }, r.out || {}, { loose: true });
   let z = null;
   for (const q of (r.lead || [])) if (dist(T, [q[0], q[1]]) <= q[2] && (!z || q[3] > z[3])) z = q;
   if (z) return { g: z[3], t: z[4], w: z[5], to: z[6], grab: z[7] || null };
@@ -675,7 +675,7 @@ async function play(s, a) {
 }
 function showAnswerOnField() {
   const b = r.best;
-  if (b.kind === 'pass') { tok.us[b.to].classList.add('best'); if (b.at) reticle(zoneInk, b.at, 'best', 2.2); }
+  if (b.kind === 'pass') { if (b.to) tok.us[b.to].classList.add('best'); if (b.at) reticle(zoneInk, b.at, 'best', 2.2); }
   if (r.type === 'move') r.zones.filter(z => z[3] === 3).forEach(zoneCircle);
   if (b.kind === 'carry') (r.carry || []).filter(z => z[3] === 3).forEach(zoneCircle);
 }
