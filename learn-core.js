@@ -18,6 +18,7 @@
      { t: 1, us: { '6': [x, y] }, them: { '9': [x, y] },
        pass: 'us:10' | [x, y],    // the ball goes to that player (where he ends this step) or to a spot
        pd: .3,                    // pass leaves this far into the step (0 to 1)
+       air: true,                 // a lofted pass or cross (goes over players)
        shot: [x, y], goal: true,  // a shot; goal plays the crowd
        face: { 'us:6': 'down' },  // which way a player faces (up, down, left, right), for where the ball sits
        look: ['us:6', [x, y]],    // flash a "look over the shoulder" cone toward that spot
@@ -44,7 +45,7 @@
 (function () {
 window.LEARN_SETS = window.LEARN_SETS || {};
 // positions that have their keys written (the others show as coming soon)
-window.LEARN_FILES = { '6': 'learn-6.js' };
+window.LEARN_FILES = { '6': 'learn-6.js', '10': 'learn-10.js', '9': 'learn-9.js', '11': 'learn-wing.js', '7': 'learn-wing.js', '4': 'learn-cb.js', '3': 'learn-wide-cb.js', '2': 'learn-wide-cb.js', '1': 'learn-gk.js' };
 
 const SWAP = { '3': '2', '2': '3', '11': '7', '7': '11' };
 const sw = n => (n in SWAP ? SWAP[n] : n);
