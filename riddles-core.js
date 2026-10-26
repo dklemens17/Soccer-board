@@ -23,7 +23,7 @@ LIB.TOO_SAFE = w => LIB.P(1, 'Too safe', w);
 LIB.FAR = LIB.P(0, 'Out of range', 'Way too far from goal. Keep the ball and build the attack.');
 
 window.POSITIONS = [
-  { n: '1',  name: 'Keeper',          title: 'the keeper',  file: 'riddles-gk.js', soon: true },
+  { n: '1',  name: 'Keeper',          title: 'the keeper',  file: 'riddles-gk.js' },
   { n: '3',  name: 'Left defender',   title: 'the 3',       file: 'riddles-wide-cb.js' },
   { n: '4',  name: 'Center back',     title: 'the 4',       file: 'riddles-cb.js' },
   { n: '2',  name: 'Right defender',  title: 'the 2',       file: 'riddles-wide-cb.js' },
