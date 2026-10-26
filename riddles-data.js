@@ -8,9 +8,14 @@
    type 'ball'  — the 6 has the ball: tap a teammate (pass), drag the 6 (dribble) or shoot.
    type 'move'  — the 6 does not have the ball: drag the 6 to the best spot.
 
+   Passing is done by dragging the ball. Releasing it on a teammate is a pass to his feet;
+   releasing it in open grass is a pass into space.
    Every answer is { g: stars 0-3, t: short verdict, w: why }.
-   pass[n].lead  — pass into space where that teammate is running.
-   pass[n].cut   — their player who intercepts it.
+   pass[n]       — verdict for a pass to that teammate's feet. pass[n].cut — their player who intercepts it.
+   lead          — passes into space: [x, y, radius, stars, verdict, why, receiver, (their player who wins it)].
+                   A space pass outside every lead zone is judged by the page: is a defender in the lane,
+                   does one of theirs get there first, and does making him run there help him?
+   leadNote      — optional coaching line used when a space pass to an unlisted spot doesn't help.
    zones / carry — [x, y, radius, stars, verdict, why]; the best zone containing the drop wins.
    elsewhere     — verdict for a drop outside every zone.
    follow        — their players who stay with the 6 when he moves (shown after the answer).
@@ -40,7 +45,7 @@ window.RIDDLES = [
   them: { 1:[25,3], 2:[13,17], 4:[25,15], 3:[37,17], 6:[35,27], 10:[18,41], 9:[21,57], 7:[10,44], 11:[40,45] },
   ball: '6',
   pass: {
-    10: P(3, 'Pro choice', "Your 10 is free between their midfield and their defenders. One pass and he's facing their goal."),
+    10: P(3, 'Pro choice', "Your 10 is free and standing still between their lines, so play it firmly to his feet. He turns and faces their goal."),
     7:  P(2, 'Good', 'The 7 is open, but going wide is slower. The pass to the 10 cuts through their midfield in one go.'),
     9:  P(1, 'Risky', 'A long pass to a player with a defender right behind him. The 10 was free and closer.'),
     11: P(0, 'Intercepted', 'Their 10 is standing in that passing lane. That ball gets cut out.', { cut: '10' }),
@@ -49,6 +54,11 @@ window.RIDDLES = [
     2:  TOO_SAFE('Sideways and backwards when your 10 was free in front of you.'),
     1:  TOO_SAFE('Back to the keeper with nobody pressing you? Your 10 was free.')
   },
+  lead: [
+    [25, 24, 3.5, 1, 'Too far ahead', 'Your 10 was free where he stood. Play it ahead of him and their 4 steps up to win it.', '10', '4'],
+    [44, 25, 4.5, 2, 'Good', 'Leading your 7 down the line works: he is free with space in front. But the pass to the 10 cuts through their midfield.', '7']
+  ],
+  leadNote: 'Your 10 is free and standing still. Play it to his feet.',
   shoot: P(0, 'Out of range', "That's nearly 50 yards. Keep the ball and build the attack."),
   carry: [[25, 40, 6, 2, 'Okay', 'Dribbling into space is fine when nobody presses you, but the pass to the 10 gets there faster.']],
   elsewhere: P(1, 'Not quite', 'You have time, so use it to find the free teammate.'),
@@ -56,14 +66,14 @@ window.RIDDLES = [
 
 { ch: 0, type: 'ball', title: 'Switch it',
   prompt: 'You got the ball from your 2. Their players have all moved to the right side. Where does it go?',
-  hint: 'Where are their players? Where are they NOT?',
-  lesson: 'When they all crowd one side, the space is on the other side.',
+  hint: 'Where are their players? Where are they NOT? And is there grass in front of your teammate?',
+  lesson: 'When they all crowd one side, switch it. If your teammate has open grass in front of him, play it into that space.',
   us:   { 1:[25,72], 3:[10,58], 4:[24,62], 2:[39,57], 6:[24,48], 10:[30,33], 11:[5,30], 9:[28,19], 7:[45,32] },
   them: { 1:[25,3], 2:[17,17], 4:[27,15], 3:[37,17], 6:[31,29], 10:[30,45], 9:[33,54], 7:[19,33], 11:[42,28] },
   ball: '6',
   arrows: [{ team: 'them', from: [30,45], to: [27.2,46.4] }],
   pass: {
-    11: P(3, 'Pro choice', 'They all shifted to the right, so your 11 is alone with the whole left side to run into. Switch it!'),
+    11: P(2, 'Good', "Great switch! But there's open grass in front of him. Play it into that space so he can run onto it at full speed."),
     3:  P(2, 'Good', 'Smart switch, away from the crowd. But your 11 was free higher up the field, which saves a pass.'),
     4:  TOO_SAFE('Safe, but the open space is on the left. Look for the switch.'),
     2:  P(0, 'Intercepted', 'That goes straight back toward their 9. He steps in and takes it.', { cut: '9' }),
@@ -72,21 +82,25 @@ window.RIDDLES = [
     9:  P(0, 'Marked', 'A long pass through the middle to a marked 9. It won’t stick.'),
     1:  TOO_SAFE('Back to the keeper when your 11 is wide open? Switch it instead.')
   },
+  lead: [
+    [6.5, 23.5, 5, 3, 'Pro choice', 'You switched it into the open grass in front of your 11. He runs onto it at full speed and nobody is near him.', '11'],
+    [9, 12.5, 4, 1, 'Overhit', 'Too far. Their 2 gets there before your 11.', '11', '2']
+  ],
   shoot: FAR,
   carry: [[14, 44, 7, 2, 'Okay', 'Dribbling toward the space works, but the ball travels faster than you. Switch it with a pass.']],
   elsewhere: P(1, 'Not quite', 'Dribbling into their side of the field takes you toward the crowd. The space is on the left.'),
-  best: { kind: 'pass', to: '11' } },
+  best: { kind: 'pass', to: '11', at: [6.5,23] } },
 
 { ch: 0, type: 'ball', title: 'Away from pressure',
   prompt: 'Their 10 is running at you from your left. You can pass now, first time. Who gets it?',
-  hint: 'Pressure is coming from the left. Which way should the ball go?',
-  lesson: 'Pressure from one side? Play out the other side.',
+  hint: 'Pressure is coming from the left. Which way should the ball go? Who is guarding the space down the wing?',
+  lesson: 'Pressure from one side? Play out the other side. If a defender guards the space in front of him, play it to his feet.',
   us:   { 1:[25,72], 3:[11,59], 4:[25,62], 2:[39,58], 6:[25,47], 10:[22,32], 11:[6,33], 9:[27,20], 7:[45,36] },
-  them: { 1:[25,3], 2:[14,17], 4:[26,15], 3:[37,18], 6:[22,27.5], 10:[19,44], 9:[14,52], 7:[10,40], 11:[40,48] },
+  them: { 1:[25,3], 2:[14,17], 4:[26,15], 3:[42,25], 6:[22,27.5], 10:[19,44], 9:[14,52], 7:[10,40], 11:[40,48] },
   ball: '6',
   arrows: [{ team: 'them', from: [19,44], to: [22.4,45.6] }],
   pass: {
-    7:  P(3, 'Pro choice', 'Their 10 is pressing from the left, so you play out to the right, and forward. Your 7 has the whole wing.'),
+    7:  P(3, 'Pro choice', "Their 10 is pressing from the left, so you play out to the right. Their 3 is guarding the space down the line, so it goes to the 7's feet."),
     2:  P(2, 'Good', 'Away from the pressure, nice. But your 7 was open further up the field.'),
     4:  TOO_SAFE('Safe, but their 10 will keep pressing. You had a forward pass away from him.'),
     3:  P(0, 'Into pressure', "That's right where their 9 and 10 are. Easy steal for them.", { cut: '9' }),
@@ -95,6 +109,9 @@ window.RIDDLES = [
     9:  P(1, 'Marked', 'Long pass to a 9 with a defender on him. The 7 was free.'),
     1:  TOO_SAFE('All the way back to the keeper? You had a free 7 away from the pressure.')
   },
+  lead: [
+    [45, 28, 4, 0, 'Into their 3', "Their 3 is guarding the space down the line, so he wins that. Play it to the 7's feet instead.", '7', '3']
+  ],
   shoot: FAR,
   carry: [[33, 44, 6, 2, 'Okay', 'Dribbling away from the pressure is fine, but a pass gets you out faster.'],
           [18, 46, 6, 0, 'Into pressure', 'You dribbled right into their 10.']],
@@ -119,6 +136,7 @@ window.RIDDLES = [
     7:  P(0, "Can't see it", "You're facing your own goal. To make that pass you'd have to turn into their 10."),
     11: P(0, "Can't see it", "You're facing your own goal. To make that pass you'd have to turn into their 10.")
   },
+  leadNote: 'Your 4 is facing the play. He wants it at his feet.',
   shoot: P(0, 'No way', "You're facing your own goal, 48 yards from theirs."),
   carry: [],
   elsewhere: P(0, 'Turned into pressure', 'Turning with a defender tight on your back is how you lose the ball in the middle of the field.'),
@@ -126,14 +144,14 @@ window.RIDDLES = [
 
 { ch: 0, type: 'ball', title: 'Over the top',
   prompt: 'Their defenders have pushed all the way up to halfway. Your 9 is already sprinting. What’s the pass?',
-  hint: 'Look at the space behind their last defenders.',
-  lesson: 'When their defenders push high, the space is behind them. Hit the run.',
-  us:   { 1:[25,72], 3:[12,58], 4:[25,59], 2:[38,58], 6:[24,50], 10:[24,42], 11:[6,38], 9:[28,37], 7:[44,38] },
-  them: { 1:[25,7], 2:[10,34], 4:[25,33], 3:[40,34], 6:[23,38], 10:[17,46], 9:[31,52], 7:[12,52], 11:[38,49] },
+  hint: 'Look at the space behind their last defenders. Where will your 9 be in two seconds?',
+  lesson: 'When their defenders push high, the space is behind them. Pass into your runner’s path, not to where he is now.',
+  us:   { 1:[25,72], 3:[12,58], 4:[25,59], 2:[38,58], 6:[24,50], 10:[24,42], 11:[6,38], 9:[29,34.5], 7:[44,38] },
+  them: { 1:[25,7], 2:[10,34], 4:[25,33.5], 3:[40,34], 6:[23,38], 10:[17,46], 9:[31,52], 7:[12,52], 11:[38,49] },
   ball: '6',
-  arrows: [{ team: 'us', from: [28.5,35], to: [31,19], dash: 1 }],
+  arrows: [{ team: 'us', from: [29.6,32.5], to: [31,22.5], dash: 1 }],
   pass: {
-    9:  P(3, 'Pro choice', "Their defenders pushed up, so there's 25 yards of grass behind them. Your 9 is already running. Put it into that space.", { lead: [31,19], air: 1 }),
+    9:  P(1, 'Behind him', 'Your 9 is already sprinting. A pass to where he is now arrives behind him, and their 4 steps in.'),
     10: P(1, 'Marked', "Their 6 is tight on your 10. He'd have to play it back to you."),
     7:  P(1, 'Marked', "Their defender is right on your 7. The space behind them is the prize."),
     11: P(0, 'Intercepted', 'Their 10 is standing in that lane.', { cut: '10' }),
@@ -142,10 +160,14 @@ window.RIDDLES = [
     2:  P(0, 'Intercepted', 'Their 9 is standing in that lane, and your 9 was running in behind.', { cut: '9' }),
     1:  TOO_SAFE('Back to the keeper when your 9 is through on goal?')
   },
+  lead: [
+    [31, 23.5, 5, 3, 'Pro choice', "Into the space behind their defenders, right in your 9's path. He runs onto it with a clear run at goal.", '9'],
+    [29, 9, 3.5, 1, 'Overhit', 'Too long. Their keeper comes out and collects it.', '9', '1']
+  ],
   shoot: P(0, 'Out of range', '50 yards out. No chance.'),
   carry: [],
   elsewhere: P(1, 'Too slow', "Dribbling into their midfield takes time. The 9's run won't wait for you."),
-  best: { kind: 'pass', to: '9' } },
+  best: { kind: 'pass', to: '9', at: [31,23.5] } },
 
 /* ---------------- 2. Get open ---------------- */
 { ch: 1, type: 'move', title: 'Out of the shadow',
@@ -318,14 +340,14 @@ window.RIDDLES = [
 /* ---------------- 4. Ball won, ball lost ---------------- */
 { ch: 3, type: 'ball', title: 'Win it, go!',
   prompt: 'You just stole the ball in the middle. Most of their team is in our half. What’s your first pass?',
-  hint: 'Who is already running, and where is the space?',
-  lesson: 'When you win it and they are out of shape, go forward fast.',
+  hint: 'Who is already running, and where will he be when the ball gets there?',
+  lesson: 'Win it while they are out of shape? Go forward fast, into the space in front of your runner.',
   us:   { 1:[25,72], 3:[12,61], 4:[24,63], 2:[37,61], 6:[24,46], 10:[16,44], 11:[7,36], 9:[25,30], 7:[42,31] },
   them: { 1:[25,3], 2:[14,24], 4:[28,23], 3:[36,42], 6:[31,45], 10:[20,52], 9:[27,57], 7:[7,54], 11:[41,52] },
   ball: '6',
   arrows: [{ team: 'us', from: [42.4,29], to: [43,19], dash: 1 }, { team: 'them', from: [31,45], to: [28.3,45.4] }],
   pass: {
-    7:  P(3, 'Pro choice', 'Their defender on that side pushed up, so the right wing is empty. Hit your 7 in behind. Counterattack!', { lead: [43,19] }),
+    7:  P(1, 'Behind him', "He's already sprinting down the wing. Pass into the space in front of him, not to where he is now."),
     9:  P(2, 'Good', 'Forward and quick. But their 4 is near him, and the 7 had the whole wing.'),
     11: P(1, 'Slow', 'Their 2 is ready for him. The space is on the other side.'),
     10: P(1, 'Slow', 'Sideways gives their players time to run back.'),
@@ -334,10 +356,13 @@ window.RIDDLES = [
     2:  P(1, 'Too slow', 'When you win it and they’re out of shape, go forward fast.'),
     1:  P(1, 'Too slow', 'When you win it and they’re out of shape, go forward fast.')
   },
+  lead: [
+    [43, 20, 4.5, 3, 'Pro choice', 'Their defender on that side pushed up, so the right wing is empty. You put it in front of your 7 and he runs onto it. Counterattack!', '7']
+  ],
   shoot: FAR,
   carry: [[24, 38, 6, 2, 'Okay', 'Driving forward is good, but their 6 is chasing you. A pass is faster.']],
   elsewhere: P(1, 'Not quite', 'Their 6 is chasing you. Move the ball forward with a pass.'),
-  best: { kind: 'pass', to: '7' } },
+  best: { kind: 'pass', to: '7', at: [43,20] } },
 
 { ch: 3, type: 'move', title: 'Win it back',
   prompt: 'Our 10 just lost the ball. Their 6 picked it up facing his own goal, right next to you. Drag the 6.',
@@ -416,28 +441,33 @@ window.RIDDLES = [
   best: { kind: 'carry', at: [25,37] } },
 
 /* ---------------- 5. Beat the press ---------------- */
-{ ch: 4, type: 'ball', title: 'Squeezed',
-  prompt: 'Their 9 and 10 are closing on you from both sides. Who gets the ball?',
-  hint: 'Two of them came to you. Who did they leave?',
-  lesson: 'When two of them squeeze you, the free player is usually behind you. Play it simple.',
-  us:   { 1:[25,72], 3:[11,60], 4:[25,61], 2:[39,60], 6:[25,48], 10:[23,32], 11:[6,34], 9:[27,20], 7:[44,34] },
-  them: { 1:[25,3], 2:[13,18], 4:[26,16], 3:[37,19], 6:[22,28], 10:[30,45], 9:[20,45], 7:[9,44], 11:[41,46] },
+{ ch: 4, type: 'ball', title: 'On his back',
+  prompt: 'Your 10 is coming short toward you, and their 6 is right on his back. Your wingers and 9 are marked. Make the pass.',
+  hint: 'Where is the free grass: in front of your 10, or behind him?',
+  lesson: 'Teammate coming toward you with a defender on his back? Play it firmly to his feet, never into the space behind him.',
+  us:   { 1:[25,72], 3:[11,59], 4:[25,61], 2:[39,59], 6:[25,50], 10:[26,37], 11:[7,33], 9:[26,21], 7:[44,33] },
+  them: { 1:[25,3], 2:[10,28.5], 4:[25,17], 3:[40,28.5], 6:[26,32.5], 10:[16,47], 9:[33,56], 7:[10,44], 11:[41,45] },
   ball: '6',
-  arrows: [{ team: 'them', from: [20,45], to: [22.3,46.3] }, { team: 'them', from: [30,45], to: [27.7,46.3] }],
+  arrows: [{ team: 'us', from: [26.4,31], to: [26.1,34.2], dash: 1 }],
   pass: {
-    4:  P(3, 'Pro choice', "Both of them came to you, so the 4 is free and facing forward. Simple pass back, and he has time to find the next one."),
-    3:  P(2, 'Good', "You escaped, but a pass across your body with their 9 right there is riskier than the simple one back."),
-    2:  P(2, 'Good', "You escaped, but a pass across your body with their 10 right there is riskier than the simple one back."),
-    1:  P(1, 'Too far back', 'The 4 was right there.'),
-    10: P(0, 'Marked', "Their 6 is all over your 10, and you can't turn with two of them on you."),
-    9:  P(0, 'No chance', "You can't turn and play forward with two of them squeezing you."),
-    7:  P(0, 'No chance', "You can't turn and play forward with two of them squeezing you."),
-    11: P(0, 'No chance', "You can't turn and play forward with two of them squeezing you.")
+    10: P(3, 'Pro choice', "He's coming toward you with a defender on his back, so play it firmly to his feet. He can lay it off or spin, and the space behind him stays their 6's problem."),
+    7:  P(1, 'Marked', 'Their 3 is right on your 7.'),
+    11: P(1, 'Marked', 'Their 2 is right on your 11.'),
+    9:  P(0, 'Intercepted', 'Their 6 is standing right in that lane.', { cut: '6' }),
+    4:  TOO_SAFE('Safe, but your 10 came to help and he was open to his feet.'),
+    3:  TOO_SAFE('Sideways when your 10 was open to his feet.'),
+    2:  TOO_SAFE('Sideways when your 10 was open to his feet.'),
+    1:  TOO_SAFE('Back to the keeper when your 10 was open to his feet?')
   },
+  lead: [
+    [26, 28, 3.8, 0, 'Wrong side', "That's the space behind your 10, and their 6 is standing in it. When he's coming to you, play it to his feet.", '10', '6'],
+    [32, 40, 3, 1, 'Makes him turn', 'He was coming toward you. Now he has to stop and chase it sideways, and their 6 catches up. To his feet was better.', '10']
+  ],
+  leadNote: 'He is coming toward you with a defender on his back. Play it to his feet.',
   shoot: FAR,
   carry: [],
-  elsewhere: P(0, 'Lost it', 'Dribbling between two of them in the middle is how we give up goals.'),
-  best: { kind: 'pass', to: '4' } },
+  elsewhere: P(1, 'Not quite', 'Your 10 came short to help you. Use him.'),
+  best: { kind: 'pass', to: '10' } },
 
 { ch: 4, type: 'ball', title: 'Who did he leave?',
   prompt: 'Their 6 has run up to press you. Who is free now?',
@@ -459,6 +489,7 @@ window.RIDDLES = [
   },
   shoot: FAR,
   carry: [],
+  leadNote: 'Your 10 is free and close. Play it to his feet.',
   elsewhere: P(1, 'Not quite', 'Dribbling into their 6 when your 10 is free behind him?'),
   best: { kind: 'pass', to: '10' } },
 
@@ -522,6 +553,7 @@ window.RIDDLES = [
   },
   shoot: FAR,
   carry: [],
+  leadNote: 'The keeper wants it to his feet, away from their 9.',
   elsewhere: P(0, 'Too risky', 'Dribbling in front of our own box with pressure on? Too risky.'),
   best: { kind: 'pass', to: '1' } },
 

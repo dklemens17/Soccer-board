@@ -98,7 +98,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,.tok:focus-visible{outl
 .tok.best{box-shadow:0 0 0 2px var(--rim),0 0 0 6px #7cffb2,0 3px 8px rgba(0,0,0,.4)}
 .ball{pointer-events:none;width:calc(var(--tok) * .6);height:calc(var(--tok) * .6);margin:calc(var(--tok) * -.3) 0 0 calc(var(--tok) * -.3);z-index:6;
   filter:drop-shadow(0 2px 2px rgba(0,0,0,.45))}
-.ball svg{display:block;width:100%;height:100%}
+.ball svg{display:block;width:100%;height:100%;pointer-events:none}
+.ball.aimable{pointer-events:auto;touch-action:none;cursor:grab}
+.ball.aimable::before{content:"";position:absolute;inset:-12px;border-radius:50%}
+.ball.aimable::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2.5px solid #fff;animation:ring 1.6s ease-in-out infinite}
+.ball.aiming{cursor:grabbing}
+.ball.aiming::after{animation:none;opacity:.4}
+.pitch.onball .tok.me::after{animation:none;opacity:.9}
 .ghost{pointer-events:none;width:var(--tok);height:var(--tok);margin:calc(var(--tok) / -2) 0 0 calc(var(--tok) / -2);z-index:1;border:2px dashed rgba(255,255,255,.85);background:rgba(255,255,255,.1)}
 
 /* tray */
@@ -245,7 +251,7 @@ html.land .levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 <section class="sheet" id="levelSheet" role="dialog" aria-modal="true" aria-labelledby="levelTitle">
   <div class="grab"></div>
   <div class="sheet-head"><h2 id="levelTitle" tabindex="-1">Riddles for the 6</h2><button class="close" type="button" data-close>Done</button></div>
-  <p class="note">Thirty game situations for a number 6. Get 2 stars on a riddle to unlock the next one.</p>
+  <p class="note">Thirty game situations for a number 6. To pass, drag the ball: drop it on a teammate to play it to his feet, or in front of him to lead him into space. Get 2 stars on a riddle to unlock the next one.</p>
   <div id="chapters"></div>
   <div class="foot">
     <label class="switch"><input type="checkbox" id="unlockAll"> Open every riddle (for coaches)</label>
@@ -403,6 +409,7 @@ function arrow(group, from, to, color, opts = {}) {
   p.setAttribute('fill', 'none'); p.setAttribute('stroke', INK[color]); p.setAttribute('stroke-width', opts.w || '.5');
   p.setAttribute('stroke-linecap', 'round');
   if (opts.dash) p.setAttribute('stroke-dasharray', '.8 1.2');
+  if (opts.faint) p.setAttribute('opacity', '.6');
   p.setAttribute('marker-end', `url(#ah-${color})`);
   group.appendChild(p);
 }
@@ -428,6 +435,7 @@ function loadRiddle(i) {
   $('#title').textContent = r.title; $('#prompt').textContent = r.prompt;
   $('#hintText').textContent = r.hint; $('#hint').hidden = true; hintBtn.setAttribute('aria-pressed', 'false');
   shootBtn.hidden = r.type !== 'ball';
+  pitch.classList.toggle('onball', r.type === 'ball');
   document.title = `${idx + 1}. ${r.title} | Number 6 Riddles`;
   resetScene();
 }
@@ -455,23 +463,86 @@ function resetSix() {
   pos.us['6'] = r.us['6'].slice(); putEl(tok.us['6'], pos.us['6'], 0);
   if (carrier.team === 'us' && carrier.n === '6') { ballPos = footOf('us', '6'); putEl(ballEl, ballPos, 0); }
 }
+function syncBall() {
+  ballEl.classList.toggle('aimable', mode === 'pick' && r.type === 'ball' && !!carrier && carrier.team === 'us' && carrier.n === '6');
+}
 function updateGo() {
+  syncBall();
   if (mode === 'done') { goBtn.disabled = false; goBtn.textContent = 'See how you did'; return; }
   if (mode === 'anim') { goBtn.disabled = true; goBtn.textContent = 'Watch…'; return; }
-  if (!sel) { goBtn.disabled = true; goBtn.textContent = r.type === 'ball' ? 'Tap a teammate, drag the 6, or shoot' : 'Drag the 6 to the best spot'; return; }
+  if (!sel) { goBtn.disabled = true; goBtn.textContent = r.type === 'ball' ? 'Drag the ball to pass, drag the 6 to dribble, or shoot' : 'Drag the 6 to the best spot'; return; }
   goBtn.disabled = false;
-  goBtn.textContent = sel.kind === 'pass' ? (sel.to === '1' ? 'Pass to the keeper' : `Pass to the ${sel.to}`)
+  const who = n => n === '1' ? 'the keeper' : `the ${n}`;
+  goBtn.textContent = sel.kind === 'pass'
+      ? (sel.feet ? (sel.to === '1' ? 'Pass to the keeper' : `Pass to the ${sel.to}\u2019s feet`) : sel.to ? `Pass into space for ${who(sel.to)}` : 'Pass into space')
     : sel.kind === 'shoot' ? 'Shoot!' : sel.kind === 'carry' ? 'Dribble there' : 'Lock in this spot';
 }
 
 /* ---------- choosing ---------- */
-function choosePass(n) {
+const FEET = 2.8, REACH = 12;
+const nameOf = n => n === '1' ? 'keeper' : n;
+function segDist(p, a, b) {
+  const dx = b[0] - a[0], dy = b[1] - a[1], L2 = dx * dx + dy * dy;
+  const t = L2 ? clamp(((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L2, 0, 1) : 0;
+  return [Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy), t];
+}
+function nearest(team, T, skip) {
+  let best = null, bd = 1e9;
+  for (const n of NUMS) { if (n === skip) continue; const d = dist(T, pos[team][n]); if (d < bd) { bd = d; best = n; } }
+  return [best, bd];
+}
+function laneBlocker(a, b) {
+  let hit = null, ht = 2;
+  for (const n of NUMS) { const [d, t] = segDist(pos.them[n], a, b); if (d < 2.2 && t > .08 && t < .96 && t < ht) { ht = t; hit = n; } }
+  return hit;
+}
+const inGoal = T => T[1] < .9 && T[0] >= 21.5 && T[0] <= 28.5;
+const outOfPlay = T => T[0] < -.3 || T[0] > W + .3 || T[1] < -.3 || T[1] > L + .3;
+function readPass(T) {
+  // Released on a teammate = a pass to his feet; anywhere else = a pass into space.
+  const [n, dR] = nearest('us', T, '6');
+  if (dR <= FEET) return { feet: true, to: n, at: pos.us[n].slice() };
+  return { feet: false, to: dR <= REACH ? n : null, at: T.slice() };
+}
+function judgePass(s) {
+  const T = s.at;
+  if (s.feet) return Object.assign({}, r.pass[s.to] || { g: 1, t: 'Not quite', w: 'There was a better pass. Look again.' }, { to: s.to });
+  if (outOfPlay(T)) return { g: 0, t: 'Out of play', w: 'That pass rolls out of bounds. Their ball.', loose: true };
+  let z = null;
+  for (const q of (r.lead || [])) if (dist(T, [q[0], q[1]]) <= q[2] && (!z || q[3] > z[3])) z = q;
+  if (z) return { g: z[3], t: z[4], w: z[5], to: z[6], grab: z[7] || null };
+  const cut = laneBlocker(ballPos, T);
+  if (cut) return { g: 0, t: 'Intercepted', w: `Their ${nameOf(cut)} is in the way. That pass gets cut out.`, cut };
+  const [n, dR] = nearest('us', T, '6'), [m, dO] = nearest('them', T);
+  if (dR > REACH) return { g: 0, t: 'Nobody there', w: 'None of your teammates can get to that spot, so it goes straight to them.', grab: m };
+  if (dO + 1 < dR) return { g: 0, t: 'They get there first', w: `Their ${nameOf(m)} is closer to that spot than your ${nameOf(n)}.`, grab: m };
+  const raw = r.pass[n] || { g: 1, t: 'Not quite', w: '' };
+  // a direct pass that would be cut out says nothing about a lead pass whose lane is clear
+  const d = raw.cut ? { g: 1, t: 'Risky', w: `Their ${nameOf(raw.cut)} is close to that lane, so it's a risky pass.` } : raw;
+  if (dR <= 4.5) return Object.assign({}, d, { to: n, cut: null });
+  if (d.g >= 3) return { g: 2, t: 'Good', w: `Your ${nameOf(n)} can get it, but he was free where he stood. A pass to his feet was simpler.`, to: n };
+  if (T[1] < pos.us[n][1] - 2) return Object.assign({}, d, { to: n, cut: null });
+  return { g: Math.min(d.g, 1), t: 'Makes him chase it', w: (`Your ${nameOf(n)} can get there, but making him run sideways or back doesn't help him. ` + (r.leadNote || '')).trim(), to: n };
+}
+function reticle(group, p, color, rad) {
+  const g = document.createElementNS(NS, 'g');
+  g.innerHTML = `<circle cx="${r2(p[0])}" cy="${r2(p[1])}" r="${rad || 1.15}" fill="${color === 'best' ? 'rgba(124,255,178,.22)' : 'rgba(255,255,255,.14)'}" stroke="${INK[color || 'pick']}" stroke-width=".3"/>
+    <circle cx="${r2(p[0])}" cy="${r2(p[1])}" r=".28" fill="${INK[color || 'pick']}"/>`;
+  group.appendChild(g);
+}
+function drawAim(s) {
+  pickInk.replaceChildren(); NUMS.forEach(n => tok.us[n].classList.remove('pick'));
+  if (s.feet) { arrow(pickInk, ballPos, s.at, 'pick', { dash: 1, shorten: tokYards() * .55 }); tok.us[s.to].classList.add('pick'); return; }
+  arrow(pickInk, ballPos, s.at, 'pick', { dash: 1, shorten: 1.2 });
+  reticle(pickInk, s.at);
+  if (s.to) { tok.us[s.to].classList.add('pick'); arrow(pickInk, pos.us[s.to], s.at, 'pick', { dash: 1, w: '.24', shorten: 1.5, faint: 1 }); }
+}
+function choosePassAt(T) {
   if (mode !== 'pick') return;
   resetSix(); clearPick();
-  sel = { kind: 'pass', to: n };
-  const a = r.pass[n], to = a && a.lead ? a.lead : pos.us[n];
-  arrow(pickInk, ballPos, to, 'pick', { dash: 1, shorten: a && a.lead ? 0 : tokYards() * .55 });
-  tok.us[n].classList.add('pick');
+  if (inGoal(T)) { chooseShoot(); return; }
+  sel = Object.assign({ kind: 'pass' }, readPass(T));
+  drawAim(sel);
   updateGo();
 }
 function chooseShoot() {
@@ -494,7 +565,7 @@ function chooseSpot(p, animate) {
 }
 
 function judge(s) {
-  if (s.kind === 'pass') return r.pass[s.to] || { g: 1, t: 'Not quite', w: 'There was a better pass. Look again.' };
+  if (s.kind === 'pass') return judgePass(s);
   if (s.kind === 'shoot') return r.shoot || { g: 0, t: 'Out of range', w: 'Way too far from goal.' };
   const zones = s.kind === 'carry' ? (r.carry || []) : r.zones;
   let best = null;
@@ -511,11 +582,25 @@ async function passBall(toTeam, n, lead) {
   ballPos = footOf(toTeam, n); putEl(ballEl, ballPos, ms);
   await wait(ms + 140);
 }
+async function passInto(T, team, n) {
+  // ball into space; the player runs onto it and stops just behind it
+  const len = dist(ballPos, T), ms = Math.round(380 + len * 15);
+  carrier = null; ballPos = T.slice(); putEl(ballEl, T, ms);
+  if (team && n) {
+    const from = pos[team][n], v = [T[0] - from[0], T[1] - from[1]], vl = Math.hypot(v[0], v[1]) || 1, k = Math.min(vl, tokYards() * .5 + .3);
+    const stop = [T[0] - v[0] / vl * k, T[1] - v[1] / vl * k];
+    pos[team][n] = stop; putEl(tok[team][n], stop, ms + 180);
+  }
+  await wait(ms + 240);
+}
 async function play(s, a) {
-  pickInk.querySelectorAll('path').forEach(p => p.setAttribute('opacity', '.45'));
+  pickInk.querySelectorAll('path,circle').forEach(p => p.setAttribute('opacity', '.45'));
   if (s.kind === 'pass') {
     if (a.cut) await passBall('them', a.cut);
-    else await passBall('us', s.to, a.lead);
+    else if (a.loose) await passInto(s.at);
+    else if (a.grab) await passInto(s.at, 'them', a.grab);
+    else if (s.feet) await passBall('us', a.to || s.to);
+    else await passInto(s.at, 'us', a.to || s.to);
   } else if (s.kind === 'shoot') {
     const end = a.end || (a.g >= 2 ? [23.4, -1.2] : footOf('them', '1'));
     carrier = null; putEl(ballEl, end, 520); ballPos = end; await wait(640);
@@ -529,7 +614,7 @@ async function play(s, a) {
 }
 function showAnswerOnField() {
   const b = r.best;
-  if (b.kind === 'pass') tok.us[b.to].classList.add('best');
+  if (b.kind === 'pass') { tok.us[b.to].classList.add('best'); if (b.at) reticle(zoneInk, b.at, 'best', 2.2); }
   if (r.type === 'move') r.zones.filter(z => z[3] === 3).forEach(zoneCircle);
   if (b.kind === 'carry') (r.carry || []).filter(z => z[3] === 3).forEach(zoneCircle);
 }
@@ -550,7 +635,7 @@ async function showBest() {
   resetScene();
   const b = r.best;
   await wait(250);
-  if (b.kind === 'pass') choosePass(b.to);
+  if (b.kind === 'pass') choosePassAt((b.at || r.us[b.to]).slice());
   else if (b.kind === 'shoot') chooseShoot();
   else { chooseSpot(b.at.slice(), true); await wait(650); }
   mode = 'anim'; updateGo();
@@ -621,8 +706,19 @@ document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click
 /* ---------- input ---------- */
 let drag = null, toastTimer;
 function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600); }
+let aim = null;
+const clampField = T => [clamp(T[0], -M + .5, W + M - .5), clamp(T[1], -M + .5, L + M - .5)];
 tokensEl.addEventListener('pointerdown', e => {
-  const el = e.target.closest('.tok'); if (!el || mode !== 'pick') return;
+  if (mode !== 'pick') return;
+  if (e.target.closest('.ball.aimable')) {
+    e.preventDefault();
+    try { ballEl.setPointerCapture(e.pointerId); } catch {}
+    resetSix(); clearPick(); sel = null; updateGo();
+    aim = { id: e.pointerId, sx: e.clientX, sy: e.clientY, moved: false };
+    ballEl.classList.add('aiming');
+    return;
+  }
+  const el = e.target.closest('.tok'); if (!el) return;
   if (!(el.dataset.team === 'us' && el.dataset.n === '6')) return;
   e.preventDefault();
   try { el.setPointerCapture(e.pointerId); } catch {}
@@ -631,6 +727,14 @@ tokensEl.addEventListener('pointerdown', e => {
   el.classList.add('lift');
 });
 tokensEl.addEventListener('pointermove', e => {
+  if (aim && e.pointerId === aim.id) {
+    if (!aim.moved && Math.hypot(e.clientX - aim.sx, e.clientY - aim.sy) < 6) return;
+    aim.moved = true;
+    const T = clampField(toField(e));
+    if (inGoal(T)) { pickInk.replaceChildren(); NUMS.forEach(n => tok.us[n].classList.remove('pick')); arrow(pickInk, ballPos, T, 'pick', { dash: 1 }); }
+    else drawAim(readPass(T));
+    return;
+  }
   if (!drag || e.pointerId !== drag.id) return;
   if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 5) return;
   if (!drag.moved) { drag.moved = true; clearPick(); sel = null; }
@@ -641,13 +745,20 @@ tokensEl.addEventListener('pointermove', e => {
   arrow(pickInk, r.us['6'], p, 'pick', { dash: r.type === 'ball' ? 0 : 1, shorten: tokYards() * .55 });
 });
 function endDrag(e) {
+  if (aim && e.pointerId === aim.id) {
+    const T = clampField(toField(e)), moved = aim.moved; aim = null;
+    ballEl.classList.remove('aiming');
+    if (moved && e.type === 'pointerup' && dist(T, ballPos) >= 3) choosePassAt(T);
+    else { clearPick(); sel = null; updateGo(); if (e.type === 'pointerup') toast('Drag the ball where you want the pass to go: onto a teammate, or into the space in front of him.'); }
+    return;
+  }
   if (!drag || e.pointerId !== drag.id) return;
   const moved = drag.moved; drag = null;
   tok.us['6'].classList.remove('lift');
   if (moved && dist(pos.us['6'], r.us['6']) >= 1.5) chooseSpot(pos.us['6'].slice(), false);
   else {
     resetSix(); clearPick(); sel = null; updateGo();
-    if (e.type === 'pointerup') toast(r.type === 'ball' ? 'Drag the 6 to dribble, or tap a teammate to pass.' : 'Drag the 6 to the spot you want.');
+    if (e.type === 'pointerup') toast(r.type === 'ball' ? 'Drag the 6 to dribble. To pass, drag the ball.' : 'Drag the 6 to the spot you want.');
   }
 }
 tokensEl.addEventListener('pointerup', endDrag);
@@ -656,8 +767,8 @@ tokensEl.addEventListener('click', e => {
   const el = e.target.closest('.tok'); if (!el || mode !== 'pick') return;
   const { team, n } = el.dataset;
   if (team === 'us' && n === '6') return;
-  if (team === 'them') { toast(r.type === 'ball' ? "That's one of theirs. Tap a teammate to pass." : 'Drag the 6 to a spot.'); return; }
-  if (r.type === 'ball') choosePass(n);
+  if (team === 'them') { toast(r.type === 'ball' ? "That's one of theirs. Drag the ball to a teammate, or into space." : 'Drag the 6 to a spot.'); return; }
+  if (r.type === 'ball') toast('Drag the ball to make the pass: drop it on him for his feet, or in front of him to lead him.');
   else toast("You don't have the ball here. Drag the 6 to the best spot.");
 });
 pitch.addEventListener('click', e => {
@@ -672,7 +783,7 @@ tokensEl.addEventListener('keydown', e => {
     e.preventDefault(); if (land) d = [d[1], -d[0]];
     const k = e.shiftKey ? 3 : 1;
     chooseSpot(clampPos([pos.us['6'][0] + d[0] * k, pos.us['6'][1] + d[1] * k]), false);
-  } else if ((e.key === 'Enter' || e.key === ' ') && r.type === 'ball') { e.preventDefault(); choosePass(el.dataset.n); }
+  } else if ((e.key === 'Enter' || e.key === ' ') && r.type === 'ball') { e.preventDefault(); choosePassAt(pos.us[el.dataset.n].slice()); }
 });
 pitch.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('gesturestart', e => e.preventDefault());
@@ -718,6 +829,10 @@ addEventListener('resize', relayout);
 addEventListener('orientationchange', () => setTimeout(relayout, 60));
 if ('ResizeObserver' in window) new ResizeObserver(fit).observe(stage);
 addEventListener('storage', e => { if (e.key === BOARD) applyColors(); });
+window.__riddleDebug = {
+  load: i => loadRiddle(i),
+  judgeAt: (x, y) => { const T = [x, y]; if (inGoal(T)) return { g: (r.shoot || {}).g, t: 'shot' }; return judgePass(Object.assign({ kind: 'pass' }, readPass(T))); }
+};
 })();
 </script>
 </body>
