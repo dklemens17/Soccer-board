@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tactics">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Soccer Riddles</title>
+<title>Soccer Puzzles</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -219,6 +219,7 @@ html.land .grab{display:none}
 html.land .scrim{background:rgba(20,28,34,.18)}
 html.land .levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 @media (max-height:360px){html.land .modes a{padding:6px 10px 5px}}
+@media (max-width:370px){.modes a{padding:8px 8px 7px;font-size:16px}.score{padding:8px 9px 7px}}
 
 /* level rings: the inner rim is the tier you have, the outer arc is progress to the next one */
 .ring{position:relative;display:inline-grid;place-items:center;border-radius:50%;padding:4px;
@@ -352,7 +353,7 @@ html.land .cele-reveal{margin-top:10px}
 <body>
 
 <header class="rail">
-  <nav class="modes" aria-label="Mode"><a href="./">Board</a><a href="riddles.html" aria-current="page">Puzzles</a></nav>
+  <nav class="modes" aria-label="Mode"><a href="./">Board</a><a href="riddles.html" aria-current="page">Puzzles</a><a href="learn.html">Learn</a></nav>
   <button class="posbtn" id="posBtn" type="button" aria-label="Change position"><span class="ring" id="posRing"><span class="pk us" id="posPk">6</span></span></button>
   <button class="score" id="scoreBtn" type="button" aria-label="Stars and trophy room"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg><span id="starTotal">0</span><span class="of">/ 90</span></button>
 </header>
@@ -372,9 +373,9 @@ html.land .cele-reveal{margin-top:10px}
   </div>
 </main>
 
-<nav class="tray" aria-label="Riddle tools">
+<nav class="tray" aria-label="Puzzle tools">
   <button class="tool" id="levelsBtn" type="button">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>Riddles</button>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>Puzzles</button>
   <button class="tool" id="hintBtn" type="button" aria-pressed="false">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>Hint</button>
   <button class="tool" id="restartBtn" type="button">
@@ -392,31 +393,31 @@ html.land .cele-reveal{margin-top:10px}
   <h2 class="verdict" id="verdict" tabindex="-1"></h2>
   <p class="why" id="why"></p>
   <div class="rule"><b>Coach's rule</b><p id="rule"></p></div>
-  <p class="lock-note" id="lockNote" hidden>Get 2 stars on this riddle to unlock the next one.</p>
+  <p class="lock-note" id="lockNote" hidden>Get 2 stars on this puzzle to unlock the next one.</p>
   <div class="actions">
     <button type="button" id="bestBtn">Show the best answer</button>
     <button type="button" id="againBtn">Try again</button>
-    <button type="button" id="nextBtn" class="primary">Next riddle</button>
+    <button type="button" id="nextBtn" class="primary">Next puzzle</button>
   </div>
 </section>
 
 <section class="sheet" id="posSheet" role="dialog" aria-modal="true" aria-labelledby="posTitle">
   <div class="grab"></div>
   <h2 id="posTitle" tabindex="-1">What position are you playing today?</h2>
-  <p class="note">Each position has 30 riddles, and so do set pieces. Your stars are saved for each one, and you can switch anytime.<span id="soonNote"> Grey ones are coming soon.</span></p>
+  <p class="note">Each position has 30 puzzles, and so do set pieces. Your stars are saved for each one, and you can switch anytime.<span id="soonNote"> Grey ones are coming soon.</span></p>
   <p class="legend"><span><i style="background:#d9874a"></i>Bronze: clear all 30</span><span><i style="background:#c9d4de"></i>Silver: 75 stars</span><span><i style="background:#ffd23f"></i>Gold: all 90</span></p>
   <div class="formation" id="formation"></div>
 </section>
 
 <section class="sheet" id="levelSheet" role="dialog" aria-modal="true" aria-labelledby="levelTitle">
   <div class="grab"></div>
-  <div class="sheet-head"><h2 id="levelTitle" tabindex="-1">Riddles for the 6</h2><button class="close" type="button" data-close>Done</button></div>
+  <div class="sheet-head"><h2 id="levelTitle" tabindex="-1">Puzzles for the 6</h2><button class="close" type="button" data-close>Done</button></div>
   <button class="switchpos" type="button" id="switchPos">Playing <b id="switchPosName">the 6</b>. Change position</button>
   <div class="tierline" id="tierLine"></div>
-  <p class="note">Thirty game situations for <span id="levelWho">the 6</span>. To pass, drag the ball: drop it on a teammate to play it to his feet, or in front of him to lead him into space. Get 2 stars on a riddle to unlock the next one.</p>
+  <p class="note">Thirty game situations for <span id="levelWho">the 6</span>. To pass, drag the ball: drop it on a teammate to play it to his feet, or in front of him to lead him into space. Get 2 stars on a puzzle to unlock the next one.</p>
   <div id="chapters"></div>
   <div class="foot">
-    <label class="switch"><input type="checkbox" id="unlockAll"> Open every riddle (for coaches)</label>
+    <label class="switch"><input type="checkbox" id="unlockAll"> Open every puzzle (for coaches)</label>
     <label class="switch"><input type="checkbox" class="soundOn"> Sounds</label>
     <button class="textbtn" type="button" id="resetProg">Reset stars</button>
   </div>
@@ -665,7 +666,7 @@ function loadRiddle(i) {
   $('#hintText').textContent = r.hint; $('#hint').hidden = true; hintBtn.setAttribute('aria-pressed', 'false');
   shootBtn.hidden = r.type !== 'ball' || r.shoot === null;
   pitch.classList.toggle('onball', r.type === 'ball');
-  document.title = `${idx + 1}. ${r.title} | Riddles for ${setTitle()}`;
+  document.title = `${idx + 1}. ${r.title} | Puzzles for ${setTitle()}`;
   resetScene();
 }
 function resetScene() {
@@ -949,9 +950,9 @@ function openResult(a, isBest, capped) {
   best.textContent = capped ? 'Show me the right answer' : 'Show the best answer';
   best.classList.toggle('primary', !!capped);
   note.hidden = !capped && (last || nextOpen);
-  note.textContent = capped ? `That's three tries. Watch the right answer, then move on to the ${last ? 'riddle list' : 'next riddle'}.`
-    : `Get 2 stars on this riddle to unlock the next one.${misses && left > 0 ? ` ${left} ${left === 1 ? 'try' : 'tries'} left before we show you the answer.` : ''}`;
-  next.textContent = last ? 'See all riddles' : 'Next riddle';
+  note.textContent = capped ? `That's three tries. Watch the right answer, then move on to the ${last ? 'puzzle list' : 'next puzzle'}.`
+    : `Get 2 stars on this puzzle to unlock the next one.${misses && left > 0 ? ` ${left} ${left === 1 ? 'try' : 'tries'} left before we show you the answer.` : ''}`;
+  next.textContent = last ? 'See all puzzles' : 'Next puzzle';
   next.disabled = !last && !nextOpen;
   next.classList.toggle('primary', last || nextOpen);
   next.hidden = again.hidden = !!capped;
@@ -970,14 +971,14 @@ function renderLevels() {
   box.innerHTML = CH.map((c, ci) => {
     const btns = R.map((q, i) => [q, i]).filter(([q]) => q.ch === ci).map(([q, i]) => {
       const st = starsAt(i), open = unlocked(i);
-      return `<button type="button" class="lvl" data-i="${i}" ${open ? '' : 'disabled'} aria-current="${i === idx}" aria-label="Riddle ${i + 1}, ${q.title}${open ? (st >= 0 ? `, ${st} of 3 stars` : '') : ', locked'}">
+      return `<button type="button" class="lvl" data-i="${i}" ${open ? '' : 'disabled'} aria-current="${i === idx}" aria-label="Puzzle ${i + 1}, ${q.title}${open ? (st >= 0 ? `, ${st} of 3 stars` : '') : ', locked'}">
         <b>${i + 1}</b><span class="mini">${starsSVG(Math.max(0, st))}</span>
         <svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></button>`;
     }).join('');
     return `<section class="chapter"><h3><i style="--ch:${CH_COLORS[ci]}"></i>${ci + 1}. ${c.name}</h3><p>${c.blurb}</p><div class="levels">${btns}</div></section>`;
   }).join('');
   $('#unlockAll').checked = prog.unlockAll; syncSound();
-  $('#levelTitle').textContent = `Riddles for ${setTitle()}`; $('#levelWho').textContent = setTitle();
+  $('#levelTitle').textContent = `Puzzles for ${setTitle()}`; $('#levelWho').textContent = setTitle();
   $('#switchPosName').textContent = posInfo(SET).varied ? setTitle() : `${setTitle()} (${posInfo(SET).name.toLowerCase()})`;
   $('#tierLine').innerHTML = `${ringHTML(SET)}<p>${posTier(SET).text}</p>`;
 }
@@ -989,7 +990,7 @@ document.querySelectorAll('.soundOn').forEach(x => x.addEventListener('change', 
   if (prog.sound) Sound.play('cheer'); else Sound.stop(.1);
 }));
 $('#resetProg').addEventListener('click', () => {
-  if (!confirm(`Clear your stars for ${setTitle()} and lock those riddles again?`)) return;
+  if (!confirm(`Clear your stars for ${setTitle()} and lock those puzzles again?`)) return;
   prog.sets[SET] = { stars: {}, last: 0 }; prog.unlockAll = false; prog.awards = computeAwards(); saveProg(); renderScore(); renderLevels(); loadRiddle(0); showLevels();
 });
 function showLevels() { renderLevels(); showSheet(levelSheet); }
@@ -1134,10 +1135,10 @@ function loadScript(src) {
 async function useSet(n, picked) {
   const info = posInfo(n);
   if (!window.RIDDLE_SETS[n]) {
-    try { await loadScript(info.file); } catch { toast(`Couldn't load the riddles for ${info.title}. Check your connection and try again.`); return false; }
+    try { await loadScript(info.file); } catch { toast(`Couldn't load the puzzles for ${info.title}. Check your connection and try again.`); return false; }
   }
   const set = window.RIDDLE_SETS[n];
-  if (!set) { toast(`The riddles for ${info.title} aren't ready yet.`); return false; }
+  if (!set) { toast(`The puzzles for ${info.title} aren't ready yet.`); return false; }
   R = set.riddles; CH = set.chapters; SET = n; ME = set.me || '6';
   prog.position = SET; if (!info.varied) prog.lastPos = SET; if (picked) prog.lastPick = today(); saveProg();
   const pk = $('#posPk'); pk.textContent = puckText(SET); pk.classList.toggle('gk', SET === '1');
@@ -1158,7 +1159,7 @@ $('#formation').addEventListener('click', async e => {
   const b = e.target.closest('[data-n]'); if (!b) return;
   const n = b.dataset.n;
   if (n === SET && R.length) { prog.lastPick = today(); saveProg(); hideSheet(); return; }
-  if (await useSet(n, true)) toast(`Riddles for ${setTitle()}. Good luck today!`);
+  if (await useSet(n, true)) toast(`Puzzles for ${setTitle()}. Good luck today!`);
 });
 $('#posBtn').addEventListener('click', openPicker);
 $('#switchPos').addEventListener('click', openPicker);
@@ -1191,10 +1192,10 @@ function posTier(n) {
   for (let i = 0; i < PER; i++) { const g = +st[i] || 0; if (g >= 2) cleared++; if (g > 0) total += g; }
   const tier = cleared < PER ? 0 : total >= 90 ? 3 : total >= 75 ? 2 : 1;
   const next = [
-    { p: cleared / PER, text: `Clear all 30 riddles for bronze. <b>${cleared} of 30</b> cleared.` },
+    { p: cleared / PER, text: `Clear all 30 puzzles for bronze. <b>${cleared} of 30</b> cleared.` },
     { p: clamp((total - 60) / 15, 0, 1), text: `<b>Bronze.</b> ${total} of 75 stars for silver.` },
     { p: clamp((total - 75) / 15, 0, 1), text: `<b>Silver.</b> ${total} of 90 stars for gold.` },
-    { p: 1, text: '<b>Gold.</b> Every riddle perfect.' }][tier];
+    { p: 1, text: '<b>Gold.</b> Every puzzle perfect.' }][tier];
   return { tier, cleared, total, p: next.p, text: next.text };
 }
 const rate = f => 40 + Math.round(59 * Math.sqrt(clamp(f, 0, 1)));
@@ -1263,7 +1264,7 @@ function specFor(e) {
       oldEmb: posEmb(e.n, e.from), newEmb: posEmb(e.n, e.to),
       oldName: TIERS[e.from].toUpperCase(), newName: TIERS[e.to].toUpperCase(),
       head: info.varied ? info.name : `${cap(posLabel(e.n))} · ${info.name}`,
-      note: ['', 'All 30 riddles cleared.', '75 stars. Keep going for gold.', 'All 90 stars. Every riddle perfect.'][e.to] };
+      note: ['', 'All 30 puzzles cleared.', '75 stars. Keep going for gold.', 'All 90 stars. Every puzzle perfect.'][e.to] };
   }
   if (e.kind === 'unit') {
     const u = UNITS.find(x => x.id === e.id);
@@ -1603,7 +1604,7 @@ function renderTrophies() {
   $('#lineup').innerHTML = ALL_KEYS.map(n => {
     const [x, y] = FORMATION[n], t = posTier(n);
     const what = t.tier ? TIERS[t.tier] : `${t.cleared}/30`;
-    return `<button type="button" class="pos" data-n="${n}" style="left:${x}%;top:${y}%" aria-label="${cap(posLabel(n))}: ${t.tier ? TIERS[t.tier] : `${t.cleared} of 30 riddles cleared`}">${ringHTML(n)}<span class="nm">${what}</span></button>`;
+    return `<button type="button" class="pos" data-n="${n}" style="left:${x}%;top:${y}%" aria-label="${cap(posLabel(n))}: ${t.tier ? TIERS[t.tier] : `${t.cleared} of 30 puzzles cleared`}">${ringHTML(n)}<span class="nm">${what}</span></button>`;
   }).join('');
   const aw = computeAwards();
   $('#badges').innerHTML = UNITS.map(u => {
@@ -1615,14 +1616,14 @@ function renderTrophies() {
   $('#cardName').value = prog.name || '';
   const ft = prog.firstTries || 0;
   const best = prog.bestStreak || 0;
-  $('#ftStat').hidden = !ft; $('#ftStat').textContent = `First tries: ${ft}. That's ${ft === 1 ? 'one riddle' : `${ft} riddles`} you got right the very first time.` +
+  $('#ftStat').hidden = !ft; $('#ftStat').textContent = `First tries: ${ft}. That's ${ft === 1 ? 'one puzzle' : `${ft} puzzles`} you got right the very first time.` +
     (best >= 2 ? ` Best run: ${best} in a row.` : '');
 }
 $('#lineup').addEventListener('click', e => {
   const b = e.target.closest('[data-n]'); if (!b) return;
   const n = b.dataset.n, t = posTier(n);
   if (t.tier) celebrate(specFor({ kind: 'pos', n, from: 0, to: t.tier }));
-  else toast(`Clear all 30 riddles at ${posLabel(n)} for bronze. ${t.cleared} of 30 so far.`);
+  else toast(`Clear all 30 puzzles at ${posLabel(n)} for bronze. ${t.cleared} of 30 so far.`);
 });
 $('#badges').addEventListener('click', e => {
   const b = e.target.closest('[data-u]'); if (!b) return;

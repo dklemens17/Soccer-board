@@ -183,6 +183,8 @@ html.land .toast{left:calc((100% - 170px) / 2);bottom:calc(12px + env(safe-area-
 html.land .forms{grid-template-columns:repeat(6,minmax(0,1fr))}
 @media (max-height:340px){html.land .title{display:none}}
 
+@media (max-width:390px){.modes a{padding:8px 9px 7px}.readout{padding:8px 9px 7px;gap:5px;font-size:17px}}
+@media (max-width:350px){.modes a{padding:7px 7px 6px;font-size:16px}.readout .v{display:none}}
 @media (min-width:700px){.title{font-size:28px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
 </style>
@@ -192,7 +194,7 @@ html.land .forms{grid-template-columns:repeat(6,minmax(0,1fr))}
 <header class="rail">
   <div class="rail-main" id="railMain">
     <h1 class="sr">Tactics board</h1>
-    <nav class="modes" aria-label="Mode"><a href="./" aria-current="page">Board</a><a href="riddles.html">Puzzles</a></nav>
+    <nav class="modes" aria-label="Mode"><a href="./" aria-current="page">Board</a><a href="riddles.html">Puzzles</a><a href="learn.html">Learn</a></nav>
     <button class="readout" id="readout" type="button" aria-label="Change lineups"></button>
   </div>
   <div class="rail-draw" id="railDraw" hidden>
