@@ -1298,11 +1298,12 @@ async function celebrateAll(events) { for (const e of events) await celebrate(sp
 
 /* ---------- sounds: one recorded crowd (public domain, see README), everything else made with Web Audio ---------- */
 const Sound = (() => {
-  let ac = null, master = null, loading = null;
+  let ac = null, master = null, loading = null, attempts = 0;
   const chans = {}, buffers = {}, FILES = { crowd: 'sounds/crowd-cheer.mp3' };
   const noiseOf = new WeakMap();
+  // fetch the recording once; if it fails (offline), try again on a later tap, up to three times
   function load(c) {
-    if (!loading) loading = Promise.all(Object.entries(FILES).map(async ([k, url]) => {
+    if (!loading && attempts < 3 && ++attempts) loading = Promise.all(Object.entries(FILES).map(async ([k, url]) => {
       if (buffers[k]) return;
       const data = await (await fetch(url)).arrayBuffer();
       buffers[k] = await new Promise((ok, no) => { const p = c.decodeAudioData(data, ok, no); if (p && p.then) p.then(ok, no); });
