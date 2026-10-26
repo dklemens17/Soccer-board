@@ -262,6 +262,26 @@ html.land .pos{transform:translate(-50%,-25px)}
 .badge.wide{grid-column:1 / -1}
 html.land .badges{grid-template-columns:minmax(0,1fr)}
 
+/* first try: a quick burst of confetti and a bouncy shout */
+.ftry{position:fixed;inset:0;z-index:45;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;
+  background:radial-gradient(circle at 50% 46%,rgba(13,18,22,.6),rgba(13,18,22,.2) 72%)}
+.ftry-word{text-align:center;transform:rotate(-6deg);color:#fff;font:800 clamp(58px,18vw,104px)/.9 var(--display);letter-spacing:.01em;
+  text-shadow:0 4px 0 #1f5fbf,0 8px 0 #12397a,0 14px 26px rgba(0,0,0,.5)}
+.ftry-word span{display:block}
+.ftry-word .y{display:inline-block;color:#ffd23f;transform-origin:50% 100%;font-weight:800}
+.ftry-sub{margin-top:22px;font:700 19px/1.2 var(--ui);color:#fff;letter-spacing:.04em;text-shadow:0 2px 6px rgba(0,0,0,.55)}
+.ftry-bits i{position:absolute;left:50%;top:46%;width:9px;height:15px;margin:-7px 0 0 -4px;border-radius:2px;background:var(--c);opacity:0}
+@keyframes ftryIn{0%{opacity:0}8%{opacity:1}86%{opacity:1}100%{opacity:0}}
+@keyframes ftryPop{0%{transform:rotate(-16deg) scale(.15)}34%{transform:rotate(-3deg) scale(1.2)}50%{transform:rotate(-8deg) scale(.93)}64%,100%{transform:rotate(-6deg) scale(1)}}
+@keyframes ftryY{0%,25%{transform:none}42%{transform:scaleY(1.4) translateY(-8px)}58%{transform:scaleY(.82)}72%{transform:scaleY(1.14) translateY(-3px)}86%,100%{transform:none}}
+@keyframes ftrySub{0%,35%{opacity:0;transform:translateY(8px)}55%,100%{opacity:1;transform:none}}
+@keyframes ftryBit{0%{opacity:1;transform:translate(0,0) rotate(0)}80%{opacity:1}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--r))}}
+.ftry.play{animation:ftryIn 2.4s ease both}
+.ftry.play .ftry-word{animation:ftryPop .9s cubic-bezier(.2,.9,.3,1.3) both}
+.ftry.play .ftry-word .y{animation-name:ftryY;animation-duration:1.5s;animation-timing-function:ease-in-out;animation-fill-mode:both}
+.ftry.play .ftry-sub{animation:ftrySub 2.4s ease both}
+.ftry.play .ftry-bits i{animation:ftryBit var(--t) cubic-bezier(.12,.75,.35,1) var(--d) both}
+
 /* the celebration: rays turn, an orb pulses, old and new flicker faster and faster, a white flash, the new one lands.
    Every element's resting style is its final state, so with motion turned off it just shows the result. */
 .cele{position:fixed;inset:0;z-index:40;overflow:hidden;cursor:pointer;color:#fff;outline:none;
@@ -409,6 +429,7 @@ html.land .cele-reveal{margin-top:10px}
       <button type="button" id="saveCard">Save card</button>
     </div>
     <p class="tiny" id="cardHint">Every star raises your ratings. Playing more positions raises them fastest.</p>
+    <p class="tiny" id="ftStat" hidden></p>
   </div>
   <h3 class="sec">Your lineup</h3>
   <p class="legend"><span><i style="background:#d9874a"></i>Bronze: clear all 30</span><span><i style="background:#c9d4de"></i>Silver: 75 stars</span><span><i style="background:#ffd23f"></i>Gold: all 90</span></p>
@@ -432,6 +453,12 @@ html.land .cele-reveal{margin-top:10px}
     </div>
   </div>
   <div class="cele-flash" aria-hidden="true"></div>
+</div>
+
+<div class="ftry" id="ftry" hidden role="status" aria-label="First try!">
+  <div class="ftry-bits" id="ftryBits" aria-hidden="true"></div>
+  <div class="ftry-word" aria-hidden="true"><span>FIRST</span><span>TR<b class="y" style="animation-delay:.3s">Y</b><b class="y" style="animation-delay:.38s">Y</b><b class="y" style="animation-delay:.46s">Y</b><b class="y" style="animation-delay:.54s">Y</b>!</span></div>
+  <div class="ftry-sub">Right call, first time.</div>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -495,7 +522,8 @@ let prog = readProg();
 function saveProg() { try { localStorage.setItem(PROG, JSON.stringify(prog)); } catch {} }
 const cur = (n = SET) => prog.sets[n] || (prog.sets[n] = { stars: {}, last: 0 });
 const starsAt = i => (cur().stars[i] == null ? -1 : cur().stars[i]);
-const unlocked = i => i >= 0 && i < R.length && (prog.unlockAll || i === 0 || starsAt(i - 1) >= 2);
+const MAX_MISSES = 3;
+const unlocked = i => i >= 0 && i < R.length && (prog.unlockAll || i === 0 || starsAt(i - 1) >= 2 || !!(cur().shown || {})[i - 1]);
 const totalStars = (n = SET) => Object.values(cur(n).stars).reduce((s, g) => s + Math.max(0, g), 0);
 
 /* ---------- field ---------- */
@@ -842,19 +870,32 @@ function showAnswerOnField() {
   if (r.type === 'move') r.zones.filter(z => z[3] === 3).forEach(zoneCircle);
   if (b.kind === 'carry') (r.carry || []).filter(z => z[3] === 3).forEach(zoneCircle);
 }
+let lastCapped = false;
 async function lockIn() {
-  if (mode === 'done') { openResult(lastResult, false); return; }
+  if (mode === 'done') { openResult(lastResult, false, lastCapped); return; }
   if (!sel || mode !== 'pick') return;
   mode = 'anim'; updateGo();
+  const st = cur(); st.tries = st.tries || {}; st.miss = st.miss || {}; st.shown = st.shown || {};
+  const firstEver = !st.tries[idx] && starsAt(idx) < 0;
+  st.tries[idx] = (st.tries[idx] || 0) + 1;
   const a = judge(sel);
   await play(sel, a);
   if (a.g < 3) showAnswerOnField();
-  if (a.g > starsAt(idx)) { cur().stars[idx] = a.g; saveProg(); }
-  renderScore();
-  mode = 'done'; lastResult = a; updateGo();
+  if (a.g > starsAt(idx)) st.stars[idx] = a.g;
+  // three misses on a riddle: explain, show the right answer, and let them move on
+  let capped = false;
+  if (a.g < 2 && starsAt(idx) < 2 && !st.shown[idx]) {
+    st.miss[idx] = (st.miss[idx] || 0) + 1;
+    if (st.miss[idx] >= MAX_MISSES) { st.shown[idx] = true; capped = true; }
+  }
+  const nailed = firstEver && a.g === 3;
+  if (nailed) prog.firstTries = (prog.firstTries || 0) + 1;
+  saveProg(); renderScore();
+  mode = 'done'; lastResult = a; lastCapped = capped; updateGo();
+  if (nailed) { await wait(200); await firstTry(); }
   const won = checkAwards();
   if (won.length) { await wait(400); await celebrateAll(won); renderScore(); }
-  openResult(a, false);
+  openResult(a, false, capped);
 }
 async function showBest() {
   hideSheet(true);
@@ -869,7 +910,7 @@ async function showBest() {
   const a = judge(sel);
   await play(sel, a);
   showAnswerOnField();
-  mode = 'done'; lastResult = a; updateGo();
+  mode = 'done'; lastResult = a; lastCapped = false; updateGo();
   openResult(a, true);
 }
 
@@ -886,7 +927,7 @@ function hideSheet(silent) {
   openSheet.classList.remove('open'); scrim.classList.remove('show'); openSheet = null;
   if (!silent) goBtn.focus({ preventScroll: true });
 }
-function openResult(a, isBest) {
+function openResult(a, isBest, capped) {
   $('#resStars').innerHTML = starsSVG(a.g);
   const v = $('#verdict');
   v.textContent = isBest ? 'The best answer' : a.t;
@@ -894,13 +935,19 @@ function openResult(a, isBest) {
   $('#why').textContent = a.w;
   $('#rule').textContent = r.lesson;
   const last = idx === R.length - 1, nextOpen = unlocked(idx + 1);
-  $('#bestBtn').hidden = isBest || a.g >= 3;
-  $('#lockNote').hidden = last || nextOpen;
-  const next = $('#nextBtn');
+  const misses = (cur().miss || {})[idx] || 0, left = MAX_MISSES - misses;
+  const best = $('#bestBtn'), note = $('#lockNote'), next = $('#nextBtn'), again = $('#againBtn');
+  best.hidden = isBest || a.g >= 3;
+  best.textContent = capped ? 'Show me the right answer' : 'Show the best answer';
+  best.classList.toggle('primary', !!capped);
+  note.hidden = !capped && (last || nextOpen);
+  note.textContent = capped ? `That's three tries. Watch the right answer, then move on to the ${last ? 'riddle list' : 'next riddle'}.`
+    : `Get 2 stars on this riddle to unlock the next one.${misses && left > 0 ? ` ${left} ${left === 1 ? 'try' : 'tries'} left before we show you the answer.` : ''}`;
   next.textContent = last ? 'See all riddles' : 'Next riddle';
   next.disabled = !last && !nextOpen;
   next.classList.toggle('primary', last || nextOpen);
-  $('#againBtn').classList.toggle('primary', !last && !nextOpen);
+  next.hidden = again.hidden = !!capped;
+  again.classList.toggle('primary', !last && !nextOpen);
   showSheet(resultSheet);
 }
 function renderScore() {
@@ -1055,7 +1102,7 @@ function fit() {
   pitch.style.left = (pl + aw / 2) + 'px'; pitch.style.top = (pt + ah / 2) + 'px';
   pitch.style.setProperty('--rot', land ? '90deg' : '0deg');
   pitch.style.setProperty('--unrot', land ? '-90deg' : '0deg');
-  pitch.style.setProperty('--tok', clamp(w * .092, 28, 52) + 'px');
+  pitch.style.setProperty('--tok', clamp(w * .0828, 25, 47) + 'px');
   if (pos && carrier && mode !== 'anim') { ballPos = footOf(carrier.team, carrier.n); putEl(ballEl, ballPos, 0); }
 }
 function relayout() { setOrientation(); fit(); }
@@ -1239,6 +1286,25 @@ cele.addEventListener('click', celeSkip);
 cele.addEventListener('keydown', e => { if (['Enter', ' ', 'Escape'].includes(e.key)) { e.preventDefault(); celeSkip(); } });
 async function celebrateAll(events) { for (const e of events) await celebrate(specFor(e)); }
 
+/* first try */
+const ftry = $('#ftry');
+const BIT_COLORS = ['#ffd23f', '#7cffb2', '#ff7a59', '#22d1e6', '#ffffff', '#5b8ef0'];
+function firstTry() {
+  return new Promise(done => {
+    $('#ftryBits').innerHTML = Array.from({ length: 48 }, () => {
+      const ang = Math.random() * Math.PI * 2, d = 110 + Math.random() * 210;
+      return `<i style="--dx:${Math.round(Math.cos(ang) * d)}px;--dy:${Math.round(Math.sin(ang) * d * .8 + 110)}px;--r:${Math.round(180 + Math.random() * 540)}deg;` +
+        `--t:${(1.1 + Math.random() * .8).toFixed(2)}s;--d:${(.1 + Math.random() * .25).toFixed(2)}s;--c:${BIT_COLORS[Math.floor(Math.random() * BIT_COLORS.length)]}"></i>`;
+    }).join('');
+    ftry.hidden = false; ftry.classList.remove('play'); void ftry.offsetWidth; ftry.classList.add('play');
+    const at = Date.now();
+    const end = () => { if (ftry.hidden) return; clearTimeout(timer); ftry.removeEventListener('click', skip); ftry.hidden = true; ftry.classList.remove('play'); done(); };
+    const skip = () => { if (Date.now() - at > 400) end(); };
+    ftry.addEventListener('click', skip);
+    const timer = setTimeout(end, calm ? 1500 : 2400);
+  });
+}
+
 /* trophy room */
 const trophySheet = $('#trophySheet'), cardCanvas = $('#cardCanvas');
 function renderTrophies() {
@@ -1255,6 +1321,8 @@ function renderTrophies() {
       ${badgeSVG(u.id, tier, 42)}<span><b>${u.name}</b><small>${u.members.map(posLabel).map(s => s.replace('the ', '')).join(' · ').replace('keeper', 'GK')}</small><small>${status}</small></span></button>`;
   }).join('');
   $('#cardName').value = prog.name || '';
+  const ft = prog.firstTries || 0;
+  $('#ftStat').hidden = !ft; $('#ftStat').textContent = `First tries: ${ft}. That's ${ft === 1 ? 'one riddle' : `${ft} riddles`} you got right the very first time.`;
 }
 $('#lineup').addEventListener('click', e => {
   const b = e.target.closest('[data-n]'); if (!b) return;
@@ -1405,7 +1473,7 @@ if ('ResizeObserver' in window) new ResizeObserver(fit).observe(stage);
 addEventListener('storage', e => { if (e.key === BOARD) applyColors(); });
 window.__riddleDebug = {
   open: async (n, i) => { if (n && n !== SET) await useSet(n, true); prog.unlockAll = true; prog.lastPick = today(); loadRiddle(i || 0); },
-  awards: () => computeAwards(), celebrate: e => celebrateAll([e]), trophies: () => showTrophies(),
+  awards: () => computeAwards(), celebrate: e => celebrateAll([e]), trophies: () => showTrophies(), firstTry: () => firstTry(),
   setStars: (n, arr) => { cur(n).stars = Object.assign({}, arr); saveProg(); renderScore(); return checkAwards(); },
   list: () => R, me: () => ME,
   load: i => loadRiddle(i),

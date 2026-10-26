@@ -4,7 +4,7 @@ A 9v9 soccer tactics board for phones. Drag players and the ball, sketch runs an
 
 Live: https://dklemens17.github.io/Soccer-board/
 
-**Riddles** (`riddles.html`): 30 game situations for every position on the field, plus 30 set pieces, in six chapters each. Each day the page asks which position you're playing, and you can switch anytime. Pass (to feet or into space), move, dribble, shoot, or kick it out, and get graded with stars, an explanation and a coach's rule. Stars are saved per position.
+**Riddles** (`riddles.html`): 30 game situations for every position on the field, plus 30 set pieces, in six chapters each. Each day the page asks which position you're playing, and you can switch anytime. Pass (to feet or into space), move, dribble, shoot, or kick it out, and get graded with stars, an explanation and a coach's rule. Stars are saved per position. Getting a riddle right on the very first try plays a "First tryyyy!" burst. After three misses on a riddle, the page shows the right answer and opens the next riddle, so nobody gets stuck.
 
 Each position's riddles are plain data (player positions, graded answers, feedback) in their own file, so they can be edited or added without touching the page code:
 

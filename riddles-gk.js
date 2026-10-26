@@ -23,9 +23,9 @@ const RIDDLES = [
   them: { 1:[25,4], 2:[12,34], 4:[25,25], 3:[38,32], 6:[24,45], 10:[25,55.5], 9:[20,60], 7:[10,56], 11:[40,56] },
   ball: { team: 'them', n: '10' },
   zones: [
-    [25, 72.2, 1.5, 3, 'Pro spot', 'You got on the line between the ball and the middle of the goal, a couple of yards off your line. Both corners are covered.'],
+    [25, 72.2, 2.1, 3, 'Pro spot', 'You got on the line between the ball and the middle of the goal, a couple of yards off your line. Both corners are covered.'],
     [25, 74.4, 0.9, 2, 'On your line', 'Centered, but standing on your line gives him more goal to aim at. Step off it a little.'],
-    [25, 72.4, 2.4, 2, 'Close', 'Almost. Get right on the line between the ball and the middle of the goal.'],
+    [25, 72.4, 3, 2, 'Close', 'Almost. Get right on the line between the ball and the middle of the goal.'],
     [21.5, 73.2, 1.5, 1, 'Off center', 'You left the far corner wide open.'],
     [25, 65, 2.5, 0, 'Too far out', 'So far out, he can chip it over your head.']
   ],
@@ -40,8 +40,8 @@ const RIDDLES = [
   them: { 1:[25,4], 2:[12,36], 4:[25,26], 3:[38,33], 6:[22,45], 10:[30,55], 9:[26,59], 7:[14,60], 11:[40,55] },
   ball: { team: 'them', n: '7' },
   zones: [
-    [22.9, 72.5, 1.5, 3, 'Pro spot', 'You got on the line between the ball and the middle of the goal. From that angle, that puts you closer to the near post, and both corners are covered.'],
-    [22.9, 72.5, 2.6, 2, 'Close', 'Almost. Get right on the line between the ball and the middle of the goal.'],
+    [22.9, 72.5, 2.1, 3, 'Pro spot', 'You got on the line between the ball and the middle of the goal. From that angle, that puts you closer to the near post, and both corners are covered.'],
+    [22.9, 72.5, 3.2, 2, 'Close', 'Almost. Get right on the line between the ball and the middle of the goal.'],
     [26.5, 73.5, 1.4, 1, 'Near post open', 'You are too far across. He shoots inside your near post.']
   ],
   elsewhere: P(1, 'Not quite', 'Get on the line between the ball and the middle of the goal.'),
@@ -55,8 +55,8 @@ const RIDDLES = [
   them: { 1:[25,4], 2:[12,40], 4:[25,28], 3:[37,36], 6:[22,48], 10:[29,60], 9:[26,65.5], 7:[11,70.5], 11:[40,58] },
   ball: { team: 'them', n: '7' },
   zones: [
-    [22.5, 73.9, 1.1, 3, 'Pro spot', 'From that tight angle, you closed the gap at your near post. He can only cross it, and you can see it coming.'],
-    [22.5, 73.9, 2, 2, 'Close', 'Almost. Get right up against your near post.'],
+    [22.5, 73.9, 1.9, 3, 'Pro spot', 'From that tight angle, you closed the gap at your near post. He can only cross it, and you can see it coming.'],
+    [22.5, 73.9, 2.6, 2, 'Close', 'Almost. Get right up against your near post.'],
     [25.5, 73.2, 1.2, 1, 'Near post open', 'You left a gap at the near post. From that angle, that is the only place he can shoot.']
   ],
   elsewhere: P(1, 'Not quite', 'Guard your near post.'),
@@ -71,8 +71,8 @@ const RIDDLES = [
   ball: { team: 'them', n: '11' },
   arrows: [{ team: 'them', from: [14,55.4], to: [35,57.6], dash: 1 }],
   zones: [
-    [27, 72.5, 1.5, 3, 'Pro spot', 'The ball moved to the other side, so you moved too. You are back on the line between the ball and the middle of the goal.'],
-    [27, 72.5, 2.6, 2, 'Close', 'Almost. Get right on the line between the ball and the middle of the goal.'],
+    [27, 72.5, 2.2, 3, 'Pro spot', 'The ball moved to the other side, so you moved too. You are back on the line between the ball and the middle of the goal.'],
+    [27, 72.5, 3.2, 2, 'Close', 'Almost. Get right on the line between the ball and the middle of the goal.'],
     [23, 72.6, 1.4, 1, 'Still on the old side', 'The ball moved and you didn’t. He shoots inside your near post.']
   ],
   elsewhere: P(1, 'Not quite', 'Get on the line between the ball and the middle of the goal.'),
@@ -86,8 +86,8 @@ const RIDDLES = [
   them: { 1:[25,4], 2:[12,33], 4:[25,25], 3:[38,33], 6:[25,49], 10:[31,54], 9:[21,55.5], 7:[9,52], 11:[41,52] },
   ball: { team: 'them', n: '6' },
   zones: [
-    [25, 71, 1.8, 3, 'Pro spot', 'He was in shooting range, so you got back and got set a few yards off your line. Nothing goes over your head.'],
-    [25, 70.5, 3, 2, 'Close', 'Almost. Get back to a few yards off your line, in the middle.'],
+    [25, 71, 2.4, 3, 'Pro spot', 'He was in shooting range, so you got back and got set a few yards off your line. Nothing goes over your head.'],
+    [25, 70.5, 3.4, 2, 'Close', 'Almost. Get back to a few yards off your line, in the middle.'],
     [25, 62.5, 2.5, 0, 'Too far out', 'He chips it over your head.']
   ],
   elsewhere: P(1, 'Not quite', 'Get back toward your goal.'),
@@ -103,7 +103,7 @@ const RIDDLES = [
   ball: { team: 'them', n: '6' },
   arrows: [{ team: 'them', from: [22.2,40], to: [23.5,60.5], dash: 1 }, { team: 'them', from: [26.8,50.6], to: [25,55.6], dash: 1 }],
   zones: [
-    [23.5, 62, 2.6, 3, 'Pro spot', 'The ball went over your defenders, and you were closer to it than their 9. You came out and won it before he got there.'],
+    [23.5, 62, 3, 3, 'Pro spot', 'The ball went over your defenders, and you were closer to it than their 9. You came out and won it before he got there.'],
     [25, 71, 2.2, 1, 'Stayed home', 'You were closer than their 9, but you stayed home. Now he gets it and goes one against one with you.'],
     [24, 54, 2.2, 0, 'Too far', 'You ran past where the ball lands, and now you are out of your box.']
   ],
@@ -119,8 +119,8 @@ const RIDDLES = [
   ball: { team: 'them', n: '9' },
   arrows: [{ team: 'them', from: [24,53], to: [24,56.4] }, { team: 'us', from: [26,50], to: [25.6,54], dash: 1 }],
   zones: [
-    [24.3, 63.2, 2, 3, 'Pro spot', 'You came out along the line to the middle of the goal and got set before he shot. Now the goal looks tiny to him.'],
-    [24.3, 64, 3.2, 2, 'Close', 'Good idea. Get right on the line between the ball and the middle of the goal, a few steps from him.'],
+    [24.3, 63.2, 2.5, 3, 'Pro spot', 'You came out along the line to the middle of the goal and got set before he shot. Now the goal looks tiny to him.'],
+    [24.3, 64, 3.6, 2, 'Close', 'Good idea. Get right on the line between the ball and the middle of the goal, a few steps from him.'],
     [25, 73.8, 1.6, 1, 'On your line', 'On your line, he has the whole goal to aim at.'],
     [24.1, 58.8, 1, 0, 'Dived in', 'You rushed right at him. He dribbles around you.']
   ],
@@ -135,8 +135,8 @@ const RIDDLES = [
   them: { 1:[25,4], 2:[12,24], 4:[25,16], 3:[37,25], 6:[25,38], 10:[31,40], 9:[26,47], 7:[11,45], 11:[39,45] },
   ball: { team: 'them', n: '6' },
   zones: [
-    [25, 63, 2.4, 3, 'Pro spot', 'The ball is far away and our line is high, so you stepped up. Any ball over your defenders is yours.'],
-    [25, 64.5, 4, 2, 'Close', 'Good. Step up a little more, toward the edge of your box.'],
+    [25, 63, 3, 3, 'Pro spot', 'The ball is far away and our line is high, so you stepped up. Any ball over your defenders is yours.'],
+    [25, 64.5, 4.4, 2, 'Close', 'Good. Step up a little more, toward the edge of your box.'],
     [25, 73.5, 1.8, 1, 'On your line', 'There is a huge gap behind your defenders. A ball over them is a race you lose from there.'],
     [25, 55, 2.4, 0, 'Too far', 'Too far. A long shot goes over your head.']
   ],
@@ -152,8 +152,8 @@ const RIDDLES = [
   ball: { team: 'us', n: '4' },
   arrows: [{ team: 'them', from: [25.4,51.6], to: [25.1,54.2] }],
   zones: [
-    [19.5, 70, 2.2, 3, 'Pro spot', 'You moved to the side of the goal. Your 4 has an easy pass, and if it goes wrong, it rolls wide of the goal, not into it.'],
-    [30.5, 70, 2.2, 3, 'Pro spot', 'You moved to the side of the goal. Your 4 has an easy pass, and if it goes wrong, it rolls wide of the goal, not into it.'],
+    [19.5, 70, 2.7, 3, 'Pro spot', 'You moved to the side of the goal. Your 4 has an easy pass, and if it goes wrong, it rolls wide of the goal, not into it.'],
+    [30.5, 70, 2.7, 3, 'Pro spot', 'You moved to the side of the goal. Your 4 has an easy pass, and if it goes wrong, it rolls wide of the goal, not into it.'],
     [25, 74.3, 1.6, 1, 'In line with the goal', 'If his pass bobbles past you, it rolls straight into our goal.'],
     [25, 65, 2, 1, 'Too close to him', 'Too close. Their 9 can close you both down.']
   ],
@@ -169,8 +169,8 @@ const RIDDLES = [
   ball: { team: 'them', n: '11' },
   arrows: [{ team: 'them', from: [35.5,56.6], to: [34.3,59.6] }],
   zones: [
-    [31.2, 64.8, 1.8, 3, 'Pro spot', 'You came out along the line between the ball and the middle of the goal and got set. He has almost nothing to shoot at.'],
-    [31.2, 64.8, 3, 2, 'Close', 'Good idea. Get right on the line between the ball and the middle of the goal.'],
+    [31.2, 64.8, 2.4, 3, 'Pro spot', 'You came out along the line between the ball and the middle of the goal and got set. He has almost nothing to shoot at.'],
+    [31.2, 64.8, 3.4, 2, 'Close', 'Good idea. Get right on the line between the ball and the middle of the goal.'],
     [25, 74, 1.6, 1, 'On your line', 'On your line, he has the whole goal to aim at.'],
     [26, 69, 1.5, 1, 'Off his angle', 'You came out, but not toward him. He shoots inside your near post.']
   ],
@@ -186,8 +186,8 @@ const RIDDLES = [
   them: { 1:[25,4], 2:[11,35], 4:[25,26], 3:[37,34], 6:[22,46], 10:[30,58], 9:[24,61], 7:[5,46], 11:[38,55] },
   ball: { team: 'them', n: '7' },
   zones: [
-    [25, 71.3, 1.8, 3, 'Pro spot', 'The cross is coming from far out, so you stood in the middle of the goal, a few yards off your line. You can come for it or get back.'],
-    [25, 71.3, 3, 2, 'Close', 'Almost. Get to the middle of the goal, a few yards off your line.'],
+    [25, 71.3, 2.3, 3, 'Pro spot', 'The cross is coming from far out, so you stood in the middle of the goal, a few yards off your line. You can come for it or get back.'],
+    [25, 71.3, 3.4, 2, 'Close', 'Almost. Get to the middle of the goal, a few yards off your line.'],
     [22.2, 73.6, 1.2, 1, 'Near post', 'Hugging the near post leaves the middle and the back post open.']
   ],
   elsewhere: P(1, 'Not quite', 'Get to the middle of the goal, a few yards off your line.'),
@@ -201,8 +201,8 @@ const RIDDLES = [
   them: { 1:[25,4], 2:[12,40], 4:[25,28], 3:[37,40], 6:[25,48], 10:[16,55], 9:[22,66], 7:[10,62], 11:[36,60] },
   ball: { team: 'them', n: '10' },
   zones: [
-    [26, 73.4, 1.3, 3, 'Pro spot', 'Your wall covers the near side, so you covered the rest of the goal, where you can see the ball.'],
-    [26, 73.4, 2.2, 2, 'Close', 'Almost. The wall has the near side. Cover the rest.'],
+    [26, 73.4, 1.9, 3, 'Pro spot', 'Your wall covers the near side, so you covered the rest of the goal, where you can see the ball.'],
+    [26, 73.4, 2.8, 2, 'Close', 'Almost. The wall has the near side. Cover the rest.'],
     [22.5, 73.8, 1.2, 1, 'Behind the wall', "Behind your wall, you can't see the ball, and the far side is wide open."]
   ],
   elsewhere: P(1, 'Not quite', 'The wall covers the near side. Cover the rest of the goal.'),
@@ -216,8 +216,8 @@ const RIDDLES = [
   them: { 1:[25,6], 2:[12,46], 4:[25,30], 3:[38,40], 6:[24,58], 10:[30,68], 9:[24,68], 7:[0.5,74.5], 11:[36,64] },
   ball: { team: 'them', n: '7' },
   zones: [
-    [26, 74, 1.2, 3, 'Pro spot', 'You stood in the middle of the goal, a step toward the back post. You can see the ball and reach anything in your area.'],
-    [26, 74, 2.2, 2, 'Close', 'Almost. Get to the middle of the goal, a step toward the back post.'],
+    [26, 74, 1.9, 3, 'Pro spot', 'You stood in the middle of the goal, a step toward the back post. You can see the ball and reach anything in your area.'],
+    [26, 74, 2.8, 2, 'Close', 'Almost. Get to the middle of the goal, a step toward the back post.'],
     [22.4, 74.2, 1.2, 1, 'Near post', 'Squeezed against the near post, you can’t get to a ball at the back post.']
   ],
   elsewhere: P(1, 'Not quite', 'Stand in the middle of your goal, a step toward the back post.'),
@@ -232,8 +232,8 @@ const RIDDLES = [
   ball: { team: 'them', n: '7' },
   arrows: [{ team: 'them', from: [9.8,72.4], to: [21.6,65.2], dash: 1 }],
   zones: [
-    [24.5, 72.4, 1.3, 3, 'Pro spot', 'The ball moved, so you moved. You got set in line with their 10 before he could shoot.'],
-    [24.5, 72.4, 2.2, 2, 'Close', 'Almost. Get right in line between their 10 and the middle of the goal.'],
+    [24.5, 72.4, 1.75, 3, 'Pro spot', 'The ball moved, so you moved. You got set in line with their 10 before he could shoot.'],
+    [24.5, 72.4, 2.6, 2, 'Close', 'Almost. Get right in line between their 10 and the middle of the goal.'],
     [22.3, 74.1, 1, 1, 'Still at the near post', "The ball moved and you didn't. He shoots into the far side."]
   ],
   elsewhere: P(1, 'Not quite', 'Get in line between the new shooter and the middle of the goal.'),
@@ -248,8 +248,8 @@ const RIDDLES = [
   ball: { team: 'them', n: '11' },
   arrows: [{ team: 'them', from: [42.5,57], to: [26.2,68.8], dash: 1 }, { team: 'them', from: [20.4,63.6], to: [22.6,66.6], dash: 1 }],
   zones: [
-    [25, 69.4, 1.8, 3, 'Pro spot', 'The cross was dropping in your area, so you came and caught it before their 9 could get there.'],
-    [25, 69.6, 2.8, 2, 'Close', 'Good. Come right to where it lands.'],
+    [25, 69.4, 2.4, 3, 'Pro spot', 'The cross was dropping in your area, so you came and caught it before their 9 could get there.'],
+    [25, 69.6, 3.4, 2, 'Close', 'Good. Come right to where it lands.'],
     [27, 74, 1.6, 1, 'Stayed home', 'It dropped six yards out, in your area, and their 9 got there first.']
   ],
   elsewhere: P(1, 'Not quite', 'Come for it where it lands.'),
@@ -502,15 +502,15 @@ const RIDDLES = [
   prompt: 'Their 7 crossed it from deep. It is dropping near the penalty spot, in a crowd of players. Drag the keeper.',
   hint: 'Can you get there first? If not, where should you be?',
   lesson: 'Only come for a cross you can win. If it is far away and crowded, stay home and get set in the middle of your goal.',
-  us:   { 1:[22.6,73.8], 3:[9,64], 4:[26,61.5], 2:[31,68], 6:[22,57], 10:[25,44], 11:[8,50], 9:[26,32], 7:[41,46] },
+  us:   { 1:[22.2,74.2], 3:[9,64], 4:[26,61.5], 2:[31,68], 6:[22,57], 10:[25,44], 11:[8,50], 9:[26,32], 7:[41,46] },
   them: { 1:[25,4], 2:[12,40], 4:[25,28], 3:[37,38], 6:[25,48], 10:[28,65.5], 9:[22,63], 7:[6,60], 11:[38,58] },
   ball: { team: 'them', n: '7' },
   arrows: [{ team: 'them', from: [7.6,60.6], to: [23.4,64.4], dash: 1 }],
   zones: [
-    [25, 72.8, 1.4, 3, 'Pro spot', 'It was dropping far out, in a crowd. You stayed home and got set in the middle of the goal, ready for the header.'],
-    [25, 72.8, 2.4, 2, 'Close', 'Almost. Get set right in the middle of the goal.'],
+    [25, 72.8, 2, 3, 'Pro spot', 'It was dropping far out, in a crowd. You stayed home and got set in the middle of the goal, ready for the header.'],
+    [25, 72.8, 2.6, 2, 'Close', 'Almost. Get set right in the middle of the goal.'],
     [24.5, 65, 2.5, 0, 'Came for it', "Too far and too crowded. You won't get there, and the goal is empty."],
-    [22.6, 73.8, 1, 1, 'Near post', 'The cross is going to the middle. You are stuck at the near post.']
+    [22.2, 74.2, 1, 1, 'Near post', 'The cross is going to the middle. You are stuck at the near post.']
   ],
   elsewhere: P(1, 'Not quite', 'Stay home and get set in the middle of the goal.'),
   best: { kind: 'move', at: [25,72.8] } },
@@ -523,8 +523,8 @@ const RIDDLES = [
   them: { 1:[25,4], 2:[12,40], 4:[25,36], 3:[37,42], 6:[32,55], 10:[27,67], 9:[21,69.5], 7:[12,60], 11:[37.5,62] },
   ball: { team: 'them', n: '6' },
   zones: [
-    [26.2, 72, 1.4, 3, 'Pro spot', 'The ball moved, so you reset fast. You are on the line between the ball and the middle of the goal before he can shoot.'],
-    [26.2, 72, 2.4, 2, 'Close', 'Almost. Get right on the line between the ball and the middle of the goal.'],
+    [26.2, 72, 2.1, 3, 'Pro spot', 'The ball moved, so you reset fast. You are on the line between the ball and the middle of the goal before he can shoot.'],
+    [26.2, 72, 3, 2, 'Close', 'Almost. Get right on the line between the ball and the middle of the goal.'],
     [22, 74, 1.2, 1, 'Still at the near post', 'The ball moved and you didn’t. He has the far side of the goal to shoot at.']
   ],
   elsewhere: P(1, 'Not quite', 'Get on the line between the ball and the middle of the goal.'),
@@ -561,8 +561,8 @@ const RIDDLES = [
   ball: { team: 'us', n: '4' },
   arrows: [{ team: 'us', from: [24.2,59], to: [24.5,66.4], dash: 1 }, { team: 'them', from: [30.4,61], to: [27,65.4], dash: 1 }],
   zones: [
-    [24.6, 67.5, 2, 3, 'Pro spot', 'The back pass was slow and their 9 was chasing it, so you came to meet the ball. You get there first.'],
-    [24.6, 68.5, 3, 2, 'Close', 'Good. Come all the way to the ball.'],
+    [24.6, 67.5, 2.5, 3, 'Pro spot', 'The back pass was slow and their 9 was chasing it, so you came to meet the ball. You get there first.'],
+    [24.6, 68.5, 3.4, 2, 'Close', 'Good. Come all the way to the ball.'],
     [25, 74, 1.8, 1, 'Waited', 'You waited on your line, and their 9 got to the ball first.']
   ],
   elsewhere: P(1, 'Not quite', 'Come to meet the ball.'),
@@ -577,8 +577,8 @@ const RIDDLES = [
   ball: { team: 'them', n: '6' },
   arrows: [{ team: 'them', from: [19,42], to: [10.4,63], dash: 1 }, { team: 'them', from: [9,54], to: [9.6,58.4], dash: 1 }],
   zones: [
-    [22.6, 73, 1.4, 3, 'Pro spot', 'Your 3 was ahead of their 7, so you stayed home and got set near your near post, in case he gets past.'],
-    [22.6, 73, 2.4, 2, 'Close', 'Almost. Get set close to your near post.'],
+    [22.6, 73, 2, 3, 'Pro spot', 'Your 3 was ahead of their 7, so you stayed home and got set near your near post, in case he gets past.'],
+    [22.6, 73, 3, 2, 'Close', 'Almost. Get set close to your near post.'],
     [11.5, 64.5, 3, 0, 'Rushed out', 'You left the goal for a ball your 3 can handle. If their 7 gets there first, the goal is empty.'],
     [25, 69.5, 1.4, 1, 'Off your angle', 'The ball is going toward your near post side. Get over there and get set.']
   ],
