@@ -219,6 +219,111 @@ html.land .grab{display:none}
 html.land .scrim{background:rgba(20,28,34,.18)}
 html.land .levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 @media (max-height:360px){html.land .modes a{padding:6px 10px 5px}}
+
+/* level rings: the inner rim is the tier you have, the outer arc is progress to the next one */
+.ring{position:relative;display:inline-grid;place-items:center;border-radius:50%;padding:4px;
+  background:conic-gradient(var(--nc) calc(var(--p,0) * 1turn),var(--track,rgba(255,255,255,.32)) 0)}
+.ring.t3{background:radial-gradient(circle,#ffe98a 55%,#ffd23f 100%);box-shadow:0 0 12px rgba(255,210,63,.8)}
+.pk.us.t1{--rim:#d9874a} .pk.us.t2{--rim:#c9d4de} .pk.us.t3{--rim:#ffd23f}
+.pk.t1,.pk.t2,.pk.t3{box-shadow:0 0 0 3px var(--rim),0 2px 5px rgba(0,0,0,.3)}
+.posbtn .ring{padding:3px;--track:rgba(29,42,51,.16)}
+.pos{transform:translate(-50%,-28px)}
+.pos[aria-current=true] .ring{box-shadow:0 0 0 3px #ffd23f,0 0 10px rgba(255,210,63,.6)}
+.pos[aria-current=true] .pk{box-shadow:0 0 0 2px var(--rim),0 3px 6px rgba(0,0,0,.35)}
+.pos[aria-current=true] .pk.t1,.pos[aria-current=true] .pk.t2,.pos[aria-current=true] .pk.t3{box-shadow:0 0 0 3px var(--rim),0 3px 6px rgba(0,0,0,.35)}
+html.land .pos{transform:translate(-50%,-25px)}
+.pos .st{position:absolute;z-index:2;top:-5px;left:calc(50% + 15px);min-height:0;padding:3px 5px 2px;border-radius:8px;background:rgba(13,18,22,.8);color:#ffe58a;text-shadow:none;font:700 12px/1 var(--ui);white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin:0 0 4px;font:600 14px/1.3 var(--ui);color:var(--ink-2)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
+.tierline{display:flex;align-items:center;gap:10px;margin:8px 0 2px;padding:10px 12px;border-radius:10px;background:#eef2f4}
+.tierline .ring{padding:3px;--track:rgba(29,42,51,.16)}
+.tierline .pk{width:30px;height:30px;font:800 16px/1 var(--display)}
+.tierline p{margin:0;font:600 15px/1.25 var(--ui);color:var(--ink-2)}
+.tierline b{color:var(--ink);font-weight:700}
+
+/* trophy room */
+.pcard{display:flex;flex-direction:column;align-items:center;gap:10px;margin:4px 0 2px}
+.pcard canvas{display:block;width:min(240px,62vw);height:auto;aspect-ratio:600/840;border-radius:14px;box-shadow:0 10px 24px -8px rgba(20,30,38,.55);cursor:pointer}
+.cardctl{display:flex;gap:8px;width:min(100%,360px)}
+.cardctl input{flex:1;min-width:0;border:0;border-radius:10px;background:#fff;box-shadow:inset 0 0 0 1.5px #cfd5da;padding:11px 12px;font:600 17px/1.2 var(--ui);color:var(--ink);-webkit-user-select:text;user-select:text}
+.cardctl button{flex:none;border:0;border-radius:10px;background:var(--ink);color:#fff;padding:0 16px;font:700 16px/1 var(--ui);white-space:nowrap}
+.tiny{margin:0;font:500 14px/1.3 var(--ui);color:var(--ink-2);text-align:center;max-width:36ch}
+.sec{margin:16px 0 4px;padding-top:14px;border-top:1px solid var(--hair);font:800 22px/1.1 var(--display)}
+.formation.mini{width:min(100%,300px);aspect-ratio:5/5.8;margin-top:8px}
+.formation.mini .pos .pk{width:38px;height:38px;font-size:20px}
+.formation.mini .pos{transform:translate(-50%,-23px)}
+.formation.mini .pos .nm{font-size:12.5px}
+.badges{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+.badge{border:0;background:#fff;border-radius:12px;padding:9px 10px;display:flex;gap:9px;align-items:center;text-align:left;box-shadow:inset 0 0 0 1.5px #cfd5da}
+.badge svg{flex:none}
+.badge b{display:block;font:800 18px/1.05 var(--display)}
+.badge small{display:block;font:600 13.5px/1.2 var(--ui);color:var(--ink-2);margin-top:2px}
+.badge.locked b{color:var(--ink-2)}
+.badge.wide{grid-column:1 / -1}
+html.land .badges{grid-template-columns:minmax(0,1fr)}
+
+/* the celebration: rays turn, an orb pulses, old and new flicker faster and faster, a white flash, the new one lands.
+   Every element's resting style is its final state, so with motion turned off it just shows the result. */
+.cele{position:fixed;inset:0;z-index:40;overflow:hidden;cursor:pointer;color:#fff;outline:none;
+  background:radial-gradient(circle at 50% 36%,var(--ca),transparent 62%),#0d1216}
+.cele-rays{position:absolute;left:50%;top:36%;width:220vmax;height:220vmax;margin:-110vmax 0 0 -110vmax;opacity:.5;
+  background:repeating-conic-gradient(from 0deg,var(--cb) 0deg 6deg,transparent 6deg 18deg)}
+.cele-orb{position:absolute;left:50%;top:36%;width:260px;height:260px;margin:-130px 0 0 -130px;border-radius:50%;opacity:.7;
+  background:radial-gradient(circle,#fff 0%,var(--cc) 30%,transparent 68%)}
+.cele-spark{position:absolute;left:50%;top:36%;width:18px;height:18px;opacity:0;background:#fff;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.cele-body{position:absolute;left:0;right:0;top:calc(36% - 112px);margin:0 auto;width:100%;max-width:460px;padding:0 20px;text-align:center}
+.cele-label{font:700 13px/1 var(--ui);letter-spacing:.3em}
+.cele-emblem{position:relative;width:150px;height:150px;margin:14px auto 0}
+.cele-emblem>div{position:absolute;inset:0;display:grid;place-items:center}
+.cele-old,.cele-oldname,.cele-flash{opacity:0}
+.cele-names{position:relative;height:58px;margin-top:22px}
+.cele-names>div{position:absolute;left:0;right:0;top:0;font:800 50px/1.05 var(--display);letter-spacing:.02em;white-space:nowrap}
+.cele-oldname{color:var(--oc)}
+.cele-newname span{display:inline-block;text-shadow:0 0 22px var(--c),0 0 6px #fff}
+.cele-reveal{margin-top:18px}
+.cele-box{display:inline-flex;flex-direction:column;gap:5px;max-width:100%;background:rgba(13,18,22,.82);border:1px solid var(--cc);border-radius:14px;padding:12px 18px}
+.cele-head{font:700 18px/1.2 var(--ui)}
+.cele-note{font:500 16px/1.3 var(--ui);opacity:.88}
+.cele-tap{margin-top:16px;font:700 11px/1 var(--ui);letter-spacing:.16em;opacity:.55}
+.cele-flash{position:absolute;inset:0;background:#fff;pointer-events:none}
+.cele .ring.big{padding:7px}
+.cele .ring.big .pk{width:118px;height:118px;font:800 64px/1 var(--display)}
+.cele .ring.big .pk.t1,.cele .ring.big .pk.t2,.cele .ring.big .pk.t3{box-shadow:0 0 0 5px var(--rim),0 6px 16px rgba(0,0,0,.45)}
+.mcard{width:104px;height:146px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  box-shadow:0 0 0 3px rgba(255,255,255,.55),0 8px 20px rgba(0,0,0,.45);background:linear-gradient(160deg,var(--m1),var(--m2) 55%,var(--m3));color:var(--mi)}
+.mcard b{font:800 58px/1 var(--display)}
+.mcard span{font:700 14px/1 var(--ui);letter-spacing:.12em;opacity:.8}
+.mcard.c0{--m1:#f0c49a;--m2:#c27f45;--m3:#7a4521;--mi:#2a170a}
+.mcard.c1{--m1:#fbfcfd;--m2:#c9d2da;--m3:#8996a1;--mi:#16222b}
+.mcard.c2{--m1:#fff4b8;--m2:#f4c430;--m3:#b07d00;--mi:#2b2000}
+.mcard.c3{--m1:#5b3aa8;--m2:#2c1a5c;--m3:#0f0824;--mi:#ffe08a}
+@keyframes celeIn{from{opacity:0}to{opacity:1}}
+@keyframes celeRaysOp{0%{opacity:0}30%{opacity:.55}60%{opacity:1}100%{opacity:.5}}
+@keyframes celeSpin{to{transform:rotate(360deg)}}
+@keyframes celeOrb{0%{transform:scale(.2);opacity:0}18%{transform:scale(.75);opacity:.8}28%{transform:scale(.55)}38%{transform:scale(.95)}46%{transform:scale(.65)}54%{transform:scale(1.15)}60%{transform:scale(2.6);opacity:1}70%{transform:scale(1);opacity:.85}100%{transform:scale(1.05);opacity:.7}}
+@keyframes celeOld{0%{opacity:1}32%{opacity:1}35%{opacity:0}39%{opacity:1}43%{opacity:0}46%{opacity:1}49%{opacity:0}51.5%{opacity:1}54%{opacity:0}56%{opacity:1}58%{opacity:0}100%{opacity:0}}
+@keyframes celeNew{0%,33%{opacity:0}35%{opacity:1}39%{opacity:0}43%{opacity:1}46%{opacity:0}49%{opacity:1}51.5%{opacity:0}54%{opacity:1}56%{opacity:0}58%,100%{opacity:1}}
+@keyframes celePop{0%,58%{transform:scale(1)}62%{transform:scale(1.3)}72%{transform:scale(.96)}80%,100%{transform:scale(1)}}
+@keyframes celeFlash{0%,57%{opacity:0}61%{opacity:1}73%,100%{opacity:0}}
+@keyframes celeReveal{0%,64%{opacity:0;transform:translateY(8px)}76%,100%{opacity:1;transform:none}}
+@keyframes celeLabel{0%{opacity:0}8%,100%{opacity:1}}
+@keyframes celeSpark{0%,63%{opacity:0;transform:scale(0) rotate(0)}72%{opacity:1;transform:scale(1.3) rotate(45deg)}86%{opacity:.8;transform:scale(.8) rotate(90deg)}100%{opacity:0;transform:scale(.4) rotate(120deg)}}
+.cele.play{animation:celeIn .25s ease-out both}
+.cele.play .cele-rays{animation:celeRaysOp 3.4s linear both,celeSpin 26s linear infinite}
+.cele.play .cele-orb{animation:celeOrb 3.4s ease-in-out both}
+.cele.play .cele-old,.cele.play .cele-oldname{animation:celeOld 3.4s step-end both}
+.cele.play .cele-new,.cele.play .cele-newname{animation:celeNew 3.4s step-end both}
+.cele.play .cele-new>*,.cele.play .cele-newname span{animation:celePop 3.4s ease-out both}
+.cele.play .cele-flash{animation:celeFlash 3.4s ease-out both}
+.cele.play .cele-reveal{animation:celeReveal 3.4s ease-out both}
+.cele.play .cele-label{animation:celeLabel 3.4s ease-out both}
+.cele.play .cele-spark{animation:celeSpark 3.4s ease-out both}
+html.land .cele-body{top:calc(36% - 96px)}
+html.land .cele-emblem{width:120px;height:120px;margin-top:8px}
+html.land .cele .ring.big .pk{width:92px;height:92px;font-size:50px}
+html.land .cele-names{margin-top:12px}
+html.land .cele-names>div{font-size:40px}
+html.land .cele-reveal{margin-top:10px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -226,8 +331,8 @@ html.land .levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 
 <header class="rail">
   <nav class="modes" aria-label="Mode"><a href="./">Board</a><a href="riddles.html" aria-current="page">Riddles</a></nav>
-  <button class="posbtn" id="posBtn" type="button" aria-label="Change position"><span class="pk us" id="posPk">6</span></button>
-  <button class="score" id="scoreBtn" type="button" aria-label="Riddle list and stars"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg><span id="starTotal">0</span><span class="of">/ 90</span></button>
+  <button class="posbtn" id="posBtn" type="button" aria-label="Change position"><span class="ring" id="posRing"><span class="pk us" id="posPk">6</span></span></button>
+  <button class="score" id="scoreBtn" type="button" aria-label="Stars and trophy room"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg><span id="starTotal">0</span><span class="of">/ 90</span></button>
 </header>
 
 <section class="card" id="card" aria-live="polite">
@@ -276,7 +381,8 @@ html.land .levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 <section class="sheet" id="posSheet" role="dialog" aria-modal="true" aria-labelledby="posTitle">
   <div class="grab"></div>
   <h2 id="posTitle" tabindex="-1">What position are you playing today?</h2>
-  <p class="note">Each position has 30 riddles, and your stars are saved for each one. You can switch anytime.<span id="soonNote"> Grey positions are coming soon.</span></p>
+  <p class="note">Each position has 30 riddles, and your stars are saved for each one. You can switch anytime.<span id="soonNote"> Grey ones are coming soon.</span></p>
+  <p class="legend"><span><i style="background:#d9874a"></i>Bronze: clear all 30</span><span><i style="background:#c9d4de"></i>Silver: 75 stars</span><span><i style="background:#ffd23f"></i>Gold: all 90</span></p>
   <div class="formation" id="formation"></div>
 </section>
 
@@ -284,6 +390,7 @@ html.land .levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
   <div class="grab"></div>
   <div class="sheet-head"><h2 id="levelTitle" tabindex="-1">Riddles for the 6</h2><button class="close" type="button" data-close>Done</button></div>
   <button class="switchpos" type="button" id="switchPos">Playing <b id="switchPosName">the 6</b>. Change position</button>
+  <div class="tierline" id="tierLine"></div>
   <p class="note">Thirty game situations for <span id="levelWho">the 6</span>. To pass, drag the ball: drop it on a teammate to play it to his feet, or in front of him to lead him into space. Get 2 stars on a riddle to unlock the next one.</p>
   <div id="chapters"></div>
   <div class="foot">
@@ -291,6 +398,41 @@ html.land .levels{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
     <button class="textbtn" type="button" id="resetProg">Reset stars</button>
   </div>
 </section>
+
+<section class="sheet" id="trophySheet" role="dialog" aria-modal="true" aria-labelledby="trophyTitle">
+  <div class="grab"></div>
+  <div class="sheet-head"><h2 id="trophyTitle" tabindex="-1">Trophy room</h2><button class="close" type="button" data-close>Done</button></div>
+  <div class="pcard">
+    <canvas id="cardCanvas" width="600" height="840" role="img" aria-label="Your player card"></canvas>
+    <div class="cardctl">
+      <input id="cardName" type="text" maxlength="14" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Your name" aria-label="Name on your card">
+      <button type="button" id="saveCard">Save card</button>
+    </div>
+    <p class="tiny" id="cardHint">Every star raises your ratings. Playing more positions raises them fastest.</p>
+  </div>
+  <h3 class="sec">Your lineup</h3>
+  <p class="legend"><span><i style="background:#d9874a"></i>Bronze: clear all 30</span><span><i style="background:#c9d4de"></i>Silver: 75 stars</span><span><i style="background:#ffd23f"></i>Gold: all 90</span></p>
+  <div class="formation mini" id="lineup"></div>
+  <h3 class="sec">Badges</h3>
+  <p class="note">Finish every position in a group to earn its badge. The badge takes the lowest level in the group, so raise them all to make it gold.</p>
+  <div class="badges" id="badges"></div>
+</section>
+
+<div class="cele" id="cele" hidden role="dialog" aria-modal="true" aria-labelledby="celeName" aria-describedby="celeNote" tabindex="-1">
+  <div class="cele-rays" aria-hidden="true"></div>
+  <div class="cele-orb" aria-hidden="true"></div>
+  <div id="celeSparks" aria-hidden="true"></div>
+  <div class="cele-body">
+    <div class="cele-label" id="celeLabel"></div>
+    <div class="cele-emblem"><div class="cele-old" id="celeOldEmb" aria-hidden="true"></div><div class="cele-new" id="celeNewEmb"></div></div>
+    <div class="cele-names"><div class="cele-oldname" id="celeOld" aria-hidden="true"></div><div class="cele-newname"><span id="celeName"></span></div></div>
+    <div class="cele-reveal">
+      <div class="cele-box"><div class="cele-head" id="celeHead"></div><div class="cele-note" id="celeNote"></div></div>
+      <div class="cele-tap">TAP TO CONTINUE</div>
+    </div>
+  </div>
+  <div class="cele-flash" aria-hidden="true"></div>
+</div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -302,9 +444,12 @@ const W = 50, L = 75, M = 4, VW = W + 2 * M, VH = L + 2 * M;
 const PA = { d: 14, w: 36 }, GA = { d: 5, w: 16 }, SPOT = 10, CIRCLE = 8, GOAL = 6.5, GOAL_D = 2;
 const NS = 'http://www.w3.org/2000/svg';
 const PROG = 'tactics9v9.riddles.v2', PROG_V1 = 'tactics9v9.riddles.v1', BOARD = 'tactics9v9.board.v1';
-let R = [], CH = [], ME = '6';
+let R = [], CH = [], ME = '6', SET = '6';
 const POSITIONS = window.POSITIONS;
-const posInfo = n => POSITIONS.find(p => p.n === n) || POSITIONS.find(p => p.n === '6');
+const SETS = POSITIONS.concat(window.EXTRA_SETS || []);
+const posInfo = n => SETS.find(p => p.n === n) || POSITIONS.find(p => p.n === '6');
+const puckText = n => posInfo(n).short || n;
+const setTitle = (n = SET) => posInfo(n).varied ? posInfo(n).title : n === '1' ? 'the keeper' : `the ${n}`;
 const meName = () => ME === '1' ? 'the keeper' : `the ${ME}`;
 const today = () => new Date().toLocaleDateString('en-CA');
 const CH_COLORS = ['#1f5fbf', '#23854c', '#b5462f', '#7a4bb3', '#b7791f', '#1d7f8c'];
@@ -348,10 +493,10 @@ function readProg() {
 }
 let prog = readProg();
 function saveProg() { try { localStorage.setItem(PROG, JSON.stringify(prog)); } catch {} }
-const cur = (n = ME) => prog.sets[n] || (prog.sets[n] = { stars: {}, last: 0 });
+const cur = (n = SET) => prog.sets[n] || (prog.sets[n] = { stars: {}, last: 0 });
 const starsAt = i => (cur().stars[i] == null ? -1 : cur().stars[i]);
 const unlocked = i => i >= 0 && i < R.length && (prog.unlockAll || i === 0 || starsAt(i - 1) >= 2);
-const totalStars = (n = ME) => Object.values(cur(n).stars).reduce((s, g) => s + Math.max(0, g), 0);
+const totalStars = (n = SET) => Object.values(cur(n).stars).reduce((s, g) => s + Math.max(0, g), 0);
 
 /* ---------- field ---------- */
 function buildField() {
@@ -429,8 +574,12 @@ function putEl(el, p, ms) {
 }
 const tokYards = () => (parseFloat(pitch.style.getPropertyValue('--tok')) || 36) / (pitch.clientWidth || 1) * VW;
 function footOf(team, n) {
-  // where the ball sits when this player has it: just in front of him
+  // where the ball sits when this player has it: just in front of him, or on its spot for a set piece
   const p = pos[team][n], k = tokYards() * .5 + .35;
+  if (r.ballAt) {
+    const c = typeof r.ball === 'string' ? ['us', r.ball] : [r.ball.team, r.ball.n];
+    if (team === c[0] && n === c[1] && dist(p, r[team][n]) < .01) return r.ballAt.slice();
+  }
   const down = team === 'them' || (team === 'us' && n === ME && r.facing === 'back');
   return [p[0] + k * .62, p[1] + (down ? 1 : -1) * k * .78];
 }
@@ -469,17 +618,21 @@ function clonePos(o) { const c = {}; for (const k in o) c[k] = o[k].slice(); ret
 
 function loadRiddle(i) {
   idx = clamp(i, 0, R.length - 1); r = R[idx];
+  ME = r.me || ME;
+  NUMS.forEach(k => tok.us[k].setAttribute('aria-label', `Your ${k === '1' ? 'keeper' : 'number ' + k}`));
+  tok.us[ME].setAttribute('aria-label', `You, ${meName()}. Drag to move.`);
   cur().last = idx; saveProg();
   hideSheet(true);
   const ch = r.ch;
   $('#chip').textContent = CH[ch].name; $('#chip').style.setProperty('--ch', CH_COLORS[ch]);
-  $('#kind').textContent = r.kind || (r.type === 'ball' ? 'On the ball' : (r.ball.team === 'us' ? 'Off the ball' : 'Defending'));
+  $('#kind').textContent = (r.kind || (r.type === 'ball' ? 'On the ball' : (r.ball.team === 'us' ? 'Off the ball' : 'Defending')))
+    + (posInfo(SET).varied ? ` \u00b7 you're ${meName()}` : '');
   $('#count').textContent = `${idx + 1} / ${R.length}`;
   $('#title').textContent = r.title; $('#prompt').textContent = r.prompt;
   $('#hintText').textContent = r.hint; $('#hint').hidden = true; hintBtn.setAttribute('aria-pressed', 'false');
   shootBtn.hidden = r.type !== 'ball' || r.shoot === null;
   pitch.classList.toggle('onball', r.type === 'ball');
-  document.title = `${idx + 1}. ${r.title} | Riddles for ${meName()}`;
+  document.title = `${idx + 1}. ${r.title} | Riddles for ${setTitle()}`;
   resetScene();
 }
 function resetScene() {
@@ -513,11 +666,17 @@ function updateGo() {
   syncBall();
   if (mode === 'done') { goBtn.disabled = false; goBtn.textContent = 'See how you did'; return; }
   if (mode === 'anim') { goBtn.disabled = true; goBtn.textContent = 'Watch…'; return; }
-  if (!sel) { goBtn.disabled = true; goBtn.textContent = r.type === 'ball' ? (shootBtn.hidden ? `Drag the ball to pass, or drag ${meName()} to dribble` : `Drag the ball to pass, drag ${meName()} to dribble, or shoot`) : `Drag ${meName()} to the best spot`; return; }
+  if (!sel) {
+    goBtn.disabled = true;
+    goBtn.textContent = r.type !== 'ball' ? `Drag ${meName()} to the best spot`
+      : r.noCarry ? (r.restart === 'throw' ? 'Drag the ball to throw it' : shootBtn.hidden ? 'Drag the ball to play it' : 'Drag the ball to play it, or shoot')
+      : shootBtn.hidden ? `Drag the ball to pass, or drag ${meName()} to dribble` : `Drag the ball to pass, drag ${meName()} to dribble, or shoot`;
+    return;
+  }
   goBtn.disabled = false;
-  const who = n => n === '1' ? 'the keeper' : `the ${n}`;
+  const who = n => n === '1' ? 'the keeper' : `the ${n}`, V = r.restart === 'throw' ? 'Throw' : 'Pass';
   goBtn.textContent = sel.kind === 'pass'
-      ? (sel.feet ? (sel.to === '1' ? 'Pass to the keeper' : `Pass to the ${sel.to}\u2019s feet`) : outOfPlay(sel.at) ? 'Kick it out of play' : sel.to ? `Pass into space for ${who(sel.to)}` : 'Pass into space')
+      ? (sel.feet ? (sel.to === '1' ? `${V} to the keeper` : `${V} to the ${sel.to}\u2019s feet`) : outOfPlay(sel.at) ? 'Kick it out of play' : sel.to ? `${V} into space for ${who(sel.to)}` : `${V} into space`)
     : sel.kind === 'shoot' ? 'Shoot!' : sel.kind === 'carry' ? 'Dribble there' : 'Lock in this spot';
 }
 
@@ -567,6 +726,10 @@ function autoShot() {
 }
 function judgePass(s) {
   const T = s.at;
+  if (r.range) {
+    const tgt = s.feet ? pos.us[s.to] : T;
+    if (dist(ballPos, tgt) > r.range) return { g: 0, t: 'Too far', w: r.rangeNote || 'Nobody can throw it that far. It drops short, and they win it.', grab: nearest('them', tgt)[0] };
+  }
   if (s.feet) return Object.assign({}, r.pass[s.to] || autoFeet(s.to), { to: s.to });
   if (outOfPlay(T)) return Object.assign({ g: 0, t: 'Out of play', w: 'That pass rolls out of bounds. Their ball.' }, r.out || {}, { loose: true });
   let z = null;
@@ -689,6 +852,8 @@ async function lockIn() {
   if (a.g > starsAt(idx)) { cur().stars[idx] = a.g; saveProg(); }
   renderScore();
   mode = 'done'; lastResult = a; updateGo();
+  const won = checkAwards();
+  if (won.length) { await wait(400); await celebrateAll(won); renderScore(); }
   openResult(a, false);
 }
 async function showBest() {
@@ -738,7 +903,13 @@ function openResult(a, isBest) {
   $('#againBtn').classList.toggle('primary', !last && !nextOpen);
   showSheet(resultSheet);
 }
-function renderScore() { $('#starTotal').textContent = totalStars(); }
+function renderScore() {
+  $('#starTotal').textContent = totalStars();
+  const t = posTier(SET), ring = $('#posRing'), pk = $('#posPk');
+  ring.className = `ring t${t.tier}`; ring.style.setProperty('--p', t.tier === 3 ? 1 : t.p.toFixed(3)); ring.style.setProperty('--nc', TIER_COL[Math.min(3, t.tier + 1)]);
+  if (t.tier) ring.style.setProperty('--track', TIER_COL[t.tier]); else ring.style.removeProperty('--track');
+  pk.classList.remove('t0', 't1', 't2', 't3'); pk.classList.add(`t${t.tier}`);
+}
 function renderLevels() {
   const box = $('#chapters');
   box.innerHTML = CH.map((c, ci) => {
@@ -751,14 +922,15 @@ function renderLevels() {
     return `<section class="chapter"><h3><i style="--ch:${CH_COLORS[ci]}"></i>${ci + 1}. ${c.name}</h3><p>${c.blurb}</p><div class="levels">${btns}</div></section>`;
   }).join('');
   $('#unlockAll').checked = prog.unlockAll;
-  $('#levelTitle').textContent = `Riddles for ${meName()}`; $('#levelWho').textContent = meName();
-  $('#switchPosName').textContent = `${meName()} (${posInfo(ME).name.toLowerCase()})`;
+  $('#levelTitle').textContent = `Riddles for ${setTitle()}`; $('#levelWho').textContent = setTitle();
+  $('#switchPosName').textContent = posInfo(SET).varied ? setTitle() : `${setTitle()} (${posInfo(SET).name.toLowerCase()})`;
+  $('#tierLine').innerHTML = `${ringHTML(SET)}<p>${posTier(SET).text}</p>`;
 }
 $('#chapters').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b && !b.disabled) loadRiddle(+b.dataset.i); });
 $('#unlockAll').addEventListener('change', e => { prog.unlockAll = e.target.checked; saveProg(); renderLevels(); });
 $('#resetProg').addEventListener('click', () => {
-  if (!confirm(`Clear your stars for ${meName()} and lock those riddles again?`)) return;
-  prog.sets[ME] = { stars: {}, last: 0 }; prog.unlockAll = false; saveProg(); renderScore(); renderLevels(); loadRiddle(0); showLevels();
+  if (!confirm(`Clear your stars for ${setTitle()} and lock those riddles again?`)) return;
+  prog.sets[SET] = { stars: {}, last: 0 }; prog.unlockAll = false; prog.awards = computeAwards(); saveProg(); renderScore(); renderLevels(); loadRiddle(0); showLevels();
 });
 function showLevels() { renderLevels(); showSheet(levelSheet); }
 $('#bestBtn').addEventListener('click', showBest);
@@ -787,6 +959,7 @@ tokensEl.addEventListener('pointerdown', e => {
   }
   const el = onMe && r.type === 'ball' ? tok.us[ME] : e.target.closest('.tok'); if (!el) return;
   if (!(el.dataset.team === 'us' && el.dataset.n === ME)) return;
+  if (r.noCarry && r.type === 'ball') { e.preventDefault(); toast(r.restart === 'throw' ? "It's a throw-in. Drag the ball to throw it: onto a teammate, or into the space in front of him." : "It's a set piece. Drag the ball to play it."); return; }
   e.preventDefault();
   try { el.setPointerCapture(e.pointerId); } catch {}
   const p = toField(e);
@@ -845,6 +1018,7 @@ pitch.addEventListener('click', e => {
 tokensEl.addEventListener('keydown', e => {
   const el = e.target.closest('.tok'); if (!el || mode !== 'pick' || el.dataset.team !== 'us') return;
   if (el.dataset.n === ME) {
+    if (r.noCarry && r.type === 'ball') return;
     let d = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] }[e.key];
     if (!d) return;
     e.preventDefault(); if (land) d = [d[1], -d[0]];
@@ -861,8 +1035,8 @@ shootBtn.addEventListener('click', () => { if (sel && sel.kind === 'shoot') { cl
 hintBtn.addEventListener('click', () => { const h = $('#hint'); h.hidden = !h.hidden; hintBtn.setAttribute('aria-pressed', String(!h.hidden)); });
 $('#restartBtn').addEventListener('click', () => { hideSheet(true); resetScene(); });
 $('#levelsBtn').addEventListener('click', showLevels);
-$('#scoreBtn').addEventListener('click', showLevels);
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && openSheet) hideSheet(); });
+$('#scoreBtn').addEventListener('click', () => showTrophies());
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && openSheet && cele.hidden) hideSheet(); });
 
 /* ---------- layout (portrait / landscape) ---------- */
 let land = false;
@@ -887,7 +1061,7 @@ function fit() {
 function relayout() { setOrientation(); fit(); }
 
 /* ---------- positions ---------- */
-const FORMATION = { '11': [17, 15], '9': [50, 10], '7': [83, 15], '10': [50, 31], '6': [50, 49], '3': [18, 64], '4': [50, 70], '2': [82, 64], '1': [50, 87] };
+const FORMATION = { '11': [17, 15], '9': [50, 10], '7': [83, 15], '10': [50, 31], '6': [50, 49], '3': [18, 64], '4': [50, 70], '2': [82, 64], '1': [50, 87], 'sp': [87, 86] };
 const loaded = {};
 function loadScript(src) {
   if (loaded[src]) return loaded[src];
@@ -904,40 +1078,325 @@ async function useSet(n, picked) {
   }
   const set = window.RIDDLE_SETS[n];
   if (!set) { toast(`The riddles for ${info.title} aren't ready yet.`); return false; }
-  R = set.riddles; CH = set.chapters; ME = set.me;
-  prog.position = ME; if (picked) prog.lastPick = today(); saveProg();
-  NUMS.forEach(k => tok.us[k].setAttribute('aria-label', `Your ${k === '1' ? 'keeper' : 'number ' + k}`));
-  tok.us[ME].setAttribute('aria-label', `You, ${meName()}. Drag to move.`);
-  const pk = $('#posPk'); pk.textContent = ME; pk.classList.toggle('gk', ME === '1');
-  $('#posBtn').setAttribute('aria-label', `Playing ${meName()}. Change position`);
+  R = set.riddles; CH = set.chapters; SET = n; ME = set.me || '6';
+  prog.position = SET; if (!info.varied) prog.lastPos = SET; if (picked) prog.lastPick = today(); saveProg();
+  const pk = $('#posPk'); pk.textContent = puckText(SET); pk.classList.toggle('gk', SET === '1');
+  $('#posBtn').setAttribute('aria-label', `Playing ${setTitle()}. Change position`);
   renderScore();
   const st = cur(); loadRiddle(unlocked(st.last) ? st.last : 0);
   return true;
 }
 function renderFormation() {
-  $('#formation').innerHTML = POSITIONS.map(p => {
+  $('#formation').innerHTML = SETS.map(p => {
     const [x, y] = FORMATION[p.n], st = totalStars(p.n);
-    return `<button type="button" class="pos" data-n="${p.n}" style="left:${x}%;top:${y}%" aria-current="${p.n === ME}" ${p.soon ? 'disabled' : ''} aria-label="${p.name}, number ${p.n}${p.soon ? ', coming soon' : st ? `, ${st} stars` : ''}">
-      <span class="pk us${p.n === '1' ? ' gk' : ''}">${p.n}</span><span class="nm">${p.name}</span>${st && !p.soon ? `<span class="st">\u2605 ${st}</span>` : ''}</button>`;
+    return `<button type="button" class="pos" data-n="${p.n}" style="left:${x}%;top:${y}%" aria-current="${p.n === SET}" ${p.soon ? 'disabled' : ''} aria-label="${p.name}${p.varied ? '' : `, number ${p.n}`}${p.soon ? ', coming soon' : st ? `, ${st} stars` : ''}">
+      ${ringHTML(p.n)}<span class="nm">${p.name}</span>${st && !p.soon ? `<span class="st">\u2605 ${st}</span>` : ''}</button>`;
   }).join('');
 }
-function openPicker() { renderFormation(); $('#soonNote').hidden = !POSITIONS.some(p => p.soon); showSheet($('#posSheet')); }
+function openPicker() { renderFormation(); $('#soonNote').hidden = !SETS.some(p => p.soon); showSheet($('#posSheet')); }
 $('#formation').addEventListener('click', async e => {
   const b = e.target.closest('[data-n]'); if (!b) return;
   const n = b.dataset.n;
-  if (n === ME && R.length) { prog.lastPick = today(); saveProg(); hideSheet(); return; }
-  if (await useSet(n, true)) toast(`Riddles for ${meName()}. Good luck today!`);
+  if (n === SET && R.length) { prog.lastPick = today(); saveProg(); hideSheet(); return; }
+  if (await useSet(n, true)) toast(`Riddles for ${setTitle()}. Good luck today!`);
 });
 $('#posBtn').addEventListener('click', openPicker);
 $('#switchPos').addEventListener('click', openPicker);
 
+/* ---------- trophies: level rings, badges, player card ---------- */
+const LIVE = SETS.filter(p => !p.soon), PER = 30, MAX_STARS = LIVE.length * PER * 3;
+const TIERS = ['Rookie', 'Bronze', 'Silver', 'Gold'];
+const TIER_COL = ['#9aa7b1', '#d9874a', '#c9d4de', '#ffd23f'];
+const CARD_TIERS = ['Bronze', 'Silver', 'Gold', 'Legend'];
+const CARD_COL = ['#d9874a', '#e9eff4', '#ffd23f', '#b48cff'];
+const ALL_POS = ['1', '3', '4', '2', '6', '10', '11', '9', '7'], ALL_KEYS = ALL_POS.concat((window.EXTRA_SETS || []).filter(x => !x.soon).map(x => x.n));
+const UNITS = [
+  { id: 'wall', name: 'The Wall', members: ['3', '4', '2'], who: 'the 3, the 4 and the 2' },
+  { id: 'engine', name: 'Engine Room', members: ['6', '10'], who: 'the 6 and the 10' },
+  { id: 'front', name: 'Front Three', members: ['11', '9', '7'], who: 'the 11, the 9 and the 7' },
+  { id: 'flanks', name: 'Both Flanks', members: ['3', '2'], who: 'the 3 and the 2' },
+  { id: 'wings', name: 'Both Wings', members: ['11', '7'], who: 'the 11 and the 7' },
+  { id: 'spine', name: 'The Spine', members: ['1', '4', '6', '9'], who: 'the keeper, the 4, the 6 and the 9' },
+  { id: 'complete', name: 'Complete Player', members: ALL_POS, who: 'all nine positions' }
+];
+const ATTRS = [['PAS', 'Passing'], ['VIS', 'Vision'], ['MOV', 'Movement'], ['DEF', 'Defending'], ['ATT', 'Attacking'], ['GK', 'Keeping']];
+const hexA = (h, a) => { const [r, g, b] = rgb(h); return `rgba(${r},${g},${b},${a})`; };
+const posLabel = n => setTitle(n);
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const starsOf = n => Object.values((prog.sets[n] || {}).stars || {}).reduce((s, g) => s + Math.max(0, +g || 0), 0);
+
+function posTier(n) {
+  const st = (prog.sets[n] || {}).stars || {};
+  let cleared = 0, total = 0;
+  for (let i = 0; i < PER; i++) { const g = +st[i] || 0; if (g >= 2) cleared++; if (g > 0) total += g; }
+  const tier = cleared < PER ? 0 : total >= 90 ? 3 : total >= 75 ? 2 : 1;
+  const next = [
+    { p: cleared / PER, text: `Clear all 30 riddles for bronze. <b>${cleared} of 30</b> cleared.` },
+    { p: clamp((total - 60) / 15, 0, 1), text: `<b>Bronze.</b> ${total} of 75 stars for silver.` },
+    { p: clamp((total - 75) / 15, 0, 1), text: `<b>Silver.</b> ${total} of 90 stars for gold.` },
+    { p: 1, text: '<b>Gold.</b> Every riddle perfect.' }][tier];
+  return { tier, cleared, total, p: next.p, text: next.text };
+}
+const rate = f => 40 + Math.round(59 * Math.sqrt(clamp(f, 0, 1)));
+function overallNow() {
+  const total = LIVE.reduce((s, p) => s + starsOf(p.n), 0);
+  return { total, ovr: total >= MAX_STARS ? 99 : Math.min(98, rate(total / MAX_STARS)) };
+}
+const cardTier = o => o.total >= MAX_STARS ? 3 : o.ovr >= 80 ? 2 : o.ovr >= 65 ? 1 : 0;
+function computeAwards() {
+  const pos = {}; ALL_KEYS.forEach(n => { pos[n] = posTier(n).tier; });
+  const units = {}; UNITS.forEach(u => { units[u.id] = Math.min(...u.members.map(n => pos[n])); });
+  return { pos, units, card: cardTier(overallNow()) };
+}
+function checkAwards() {
+  const next = computeAwards(), prev = prog.awards || next, ev = [];
+  ALL_KEYS.forEach(n => { if (next.pos[n] > (prev.pos[n] || 0)) ev.push({ kind: 'pos', n, from: prev.pos[n] || 0, to: next.pos[n] }); });
+  UNITS.slice().sort((a, b) => a.members.length - b.members.length).forEach(u => {
+    if (next.units[u.id] > (prev.units[u.id] || 0)) ev.push({ kind: 'unit', id: u.id, from: prev.units[u.id] || 0, to: next.units[u.id] });
+  });
+  if (next.card > (prev.card || 0)) ev.push({ kind: 'card', from: prev.card || 0, to: next.card });
+  prog.awards = next; saveProg();
+  return ev;
+}
+function ringHTML(n, extra) {
+  const t = posTier(n);
+  return `<span class="ring${extra ? ' ' + extra : ''} t${t.tier}" style="--p:${t.tier === 3 ? 1 : t.p.toFixed(3)};--nc:${TIER_COL[Math.min(3, t.tier + 1)]}${t.tier ? `;--track:${TIER_COL[t.tier]}` : ''}"><span class="pk us${n === '1' ? ' gk' : ''} t${t.tier}"><span>${puckText(n)}</span></span></span>`;
+}
+
+/* badge emblems */
+let uid = 0;
+const SHIELD = 'M50 4L92 18V52C92 80 72 98 50 106C28 98 8 80 8 52V18Z';
+const TIER_GRAD = [['#f1f3f5', '#e3e7ea', '#d5dade'], ['#f6c99c', '#c27f45', '#7a4521'], ['#ffffff', '#b9c6d1', '#62717e'], ['#fff3b0', '#f2b705', '#a87400']];
+const TIER_INK = ['#a7b0b7', '#3b1f0c', '#1f2a33', '#4a3300'];
+const gear = (() => { const pts = []; for (let k = 0; k < 16; k++) { const a = (k * 22.5 - 11.25) * Math.PI / 180, rr = k % 2 ? 7.4 : 10.4;
+  pts.push(`${r2(12 + rr * Math.cos(a))},${r2(12 + rr * Math.sin(a))}`); } return pts.join(' '); })();
+const ICONS = {
+  wall: '<path d="M3 5h18v15H3zM3 10h18M3 15h18M9 5v5M15 5v5M6 10v5M12 10v5M18 10v5M9 15v5M15 15v5"/>',
+  engine: `<polygon points="${gear}"/><circle cx="12" cy="12" r="3.2"/>`,
+  front: '<path d="M5 20V9M2 12l3-3 3 3M12 20V5M9 8l3-3 3 3M19 20V9M16 12l3-3 3 3"/>',
+  flanks: '<path d="M7 6l4.5 1.6V12c0 3.2-2 5.4-4.5 6.6C4.5 17.4 2.5 15.2 2.5 12V7.6zM17 6l4.5 1.6V12c0 3.2-2 5.4-4.5 6.6-2.5-1.2-4.5-3.4-4.5-6.6V7.6z"/>',
+  wings: '<path d="M8.5 12H2.5M5.5 9l-3 3 3 3M15.5 12h6M18.5 9l3 3-3 3"/><circle cx="12" cy="12" r="2.6"/>',
+  spine: '<path d="M12 4v16"/><circle cx="12" cy="4" r="2.1" fill="currentColor"/><circle cx="12" cy="9.3" r="2.1" fill="currentColor"/><circle cx="12" cy="14.7" r="2.1" fill="currentColor"/><circle cx="12" cy="20" r="2.1" fill="currentColor"/>',
+  complete: `<path d="${STAR}" fill="currentColor" stroke="none"/>`,
+  lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'
+};
+function badgeSVG(id, tier, size) {
+  const g = TIER_GRAD[tier], u = 'bg' + (++uid), fg = TIER_INK[tier];
+  return `<svg viewBox="0 0 100 110" width="${size}" height="${Math.round(size * 1.1)}" aria-hidden="true">
+    <defs><linearGradient id="${u}" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="${g[0]}"/><stop offset=".55" stop-color="${g[1]}"/><stop offset="1" stop-color="${g[2]}"/></linearGradient></defs>
+    <path d="${SHIELD}" fill="url(#${u})" stroke="${tier ? 'rgba(0,0,0,.4)' : '#b8c0c7'}" stroke-width="3"${tier ? '' : ' stroke-dasharray="7 5"'}/>
+    <path d="M50 12L84 23.5V52C84 75 68 90 50 97" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="3"/>
+    <g transform="translate(26 30) scale(2)" fill="none" stroke="${fg}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" color="${fg}">${ICONS[tier ? id : 'lock']}</g></svg>`;
+}
+const posEmb = (n, tier) => `<span class="ring big t${tier}" style="--p:${tier ? 1 : 0};--nc:${TIER_COL[tier]}"><span class="pk us${n === '1' ? ' gk' : ''} t${tier}"><span>${puckText(n)}</span></span></span>`;
+const miniCard = (tier, ovr) => `<div class="mcard c${tier}"><b>${ovr}</b><span>${CARD_TIERS[tier].toUpperCase()}</span></div>`;
+
+/* the celebration */
+const cele = $('#cele');
+$('#celeSparks').innerHTML = [[-120, -70, 0], [118, -86, .08], [-96, 64, .16], [104, 58, .04], [0, -118, .12], [-150, 6, .2], [150, -6, .1]]
+  .map(([x, y, d]) => `<span class="cele-spark" style="margin:${y - 9}px 0 0 ${x - 9}px;animation-delay:${d}s"></span>`).join('');
+let celeDone = null, celeAt = 0, celeTimer = 0;
+function specFor(e) {
+  if (e.kind === 'pos') {
+    const info = posInfo(e.n);
+    return { label: '✦ LEVEL UP ✦', color: TIER_COL[e.to], old: TIER_COL[e.from],
+      oldEmb: posEmb(e.n, e.from), newEmb: posEmb(e.n, e.to),
+      oldName: TIERS[e.from].toUpperCase(), newName: TIERS[e.to].toUpperCase(),
+      head: info.varied ? info.name : `${cap(posLabel(e.n))} · ${info.name}`,
+      note: ['', 'All 30 riddles cleared.', '75 stars. Keep going for gold.', 'All 90 stars. Every riddle perfect.'][e.to] };
+  }
+  if (e.kind === 'unit') {
+    const u = UNITS.find(x => x.id === e.id);
+    return { label: e.from ? '✦ BADGE UPGRADE ✦' : '✦ NEW BADGE ✦', color: TIER_COL[e.to], old: TIER_COL[e.from],
+      oldEmb: badgeSVG(u.id, e.from, 124), newEmb: badgeSVG(u.id, e.to, 124),
+      oldName: e.from ? TIERS[e.from].toUpperCase() : '? ? ?', newName: e.from ? TIERS[e.to].toUpperCase() : u.name.toUpperCase(),
+      head: `${u.name} · ${TIERS[e.to]}`, note: `${cap(u.who)}, all at ${TIERS[e.to].toLowerCase()} or better.` };
+  }
+  const o = overallNow();
+  return { label: '✦ CARD UPGRADE ✦', color: CARD_COL[e.to], old: CARD_COL[e.from],
+    oldEmb: miniCard(e.from, o.ovr), newEmb: miniCard(e.to, o.ovr),
+    oldName: CARD_TIERS[e.from].toUpperCase(), newName: CARD_TIERS[e.to].toUpperCase(),
+    head: `Your player card is ${CARD_TIERS[e.to].toLowerCase()}`,
+    note: e.to === 3 ? 'Every star at every position. A legend.' : `Overall ${o.ovr}. Save it from the trophy room.` };
+}
+function celebrate(s) {
+  return new Promise(done => {
+    $('#celeLabel').textContent = s.label;
+    $('#celeOldEmb').innerHTML = s.oldEmb; $('#celeNewEmb').innerHTML = s.newEmb;
+    $('#celeOld').textContent = s.oldName; $('#celeName').textContent = s.newName;
+    $('#celeHead').textContent = s.head; $('#celeNote').textContent = s.note;
+    const set = (k, v) => cele.style.setProperty(k, v);
+    set('--c', s.color); set('--oc', s.old); set('--ca', hexA(s.color, .3)); set('--cb', hexA(s.color, .22)); set('--cc', hexA(s.color, .8));
+    cele.hidden = false; cele.classList.remove('play'); void cele.offsetWidth; cele.classList.add('play');
+    celeAt = Date.now(); cele.focus({ preventScroll: true });
+    celeDone = () => { clearTimeout(celeTimer); celeDone = null; cele.hidden = true; cele.classList.remove('play'); done(); };
+    celeTimer = setTimeout(() => celeDone && celeDone(), 8000);
+  });
+}
+// a tap right after it appears is probably the tap that triggered it, so ignore taps for a moment
+const celeSkip = () => { if (celeDone && Date.now() - celeAt > 700) celeDone(); };
+cele.addEventListener('click', celeSkip);
+cele.addEventListener('keydown', e => { if (['Enter', ' ', 'Escape'].includes(e.key)) { e.preventDefault(); celeSkip(); } });
+async function celebrateAll(events) { for (const e of events) await celebrate(specFor(e)); }
+
+/* trophy room */
+const trophySheet = $('#trophySheet'), cardCanvas = $('#cardCanvas');
+function renderTrophies() {
+  $('#lineup').innerHTML = ALL_KEYS.map(n => {
+    const [x, y] = FORMATION[n], t = posTier(n);
+    const what = t.tier ? TIERS[t.tier] : `${t.cleared}/30`;
+    return `<button type="button" class="pos" data-n="${n}" style="left:${x}%;top:${y}%" aria-label="${cap(posLabel(n))}: ${t.tier ? TIERS[t.tier] : `${t.cleared} of 30 riddles cleared`}">${ringHTML(n)}<span class="nm">${what}</span></button>`;
+  }).join('');
+  const aw = computeAwards();
+  $('#badges').innerHTML = UNITS.map(u => {
+    const tier = aw.units[u.id], target = Math.min(3, tier + 1), have = u.members.filter(n => aw.pos[n] >= target).length;
+    const status = tier === 3 ? 'Gold' : `${tier ? TIERS[tier] + ' · ' : ''}${have} of ${u.members.length} at ${TIERS[target].toLowerCase()}`;
+    return `<button type="button" class="badge${tier ? '' : ' locked'}${u.id === 'complete' ? ' wide' : ''}" data-u="${u.id}" aria-label="${u.name}: ${status}">
+      ${badgeSVG(u.id, tier, 42)}<span><b>${u.name}</b><small>${u.members.map(posLabel).map(s => s.replace('the ', '')).join(' · ').replace('keeper', 'GK')}</small><small>${status}</small></span></button>`;
+  }).join('');
+  $('#cardName').value = prog.name || '';
+}
+$('#lineup').addEventListener('click', e => {
+  const b = e.target.closest('[data-n]'); if (!b) return;
+  const n = b.dataset.n, t = posTier(n);
+  if (t.tier) celebrate(specFor({ kind: 'pos', n, from: 0, to: t.tier }));
+  else toast(`Clear all 30 riddles at ${posLabel(n)} for bronze. ${t.cleared} of 30 so far.`);
+});
+$('#badges').addEventListener('click', e => {
+  const b = e.target.closest('[data-u]'); if (!b) return;
+  const u = UNITS.find(x => x.id === b.dataset.u), tier = computeAwards().units[u.id];
+  if (tier) celebrate(specFor({ kind: 'unit', id: u.id, from: 0, to: tier }));
+  else toast(`Get ${u.who} to bronze to earn ${u.name}.`);
+});
+cardCanvas.addEventListener('click', () => { const t = cardTier(overallNow()); if (t) celebrate(specFor({ kind: 'card', from: 0, to: t })); else toast('Reach 65 overall for a silver card.'); });
+let nameTimer = 0;
+$('#cardName').addEventListener('input', e => {
+  prog.name = e.target.value.replace(/\s+/g, ' ').trimStart().slice(0, 14); saveProg();
+  clearTimeout(nameTimer); nameTimer = setTimeout(drawMyCard, 120);
+});
+$('#cardName').addEventListener('keydown', e => { if (e.key === 'Enter') e.target.blur(); });
+function showTrophies() { renderTrophies(); showSheet(trophySheet); drawMyCard(); }
+
+/* the player card, drawn on a canvas so it can be saved as a picture */
+const catOf = q => q.me === '1' ? 'GK' : q.type === 'move' ? (q.ball.team === 'them' ? 'DEF' : 'MOV')
+  : (q.best.kind === 'shoot' || q.best.kind === 'carry') ? 'ATT' : q.best.at ? 'VIS' : 'PAS';
+async function attrsNow() {
+  await Promise.all([...new Set(LIVE.map(p => p.file))].map(f => loadScript(f).catch(() => null)));
+  const got = {}, max = {};
+  ATTRS.forEach(([k]) => { got[k] = 0; max[k] = 0; });
+  for (const p of LIVE) {
+    const set = window.RIDDLE_SETS[p.n]; if (!set) continue;
+    const st = (prog.sets[p.n] || {}).stars || {};
+    set.riddles.forEach((q, i) => { const k = catOf(q); max[k] += 3; got[k] += Math.max(0, +st[i] || 0); });
+  }
+  const out = {};
+  ATTRS.forEach(([k]) => { out[k] = !max[k] ? null : got[k] >= max[k] ? 99 : Math.min(98, rate(got[k] / max[k])); });
+  return out;
+}
+const CARD_LOOK = [
+  { g: ['#f0c49a', '#c27f45', '#7a4521'], ink: '#2a170a', soft: 'rgba(42,23,10,.62)', line: 'rgba(42,23,10,.3)' },
+  { g: ['#fbfcfd', '#c9d2da', '#8996a1'], ink: '#16222b', soft: 'rgba(22,34,43,.62)', line: 'rgba(22,34,43,.28)' },
+  { g: ['#fff4b8', '#f4c430', '#b07d00'], ink: '#2b2000', soft: 'rgba(43,32,0,.62)', line: 'rgba(43,32,0,.28)' },
+  { g: ['#5b3aa8', '#2c1a5c', '#0f0824'], ink: '#ffe08a', soft: 'rgba(255,224,138,.75)', line: 'rgba(255,224,138,.35)' }];
+const JERSEY = new Path2D('M62 12L22 30L2 74L36 90L46 70V192H154V70L164 90L198 74L178 30L138 12C128 30 114 38 100 38C86 38 72 30 62 12Z');
+const SHIELD2D = new Path2D(SHIELD);
+const BADGE_FILL = ['', '#c27f45', '#d6dee5', '#f2b705'];
+let fontsOk = null;
+const fontsReady = () => fontsOk || (fontsOk = Promise.all(['800 60px "Big Shoulders Display"', '700 30px "Big Shoulders Text"']
+  .map(f => document.fonts ? document.fonts.load(f) : null)).catch(() => null));
+function roundRect(x, X, Y, w, h, rr) { x.beginPath(); x.moveTo(X + rr, Y); x.arcTo(X + w, Y, X + w, Y + h, rr); x.arcTo(X + w, Y + h, X, Y + h, rr); x.arcTo(X, Y + h, X, Y, rr); x.arcTo(X, Y, X + w, Y, rr); x.closePath(); }
+function fitFont(x, text, weight, size, family, maxW) { let s = size; do { x.font = `${weight} ${s}px ${family}`; s -= 2; } while (x.measureText(text).width > maxW && s > 20); }
+function drawCard(cv, d) {
+  const W2 = 600, H2 = 840, x = cv.getContext('2d'), t = CARD_LOOK[d.tier];
+  const DISP = '"Big Shoulders Display", "Arial Narrow", sans-serif', TXT = '"Big Shoulders Text", "Arial Narrow", sans-serif';
+  x.clearRect(0, 0, W2, H2);
+  roundRect(x, 0, 0, W2, H2, 44);
+  const g = x.createLinearGradient(0, 0, W2 * .45, H2);
+  g.addColorStop(0, t.g[0]); g.addColorStop(.55, t.g[1]); g.addColorStop(1, t.g[2]);
+  x.fillStyle = g; x.fill();
+  x.save(); x.clip();
+  x.globalAlpha = d.tier === 3 ? .1 : .18; x.fillStyle = '#fff';
+  [[-120, 260], [180, 70], [380, 40]].forEach(([o, w]) => { x.beginPath(); x.moveTo(o, 0); x.lineTo(o + w, 0); x.lineTo(o + w - 380, H2); x.lineTo(o - 380, H2); x.closePath(); x.fill(); });
+  x.restore();
+  x.strokeStyle = t.line; x.lineWidth = 4; roundRect(x, 18, 18, W2 - 36, H2 - 36, 30); x.stroke();
+  // overall, position and tier down the left
+  x.textAlign = 'center'; x.fillStyle = t.ink;
+  x.font = `800 150px ${DISP}`; x.fillText(String(d.ovr), 128, 196);
+  x.font = `700 30px ${TXT}`; x.fillStyle = t.soft; x.fillText('OVERALL', 128, 234);
+  x.beginPath(); x.arc(128, 306, 44, 0, Math.PI * 2); x.fillStyle = d.kit; x.fill();
+  x.lineWidth = 5; x.strokeStyle = d.tier === 3 ? '#ffe08a' : 'rgba(255,255,255,.9)'; x.stroke();
+  x.fillStyle = d.num; x.font = `800 ${d.pos.length > 1 ? 50 : 56}px ${DISP}`; x.textBaseline = 'middle'; x.fillText(d.pos, 128, 309); x.textBaseline = 'alphabetic';
+  x.fillStyle = t.ink; x.font = `800 34px ${DISP}`; x.fillText(CARD_TIERS[d.tier].toUpperCase(), 128, 396);
+  // the shirt
+  x.save(); x.translate(262, 58); x.scale(1.5, 1.5);
+  x.fillStyle = d.kit; x.fill(JERSEY);
+  x.lineWidth = 3; x.strokeStyle = 'rgba(0,0,0,.28)'; x.stroke(JERSEY);
+  x.fillStyle = d.num; x.textAlign = 'center'; x.font = `800 ${d.pos.length > 1 ? 74 : 86}px ${DISP}`; x.fillText(d.pos, 100, 150);
+  x.restore();
+  // name
+  const name = (d.name || 'Player').toUpperCase();
+  x.fillStyle = t.ink; x.textAlign = 'center'; fitFont(x, name, 800, 70, DISP, 500); x.fillText(name, W2 / 2, 498);
+  x.fillStyle = t.line; x.fillRect(60, 524, W2 - 120, 4);
+  // ratings
+  ATTRS.forEach(([k], i) => {
+    const col = i < 3 ? 0 : 1, row = i % 3, X = col ? 340 : 92, Y = 600 + row * 70, v = d.attrs ? d.attrs[k] : null;
+    x.textAlign = 'left'; x.fillStyle = t.ink; x.font = `800 56px ${DISP}`;
+    const vs = v == null ? '--' : String(v); x.fillText(vs, X, Y);
+    const vw = x.measureText(vs).width;
+    x.fillStyle = t.soft; x.font = `700 36px ${TXT}`; x.fillText(k, X + vw + 14, Y);
+  });
+  // stars and badges along the bottom
+  x.textAlign = 'left'; x.fillStyle = t.soft; x.font = `700 28px ${TXT}`;
+  x.fillText(`★ ${d.total} / ${MAX_STARS}`, 60, 800);
+  const earned = UNITS.filter(u => d.units[u.id] > 0);
+  earned.forEach((u, i) => {
+    x.save(); x.translate(W2 - 60 - (earned.length - i) * 44 + 4, 762); x.scale(.38, .38);
+    x.fillStyle = BADGE_FILL[d.units[u.id]]; x.fill(SHIELD2D); x.lineWidth = 7; x.strokeStyle = 'rgba(0,0,0,.35)'; x.stroke(SHIELD2D);
+    x.restore();
+  });
+}
+let drawSeq = 0;
+async function drawMyCard() {
+  const seq = ++drawSeq, o = overallNow(), aw = computeAwards();
+  const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+  const cp = posInfo(SET).varied ? (prog.lastPos || '6') : SET;
+  const kit = cp === '1' ? css('--home-gk') : css('--home-kit'), num = cp === '1' ? css('--home-gk-num') : css('--home-num');
+  const base = { tier: aw.card, ovr: o.ovr, total: o.total, pos: cp, name: prog.name, kit: kit || '#1f5fbf', num: num || '#fff', units: aw.units, attrs: null };
+  await fontsReady(); if (seq !== drawSeq) return;
+  drawCard(cardCanvas, base);
+  const attrs = await attrsNow(); if (seq !== drawSeq) return;
+  drawCard(cardCanvas, Object.assign(base, { attrs }));
+  cardCanvas.setAttribute('aria-label', `Your player card: ${CARD_TIERS[aw.card]}, overall ${o.ovr}. ` +
+    ATTRS.map(([k, nm]) => `${nm} ${attrs[k] == null ? 'not rated' : attrs[k]}`).join(', '));
+}
+$('#saveCard').addEventListener('click', async () => {
+  await drawMyCard();
+  // the saved picture: the card on a dark backdrop, so the rounded corners look right in any photo app
+  const out = document.createElement('canvas'); out.width = 720; out.height = 980;
+  const ox = out.getContext('2d'), bg = ox.createLinearGradient(0, 0, 0, 980);
+  bg.addColorStop(0, '#22313b'); bg.addColorStop(1, '#0d1216'); ox.fillStyle = bg; ox.fillRect(0, 0, 720, 980);
+  ox.save(); ox.shadowColor = 'rgba(0,0,0,.55)'; ox.shadowBlur = 44; ox.shadowOffsetY = 18; ox.drawImage(cardCanvas, 60, 56); ox.restore();
+  ox.fillStyle = 'rgba(255,255,255,.55)'; ox.textAlign = 'center'; ox.font = '700 26px "Big Shoulders Text", "Arial Narrow", sans-serif';
+  ox.fillText('9V9 SOCCER RIDDLES', 360, 950);
+  const blob = await new Promise(res => out.toBlob(res, 'image/png'));
+  if (!blob) { toast("Couldn't make the picture. Try again."); return; }
+  const fname = `${(prog.name || 'player').trim().replace(/[^a-z0-9]+/gi, '-').toLowerCase() || 'player'}-card.png`;
+  const file = new File([blob], fname, { type: 'image/png' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: 'My player card' }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fname;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+});
+
 /* ---------- start ---------- */
+if (!prog.awards) { prog.awards = computeAwards(); saveProg(); }
 buildField(); buildTokens(); applyColors();
 setOrientation(); fit();
 (async () => {
   const want = posInfo(prog.position || '6');
   let ok = await useSet(want.soon ? '6' : want.n, false);
-  if (!ok && ME !== '6') ok = await useSet('6', false);
+  if (!ok && SET !== '6') ok = await useSet('6', false);
   if (prog.lastPick !== today()) openPicker();
 })();
 addEventListener('resize', relayout);
@@ -945,7 +1404,9 @@ addEventListener('orientationchange', () => setTimeout(relayout, 60));
 if ('ResizeObserver' in window) new ResizeObserver(fit).observe(stage);
 addEventListener('storage', e => { if (e.key === BOARD) applyColors(); });
 window.__riddleDebug = {
-  open: async (n, i) => { if (n && n !== ME) await useSet(n, true); prog.unlockAll = true; prog.lastPick = today(); loadRiddle(i || 0); },
+  open: async (n, i) => { if (n && n !== SET) await useSet(n, true); prog.unlockAll = true; prog.lastPick = today(); loadRiddle(i || 0); },
+  awards: () => computeAwards(), celebrate: e => celebrateAll([e]), trophies: () => showTrophies(),
+  setStars: (n, arr) => { cur(n).stars = Object.assign({}, arr); saveProg(); renderScore(); return checkAwards(); },
   list: () => R, me: () => ME,
   load: i => loadRiddle(i),
   judgeAt: (x, y) => { const T = [x, y]; if (inGoal(T)) return { g: (r.shoot || {}).g, t: 'shot' }; return judgePass(Object.assign({ kind: 'pass' }, readPass(T))); }

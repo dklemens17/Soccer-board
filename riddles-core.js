@@ -34,6 +34,11 @@ window.POSITIONS = [
   { n: '7',  name: 'Right wing',      title: 'the 7',       file: 'riddles-wing.js' }
 ];
 
+// Sets that aren't one position. In these, each riddle says which player you are (its `me`).
+window.EXTRA_SETS = [
+  { n: 'sp', name: 'Set pieces', title: 'set pieces', short: 'SP', file: 'riddles-setpieces.js', varied: true, soon: true }
+];
+
 const SWAP = { '3': '2', '2': '3', '11': '7', '7': '11' };
 const sw = n => (n in SWAP ? SWAP[n] : n);
 const TEXT_LEFT = { '{3}': '3', '{2}': '2', '{11}': '11', '{7}': '7', '{t2}': '2', '{t3}': '3', '{t7}': '7', '{t11}': '11',
@@ -72,8 +77,9 @@ function mirror(r) {
 }
 
 LIB.defineSet = function (def) {
+  const key = def.key || def.me;
   const riddles = def.riddles.map(r => Object.assign({ me: def.me }, r));
-  window.RIDDLE_SETS[def.me] = { me: def.me, chapters: fillText(def.chapters, TEXT_LEFT), riddles: riddles.map(r => fillText(r, TEXT_LEFT)) };
+  window.RIDDLE_SETS[key] = { me: def.me || riddles[0].me, chapters: fillText(def.chapters, TEXT_LEFT), riddles: riddles.map(r => fillText(r, TEXT_LEFT)) };
   if (def.mirrorTo) {
     window.RIDDLE_SETS[def.mirrorTo] = { me: def.mirrorTo, chapters: fillText(def.chapters, TEXT_RIGHT),
       riddles: riddles.map(r => fillText(mirror(r), TEXT_RIGHT)) };
