@@ -826,13 +826,39 @@ function chooseSpot(p, animate) {
   updateGo();
 }
 
+// How forgiving placing a player is. Pro needs the player inside the circle. A near miss (within NEAR
+// yards of a pro or good spot) still counts as Good, unless the puzzle names that spot as a mistake
+// (offside, hidden, too close...) or the step off the spot loses what made it right.
+const NEAR = 2;
+function offsideAt(p) {
+  if (!carrier || carrier.team !== 'us') return false;
+  const line = NUMS.map(n => pos.them[n][1]).sort((a, b) => a - b)[1];
+  return p[1] < line && p[1] < ballPos[1] && p[1] < L / 2;
+}
+// if the spot was onside, or had an open lane for the pass to you, the near miss must be too; says why not
+function lostTheIdea(z, p) {
+  const c = [z[0], z[1]];
+  if (offsideAt(p) && !offsideAt(c)) return { t: 'Offside', w: "Close, but that step takes you past their last defender, so you'd be offside when the pass comes. The best spot (the circle) keeps you onside." };
+  const passToMe = carrier && carrier.team === 'us' && carrier.n !== ME && !r.noPayoff && ((r.payoff && r.payoff.to) || ME) === ME;
+  const cut = passToMe && laneBlocker(ballPos, p);
+  if (cut && !laneBlocker(ballPos, c)) return { t: 'Hidden', w: `Close, but from there their ${nameOf(cut)} is in the passing lane. At the best spot (the circle) the pass gets through.` };
+  return null;
+}
 function judge(s) {
   if (s.kind === 'pass') return judgePass(s);
   if (s.kind === 'shoot') return r.shoot || autoShot();
   const zones = s.kind === 'carry' ? (r.carry || []) : r.zones;
   let best = null;
   for (const z of zones) if (dist(s.at, [z[0], z[1]]) <= z[2] && (!best || z[3] > best.g)) best = { g: z[3], t: z[4], w: z[5] };
-  return best || r.elsewhere;
+  if (best) return best;
+  const edge = z => dist(s.at, [z[0], z[1]]) - z[2];
+  const close = zones.filter(z => z[3] >= 2 && edge(z) <= NEAR).sort((a, b) => edge(a) - edge(b));
+  const why = s.kind === 'carry' ? [] : close.map(z => lostTheIdea(z, s.at)), i = why.findIndex(x => !x);
+  const near = i >= 0 ? close[i] : null;
+  if (near && near[3] === 3) return { g: 2, t: 'Good', w: 'Right idea, just outside the best spot (the circle). ' + near[5].replace(/^Perfect[^.]*\.\s*/, '') };
+  if (near) return { g: 2, t: near[4], w: near[5] };
+  if (close.length && close[0][3] === 3 && why[0]) return Object.assign({}, r.elsewhere, why[0]);
+  return r.elsewhere;
 }
 
 /* ---------- playing it out ---------- */
@@ -1797,6 +1823,8 @@ window.__riddleDebug = {
   setStars: (n, arr) => { cur(n).stars = Object.assign({}, arr); saveProg(); renderScore(); return checkAwards(); },
   list: () => R, me: () => ME,
   load: i => loadRiddle(i),
+  // grade dropping the player on a spot, without playing it out (for move and dribble puzzles)
+  judgeSpot: (x, y) => { pos.us[ME] = [x, y]; const a = judge({ kind: r.type === 'ball' ? 'carry' : 'move', at: [x, y] }); pos.us[ME] = r.us[ME].slice(); return a; },
   judgeAt: (x, y) => { const T = [x, y]; if (inGoal(T)) return { g: (r.shoot || {}).g, t: 'shot' }; return judgePass(Object.assign({ kind: 'pass' }, readPass(T))); }
 };
 })();

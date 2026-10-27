@@ -17,6 +17,10 @@
                    does one of theirs get there first, and does making the runner go there help?
    leadNote      — optional coaching line used when a space pass to an unlisted spot doesn't help.
    zones / carry — [x, y, radius, stars, verdict, why]; the best zone containing the drop wins.
+                   Pro (3 stars) needs the player inside its circle. A drop outside every zone but within
+                   2 yards of a 3- or 2-star zone counts as Good (2 stars), as long as it doesn't step
+                   offside or into a blocked passing lane when the zone's center doesn't. Name a nearby
+                   mistake (offside, hidden, too close) as its own 0- or 1-star zone and it keeps its grade.
    elsewhere     — verdict for a drop outside every zone.
    follow        — their players who stay with the 6 when the 6 moves (shown after the answer).
    payoff        — after a good off-ball move, who the ball is played to (default: the 6).
