@@ -17,7 +17,9 @@
        focus: ['us:10', 'them:6', ...] (everyone else fades; null brings them back),
        chain: [{ ns: ['them:2', 'them:4', 'them:3'], c: 'good' }] (a line linking players; [] clears),
        hatch: [{ pts: [[x, y] | 'them:4', ...], c: 'gold' | 'good' | 'bad' }] (shaded space; [] clears),
-       marks: [{ a: [from, to], c, dash }, { l: [from, to], c, x: true }, { ring: 'us:10', c }] ([] clears),
+       marks: [{ a: [from, to], c, dash }, { l: [from, to], c, x: true }, { ring: 'us:10', c },
+               { s: ['them:9', 'us:4'], len: 13 } (the shadow their 9 casts away from the 4: a pass can't get through)] ([] clears),
+     A position can also be { by: [dx, dy] }: that far from where the player is (for a player you placed yourself).
        wait: 1 (hold after the step) }
 
    Built to stay light on cheap tablets: one requestAnimationFrame loop, a few SVG paths, and the
@@ -188,6 +190,14 @@ window.RiddleMotion = function (api) {
         const o = el('circle', { fill: 'none', stroke: col, 'stroke-width': .4, class: 'mfade' }, gMark);
         live.push({ kind: 'mark', update() { const p = posOf(m.ring); o.setAttribute('cx', r2(p[0])); o.setAttribute('cy', r2(p[1])); o.setAttribute('r', r2(rt() + .7)); } });
       }
+      if (m.s) {
+        const o = el('path', { fill: 'rgba(16,20,28,.38)', stroke: COL.bad, 'stroke-width': .26, 'stroke-dasharray': '1 .8', 'stroke-linejoin': 'round', class: 'mfade' }, gMark);
+        live.push({ kind: 'mark', update() {
+          const b = posOf(m.s[0]), src = posOf(m.s[1]), d = norm([b[0] - src[0], b[1] - src[1]]), nn = [-d[1], d[0]], len = m.len || 13;
+          const r0 = rt() * .95, w1 = r0 + len * r0 / Math.max(3, dist(b, src)), e = [b[0] + d[0] * len, b[1] + d[1] * len];
+          o.setAttribute('d', path([[b[0] + nn[0] * r0, b[1] + nn[1] * r0], [e[0] + nn[0] * w1, e[1] + nn[1] * w1], [e[0] - nn[0] * w1, e[1] - nn[1] * w1], [b[0] - nn[0] * r0, b[1] - nn[1] * r0]]) + 'Z');
+        } });
+      }
       const pair = m.a || m.l;
       if (pair) {
         const p = el('path', { fill: 'none', stroke: col, 'stroke-width': m.a ? .55 : .48, 'stroke-linecap': 'round', class: 'mfade' }, gMark);
@@ -208,7 +218,7 @@ window.RiddleMotion = function (api) {
   async function runStep(st) {
     const moves = [];
     for (const team of ['us', 'them']) for (const n in (st[team] || {})) {
-      const from = S[team][n].slice(), to = st[team][n].slice();
+      const v = st[team][n], from = S[team][n].slice(), to = Array.isArray(v) ? v.slice() : [from[0] + v.by[0], from[1] + v.by[1]];
       if (dist(from, to) > .01) moves.push({ team, n, from, to });
     }
     const endPos = key => { const [team, n] = ref(key), m = moves.find(x => x.team === team && x.n === n); return m ? m.to : S[team][n]; };

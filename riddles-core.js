@@ -58,7 +58,7 @@ const swapKeys = o => { const out = {}; for (const k in o) out[sw(k)] = o[k]; re
 const mzone = z => { const c = z.slice(); c[0] = mx(c[0]); if (c.length > 6 && c[6] != null) c[6] = sw(c[6]); if (c.length > 7 && c[7] != null) c[7] = sw(c[7]); return c; };
 
 // motion (riddles-motion.js): the same play on the other side of the field
-const mteam = o => { const out = {}; for (const k in o) out[sw(k)] = mp(o[k]); return out; };
+const mteam = o => { const out = {}; for (const k in o) out[sw(k)] = Array.isArray(o[k]) ? mp(o[k]) : { by: [-o[k].by[0], o[k].by[1]] }; return out; };
 const mref = v => typeof v === 'string' ? (v.includes(':') ? v.split(':')[0] + ':' + sw(v.split(':')[1]) : v) : Array.isArray(v) && typeof v[0] === 'number' ? mp(v) : v;
 const FACE_M = { left: 'right', right: 'left' };
 function mstep(st) {
@@ -73,7 +73,7 @@ function mstep(st) {
   if (st.focus) c.focus = st.focus.map(mref);
   if (st.chain) c.chain = st.chain.map(x => Object.assign({}, x, { ns: x.ns.map(mref) }));
   if (st.hatch) c.hatch = st.hatch.map(x => Object.assign({}, x, { pts: x.pts.map(mref) }));
-  if (st.marks) c.marks = st.marks.map(m => { const o = Object.assign({}, m); for (const k of ['a', 'l']) if (m[k]) o[k] = m[k].map(mref); if (m.ring) o.ring = mref(m.ring); return o; });
+  if (st.marks) c.marks = st.marks.map(m => { const o = Object.assign({}, m); for (const k of ['a', 'l', 's']) if (m[k]) o[k] = m[k].map(mref); if (m.ring) o.ring = mref(m.ring); return o; });
   return c;
 }
 function mmotion(mo) {
