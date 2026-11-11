@@ -77,7 +77,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,.tok:focus-visible{outl
 .stage{flex:1;min-height:0;position:relative;padding:8px 12px 12px}
 .pitch{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(var(--rot,0deg));border-radius:5px;touch-action:none;
   box-shadow:0 0 0 3px #f3f5f6,0 0 0 4px #97a1aa,0 10px 20px -6px rgba(20,30,38,.5)}
-.pitch>svg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.pitch>.cam{position:absolute;inset:0;transform-origin:50% 50%}
+.cam>svg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.pitch.cam-on{overflow:hidden}
 .field{border-radius:5px}
 .ink{filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
 .tokens{position:absolute;inset:0;pointer-events:none}
@@ -89,7 +91,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,.tok:focus-visible{outl
     radial-gradient(circle at 50% 125%,rgba(0,0,0,.3),rgba(0,0,0,0) 62%),
     var(--kit);
   box-shadow:0 0 0 2px var(--rim),0 3px 6px rgba(0,0,0,.35),0 1px 1px rgba(0,0,0,.3);
-  transition:transform .14s ease,box-shadow .14s ease}
+  transition:transform .14s ease,box-shadow .14s ease,opacity .35s ease}
 .tok span{font:800 calc(var(--tok) * .54)/1 var(--display);letter-spacing:-.01em;transform:rotate(var(--unrot,0deg)) translateY(.05em);pointer-events:none}
 .tok::before{content:"";position:absolute;inset:-9px;border-radius:50%}
 .us{--kit:var(--home-kit);--num:var(--home-num);--rim:var(--home-rim);cursor:pointer}
@@ -111,6 +113,27 @@ button:focus-visible,a:focus-visible,input:focus-visible,.tok:focus-visible{outl
 .ball.aiming{cursor:grabbing}
 .ball.aiming::after{animation:none;opacity:.4}
 .pitch.onball .tok.me::after{animation:none;opacity:.9}
+/* motion: the build-up before a puzzle and the play after an answer (riddles-motion.js) */
+.tok.faded{opacity:.3}
+.tok.tagged{z-index:5}
+.mtag-a.up .mtag{top:auto;bottom:calc(var(--tok) * .5 + 3px)}
+.mtag-a{position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(var(--unrot,0deg));pointer-events:none;z-index:8}
+.mtag{position:absolute;left:0;top:calc(var(--tok) * .5 + 3px);transform:translateX(-50%);white-space:nowrap;font:800 max(10px,calc(var(--tok) * .3))/1 var(--ui);letter-spacing:.05em;
+  color:#16222b;background:var(--tc,#ffd23f);border-radius:4px;padding:3px 5px 2px;box-shadow:0 1px 3px rgba(0,0,0,.4);animation:mtag .28s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes mtag{from{opacity:0;transform:translateX(-50%) scale(.6)}}
+.mfade{animation:mfade .35s ease-out both}
+@keyframes mfade{from{opacity:0}}
+.mcap{position:absolute;z-index:5;pointer-events:none;box-sizing:border-box;padding:12px 14px 26px;border-radius:5px 5px 0 0;
+  background:linear-gradient(180deg,rgba(6,24,13,.78),rgba(6,24,13,.5) 60%,rgba(6,24,13,0));color:#fff;opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s}
+.mcap.low{padding:26px 14px 12px;border-radius:0 0 5px 5px;background:linear-gradient(0deg,rgba(6,24,13,.78),rgba(6,24,13,.5) 60%,rgba(6,24,13,0));transform:translateY(6px)}
+.mcap.on{opacity:1;transform:none}
+.mcap b{display:block;font:800 clamp(21px,6vw,28px)/1.05 var(--display);text-shadow:0 2px 6px rgba(0,0,0,.5)}
+.mcap span{display:block;margin-top:4px;font:600 clamp(14px,3.9vw,16px)/1.3 var(--ui);color:rgba(255,255,255,.88);text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.mcap span:empty{display:none}
+.mstamp{position:absolute;z-index:5;pointer-events:none;text-align:center;font:800 clamp(34px,11vw,52px)/1 var(--display);color:#fff;letter-spacing:.02em;
+  text-shadow:0 3px 0 #b98700,0 6px 14px rgba(0,0,0,.45)}
+.mstamp.play{animation:mstamp 1.25s cubic-bezier(.2,.8,.2,1) both}
+@keyframes mstamp{0%{opacity:0;transform:scale(1.5)}18%{opacity:1;transform:scale(1)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.96)}}
 .ghost{pointer-events:none;width:var(--tok);height:var(--tok);margin:calc(var(--tok) / -2) 0 0 calc(var(--tok) / -2);z-index:1;border:2px dashed rgba(255,255,255,.85);background:rgba(255,255,255,.1)}
 
 /* tray */
@@ -367,11 +390,12 @@ html.land .cele-reveal{margin-top:10px}
 </section>
 
 <main class="stage" id="stage">
-  <div class="pitch" id="pitch">
+  <div class="pitch" id="pitch"><div class="cam" id="cam">
     <svg class="field" id="field" aria-hidden="true"></svg>
+    <svg class="mink" id="mink" aria-hidden="true"></svg>
     <svg class="ink" id="ink" aria-hidden="true"><defs id="inkDefs"></defs><g id="zoneInk"></g><g id="sceneInk"></g><g id="pickInk"></g></svg>
     <div class="tokens" id="tokens" aria-label="Soccer field"></div>
-  </div>
+  </div></div>
 </main>
 
 <nav class="tray" aria-label="Puzzle tools">
@@ -473,6 +497,7 @@ html.land .cele-reveal{margin-top:10px}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="riddles-core.js"></script>
+<script src="riddles-motion.js"></script>
 <script src="music.js"></script>
 <script>
 (() => {
@@ -505,6 +530,7 @@ const scrim = $('#scrim'), resultSheet = $('#resultSheet'), levelSheet = $('#lev
 const r2 = n => Math.round(n * 100) / 100;
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const norm = v => { const d = Math.hypot(v[0], v[1]) || 1; return [v[0] / d, v[1] / d]; };
 const wait = ms => new Promise(res => setTimeout(res, calm ? Math.min(ms, 60) : ms));
 const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 const cdist = (a, b) => { const A = rgb(a), B = rgb(b); return Math.hypot(A[0]-B[0], A[1]-B[1], A[2]-B[2]); };
@@ -562,6 +588,7 @@ function buildField() {
     <rect x="${-M}" y="${-M}" width="${VW}" height="${VH}" fill="url(#vig)"/>`;
   field.innerHTML = s;
   ink.setAttribute('viewBox', `${-M} ${-M} ${VW} ${VH}`); ink.setAttribute('preserveAspectRatio', 'none');
+  $('#mink').setAttribute('viewBox', `${-M} ${-M} ${VW} ${VH}`); $('#mink').setAttribute('preserveAspectRatio', 'none');
   $('#inkDefs').innerHTML = Object.entries(INK).map(([k, c]) =>
     `<marker id="ah-${k}" viewBox="0 0 10 10" refX="4" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto" markerUnits="strokeWidth"><path d="M0 0L10 5L0 10Z" fill="${c}"/></marker>`).join('');
 }
@@ -672,8 +699,24 @@ function loadRiddle(i) {
   pitch.classList.toggle('onball', r.type === 'ball');
   document.title = `${idx + 1}. ${r.title} | Puzzles for ${setTitle()}`;
   resetScene();
+  playIntro();
+}
+// the field as it is now, for the motion player
+function snapshot() {
+  const dir = {}; if (r.facing === 'back') dir['us:' + ME] = [0, 1];
+  return { us: clonePos(pos.us), them: clonePos(pos.them), ball: carrier ? carrier.team + ':' + carrier.n : null, ballAt: ballPos.slice(), dir };
+}
+// the build-up: the play unfolds, then freezes for your call
+async function playIntro() {
+  const m = r.motion;
+  if (!m || !m.intro || calm) return;
+  mode = 'intro'; updateGo(); sceneInk.replaceChildren();
+  const ok = await Motion.intro(m.intro, snapshot());
+  if (!ok || mode !== 'intro') return;
+  resetScene(); Motion.stamp('YOUR CALL');
 }
 function resetScene() {
+  if (typeof Motion !== 'undefined') Motion.clear();
   pos = { us: clonePos(r.us), them: clonePos(r.them) };
   carrier = typeof r.ball === 'string' ? { team: 'us', n: r.ball } : { team: r.ball.team, n: r.ball.n };
   sel = null; mode = 'pick'; lastResult = null;
@@ -703,6 +746,7 @@ function syncBall() {
 function updateGo() {
   syncBall();
   if (mode === 'done') { goBtn.disabled = false; goBtn.textContent = 'See how you did'; return; }
+  if (mode === 'intro' || mode === 'show') { goBtn.disabled = false; goBtn.textContent = 'Skip \u203a'; return; }
   if (mode === 'anim') { goBtn.disabled = true; goBtn.textContent = 'Watch…'; return; }
   if (!sel) {
     goBtn.disabled = true;
@@ -906,17 +950,53 @@ function showAnswerOnField() {
   if (r.type === 'move') r.zones.filter(z => z[3] === 3).forEach(zoneCircle);
   if (b.kind === 'carry') (r.carry || []).filter(z => z[3] === 3).forEach(zoneCircle);
 }
+// which answer this is, as the motion data names it: '10' (a pass to feet), 'lead0', 'carry1', 'zone0', 'shoot', 'else'
+function answerKey(s) {
+  const pick = (zones, at) => { let b = -1; zones.forEach((z, i) => { if (dist(at, [z[0], z[1]]) <= z[2] && (b < 0 || z[3] > zones[b][3])) b = i; }); return b; };
+  if (s.kind === 'pass') { if (s.feet) return s.to; const i = pick(r.lead || [], s.at); return i >= 0 ? 'lead' + i : 'space'; }
+  if (s.kind === 'shoot') return 'shoot';
+  const i = pick(s.kind === 'carry' ? (r.carry || []) : r.zones, s.at);
+  return i >= 0 ? (s.kind === 'carry' ? 'carry' : 'zone') + i : 'else';
+}
+// interceptions with no play written for them: the player who cut it out turns and runs at our goal
+function counterSteps(a) {
+  const p = pos.them[a.cut], d = norm([25 - p[0], L - p[1]]);
+  let to = [p[0] + d[0] * 6, p[1] + d[1] * 6];
+  for (let k = 6; k > 2 && NUMS.some(n => dist(pos.us[n], to) < 3.6 || (n !== a.cut && dist(pos.them[n], to) < 3.6)); k--) to = [p[0] + d[0] * k, p[1] + d[1] * k];
+  return [{ t: 1, them: { [a.cut]: to }, tag: { ['them:' + a.cut]: 'CUT' }, head: a.t, sub: "And now they're running at us.", cam: { at: 'them:' + a.cut, zoom: 1.35, tilt: .5 }, wait: 1.1 }];
+}
+function afterOf(s, a) {
+  const m = r.motion; if (!m || calm) return null;
+  const x = (m.after || {})[answerKey(s)];
+  if (x) return Array.isArray(x) ? { steps: x } : x;
+  return a.cut ? { steps: counterSteps(a) } : null;
+}
+// play the answer out: the pass (unless the motion replaces it), then what happens next
+async function playOut(s, a) {
+  const after = afterOf(s, a), my = idx;
+  if (!(after && after.replace)) await play(s, a);
+  if (a.g <= 1 && my === idx) Sound.play('whistle');
+  if (!after || my !== idx) return my === idx;
+  mode = 'show'; updateGo();
+  const end = await Motion.after(after.steps, snapshot());
+  if (!end || my !== idx) return false;
+  pos = { us: end.us, them: end.them };
+  if (end.ball.h) { const [team, n] = end.ball.h.split(':'); carrier = { team, n }; } else carrier = null;
+  ballPos = end.ball.at;
+  mode = 'anim';
+  return true;
+}
 let lastCapped = false;
 async function lockIn() {
+  if (mode === 'intro' || mode === 'show') { Motion.skip(); return; }
   if (mode === 'done') { openResult(lastResult, false, lastCapped); return; }
   if (!sel || mode !== 'pick') return;
   mode = 'anim'; updateGo();
   const st = cur(); st.tries = st.tries || {}; st.miss = st.miss || {}; st.shown = st.shown || {};
   const firstEver = !st.tries[idx] && starsAt(idx) < 0;
   st.tries[idx] = (st.tries[idx] || 0) + 1;
-  const a = judge(sel);
-  await play(sel, a);
-  if (a.g <= 1) Sound.play('whistle');
+  const a = judge(sel), my = idx, keepSel = sel;
+  if (!(await playOut(keepSel, a)) || my !== idx) return;
   if (a.g < 3) showAnswerOnField();
   if (a.g > starsAt(idx)) st.stars[idx] = a.g;
   // three misses on a riddle: explain, show the right answer, and let them move on
@@ -939,15 +1019,18 @@ async function lockIn() {
 async function showBest() {
   hideSheet(true);
   resetScene();
-  const b = r.best;
-  await wait(250);
+  const b = r.best, my = idx;
+  if (r.motion && !calm) Motion.caption('The right call', 'Watch it play out.');
+  await wait(r.motion && !calm ? 900 : 250);
+  if (my !== idx) return;
   if (b.kind === 'pass') choosePassAt((b.at || r.us[b.to]).slice());
   else if (b.kind === 'shoot') chooseShoot();
   else { chooseSpot(b.at.slice(), true); await wait(650); }
   mode = 'anim'; updateGo();
   await wait(500);
   const a = judge(sel);
-  await play(sel, a);
+  if (!(await playOut(sel, a)) || my !== idx) return;
+  Motion.caption('');
   showAnswerOnField();
   mode = 'done'; lastResult = a; lastCapped = false; updateGo();
   openResult(a, true);
@@ -1130,6 +1213,7 @@ tokensEl.addEventListener('keydown', e => {
   } else if ((e.key === 'Enter' || e.key === ' ') && r.type === 'ball') { e.preventDefault(); choosePassAt(pos.us[el.dataset.n].slice()); }
 });
 pitch.addEventListener('contextmenu', e => e.preventDefault());
+pitch.addEventListener('pointerdown', () => { if (mode === 'intro') Motion.skip(); });
 document.addEventListener('gesturestart', e => e.preventDefault());
 document.addEventListener('touchmove', e => { if (e.target.closest && e.target.closest('.pitch')) e.preventDefault(); }, { passive: false });
 
@@ -1159,7 +1243,7 @@ function fit() {
   pitch.style.setProperty('--rot', land ? '90deg' : '0deg');
   pitch.style.setProperty('--unrot', land ? '-90deg' : '0deg');
   pitch.style.setProperty('--tok', clamp(w * .0828, 25, 47) + 'px');
-  if (pos && carrier && mode !== 'anim') { ballPos = footOf(carrier.team, carrier.n); putEl(ballEl, ballPos, 0); }
+  if (pos && carrier && mode !== 'anim' && mode !== 'intro' && mode !== 'show') { ballPos = footOf(carrier.team, carrier.n); putEl(ballEl, ballPos, 0); }
 }
 function relayout() { setOrientation(); fit(); }
 
@@ -1806,6 +1890,8 @@ $('#saveCard').addEventListener('click', async () => {
 /* ---------- start ---------- */
 if (!prog.awards) { prog.awards = computeAwards(); saveProg(); }
 buildField(); buildTokens(); applyColors();
+const Motion = window.RiddleMotion({ M, VW, VH, NS, NUMS, tok, ballEl, pitch, cam: $('#cam'), layer: $('#mink'), stage, calm,
+  tokYards, land: () => land });
 setOrientation(); fit();
 (async () => {
   const want = posInfo(prog.position || '6');
@@ -1823,6 +1909,7 @@ window.__riddleDebug = {
   setStars: (n, arr) => { cur(n).stars = Object.assign({}, arr); saveProg(); renderScore(); return checkAwards(); },
   list: () => R, me: () => ME,
   load: i => loadRiddle(i),
+  motionSpeed: x => Motion.setSpeed(x), mode: () => mode, answerKey: () => sel && answerKey(sel),
   // grade dropping the player on a spot, without playing it out (for move and dribble puzzles)
   judgeSpot: (x, y) => { pos.us[ME] = [x, y]; const a = judge({ kind: r.type === 'ball' ? 'carry' : 'move', at: [x, y] }); pos.us[ME] = r.us[ME].slice(); return a; },
   judgeAt: (x, y) => { const T = [x, y]; if (inGoal(T)) return { g: (r.shoot || {}).g, t: 'shot' }; return judgePass(Object.assign({ kind: 'pass' }, readPass(T))); }
