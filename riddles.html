@@ -704,14 +704,16 @@ function loadRiddle(i) {
 // the field as it is now, for the motion player
 function snapshot() {
   const dir = {}; if (r.facing === 'back') dir['us:' + ME] = [0, 1];
-  return { us: clonePos(pos.us), them: clonePos(pos.them), ball: carrier ? carrier.team + ':' + carrier.n : null, ballAt: ballPos.slice(), dir };
+  const spot = !!r.ballAt && dist(ballPos, r.ballAt) < .01;
+  return { us: clonePos(pos.us), them: clonePos(pos.them), ball: carrier ? carrier.team + ':' + carrier.n : null, ballAt: ballPos.slice(), dir, spot };
 }
 // the build-up: the play unfolds, then freezes for your call
 async function playIntro() {
-  const m = r.motion;
-  if (!m || !m.intro || calm) return;
+  const m = r.motion || {};
+  if (calm || m.intro === false) return;
+  const intro = m.intro || window.RiddleMotion.autoIntro(r);
   mode = 'intro'; updateGo(); sceneInk.replaceChildren();
-  const ok = await Motion.intro(m.intro, snapshot());
+  const ok = await Motion.intro(intro, snapshot());
   if (!ok || mode !== 'intro') return;
   resetScene(); Motion.stamp('YOUR CALL');
 }
@@ -959,17 +961,20 @@ function answerKey(s) {
   return i >= 0 ? (s.kind === 'carry' ? 'carry' : 'zone') + i : 'else';
 }
 // interceptions with no play written for them: the player who cut it out turns and runs at our goal
-function counterSteps(a) {
-  const p = pos.them[a.cut], d = norm([25 - p[0], L - p[1]]);
-  let to = [p[0] + d[0] * 6, p[1] + d[1] * 6];
-  for (let k = 6; k > 2 && NUMS.some(n => dist(pos.us[n], to) < 3.6 || (n !== a.cut && dist(pos.them[n], to) < 3.6)); k--) to = [p[0] + d[0] * k, p[1] + d[1] * k];
-  return [{ t: 1, them: { [a.cut]: to }, tag: { ['them:' + a.cut]: 'CUT' }, head: a.t, sub: "And now they're running at us.", cam: { at: 'them:' + a.cut, zoom: 1.35, tilt: .5 }, wait: 1.1 }];
+function counterSteps(n, a) {
+  const p = pos.them[n], d = norm([25 - p[0], L - p[1]]);
+  let to = null;
+  for (let k = 6; k > 1.5 && !to; k -= .5) { const q = [p[0] + d[0] * k, p[1] + d[1] * k]; if (!NUMS.some(m => dist(pos.us[m], q) < 4 || (m !== n && dist(pos.them[m], q) < 4))) to = q; }
+  return [{ t: 1, them: to ? { [n]: to } : {}, tag: { ['them:' + n]: a.cut ? 'CUT' : 'THEIR BALL' }, head: a.t, sub: "And now they're running at us.",
+    cam: { at: 'them:' + n, zoom: 1.35, tilt: .5 }, wait: 1.1 }];
 }
 function afterOf(s, a) {
-  const m = r.motion; if (!m || calm) return null;
-  const x = (m.after || {})[answerKey(s)];
+  if (calm) return null;
+  const x = ((r.motion || {}).after || {})[answerKey(s)];
   if (x) return Array.isArray(x) ? { steps: x } : x;
-  return a.cut ? { steps: counterSteps(a) } : null;
+  // a ball they win (cut out, or first to a pass into space) turns into their counter, unless the keeper has it
+  const won = a.cut || a.grab;
+  return won && won !== '1' ? { make: () => counterSteps(won, a) } : null;
 }
 // play the answer out: the pass (unless the motion replaces it), then what happens next
 async function playOut(s, a) {
@@ -978,7 +983,7 @@ async function playOut(s, a) {
   if (a.g <= 1 && my === idx) Sound.play('whistle');
   if (!after || my !== idx) return my === idx;
   mode = 'show'; updateGo();
-  const end = await Motion.after(after.steps, snapshot());
+  const end = await Motion.after(after.make ? after.make() : after.steps, snapshot());
   if (!end || my !== idx) return false;
   pos = { us: end.us, them: end.them };
   if (end.ball.h) { const [team, n] = end.ball.h.split(':'); carrier = { team, n }; } else carrier = null;

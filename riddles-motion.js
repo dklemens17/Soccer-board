@@ -61,8 +61,8 @@ window.RiddleMotion = function (api) {
   }
   // start from the page's current field: { us, them, ball: 'us:6' | null, ballAt, dir }
   function begin(snap) {
-    S = { us: clone(snap.us), them: clone(snap.them), ball: { h: snap.ball, at: snap.ballAt.slice() }, dir: Object.assign({}, snap.dir || {}) };
-    if (!S.ball.h) {
+    S = { us: clone(snap.us), them: clone(snap.them), ball: { h: snap.spot ? null : snap.ball, at: snap.ballAt.slice() }, dir: Object.assign({}, snap.dir || {}) };
+    if (!S.ball.h && !snap.spot) {
       // a ball lying loose next to someone (a pass into space just arrived): that player has it
       let best = null, bd = 3.6;
       for (const team of ['us', 'them']) for (const n of NUMS) { const d = dist(S[team][n], S.ball.at); if (d < bd) { bd = d; best = team + ':' + n; } }
@@ -277,9 +277,9 @@ window.RiddleMotion = function (api) {
     // the build-up: players start where `intro.start` says and play into the puzzle's frozen moment
     async intro(intro, snap) {
       clear(); begin(snap);
-      const finalUs = clone(snap.us), finalThem = clone(snap.them), holder = snap.ball;
+      const finalUs = clone(snap.us), finalThem = clone(snap.them), holder = snap.spot ? null : snap.ball;
       for (const team of ['us', 'them']) Object.assign(S[team], clone((intro.start || {})[team] || {}));
-      if (intro.start && intro.start.ball) S.ball.h = intro.start.ball;
+      if (intro.start && 'ball' in intro.start) S.ball.h = intro.start.ball;
       if (intro.start && intro.start.dir) Object.assign(S.dir, intro.start.dir);
       placeAll();
       if (intro.cam) camTo(intro.cam, 0, posOf);
@@ -298,6 +298,62 @@ window.RiddleMotion = function (api) {
     caption, stamp, clear,
     skip() { skipping = true; caption(''); },
     setSpeed(x) { speed = x; }
+  };
+};
+
+/* ---------- an automatic build-up, for puzzles without a written one ----------
+   Nobody passes (most prompts don't say where the ball came from). The team without the ball closes in
+   toward it, the team with it moves up in support, anyone with a movement arrow runs along it, and the
+   ball carrier brings the ball in. On a set piece the ball stays on its spot. Starting spots that would
+   put two players on top of each other, or make them run through each other, are dropped. */
+window.RiddleMotion.autoIntro = function (r) {
+  const holder = typeof r.ball === 'string' ? ['us', r.ball] : [r.ball.team, r.ball.n];
+  const atk = holder[0], up = team => team === 'us' ? -1 : 1, fin = { us: r.us, them: r.them };
+  const ball = r.ballAt || fin[holder[0]][holder[1]];
+  let seed = 7; for (const ch of r.title) seed = (Math.imul(seed, 31) + ch.charCodeAt(0)) >>> 0;
+  const rnd = () => (seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296;
+  const start = { us: {}, them: {} }, R2 = p => [r2(p[0]), r2(p[1])];
+  for (const team of ['us', 'them']) for (const n in fin[team]) {
+    const p = fin[team][n];
+    let q;
+    if (n === '1') q = [p[0] + (ball[0] - p[0]) * -.04, p[1] - up(team) * .8];
+    else if (team === atk) q = [p[0] + (rnd() - .5) * 1.4, p[1] - up(team) * (1.8 + rnd() * 1.4)];
+    else { const d = norm([p[0] - ball[0], p[1] - ball[1]]), k = 1.5 + rnd() * 1.3; q = [p[0] + d[0] * k, p[1] + d[1] * k]; }
+    start[team][n] = R2(q);
+  }
+  for (const a of r.arrows || []) {
+    let best = null, bd = 3.5;
+    for (const n in fin[a.team]) { const d = dist(fin[a.team][n], a.from); if (d < bd) { bd = d; best = n; } }
+    if (best) { const p = fin[a.team][best], d = norm([a.to[0] - a.from[0], a.to[1] - a.from[1]]); start[a.team][best] = R2([p[0] - d[0] * 3.2, p[1] - d[1] * 3.2]); }
+  }
+  const [ht, hn] = holder, hp = fin[ht][hn];
+  if (r.ballAt) start[ht][hn] = hp.slice();
+  else if (r.facing === 'back') start[ht][hn] = R2([hp[0], hp[1] - 1.6]);
+  else start[ht][hn] = R2([hp[0], hp[1] - up(ht) * 2.6]);
+  // drop starting spots that collide, one at a time, until none do
+  const keys = []; for (const team of ['us', 'them']) for (const n in fin[team]) keys.push([team, n]);
+  for (let guard = 0; guard < 40; guard++) {
+    let bad = null;
+    outer: for (let i = 0; i < keys.length; i++) for (let j = i + 1; j < keys.length; j++) {
+      const [ta, na] = keys[i], [tb, nb] = keys[j];
+      const a0 = start[ta][na], a1 = fin[ta][na], b0 = start[tb][nb], b1 = fin[tb][nb];
+      if (dist(a0, a1) < .01 && dist(b0, b1) < .01) continue;
+      for (let u = 0; u <= 1; u += .125) {
+        const d = dist(lerp(a0, a1, u), lerp(b0, b1, u)), need = u === 0 ? 4.2 : 2.8;
+        if (d < need && d < dist(a1, b1) - .05) { bad = dist(a0, a1) >= dist(b0, b1) ? [ta, na] : [tb, nb]; break outer; }
+      }
+    }
+    if (!bad) break;
+    start[bad[0]][bad[1]] = fin[bad[0]][bad[1]].slice();
+  }
+  const moveUs = {}, moveThem = {};
+  for (const n in fin.us) if (dist(start.us[n], fin.us[n]) > .01) moveUs[n] = fin.us[n];
+  for (const n in fin.them) if (dist(start.them[n], fin.them[n]) > .01) moveThem[n] = fin.them[n];
+  const ballStart = r.ballAt || start[ht][hn];
+  return {
+    start: { us: start.us, them: start.them, ball: r.ballAt ? null : ht + ':' + hn },
+    cam: { at: ballStart, zoom: 1.45, tilt: .45 },
+    steps: [{ t: 1.6, us: moveUs, them: moveThem, cam: { at: ball, zoom: 1.3, tilt: .45 } }, { t: .8, cam: 'wide' }]
   };
 };
 })();

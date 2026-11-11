@@ -57,6 +57,44 @@ const mp = p => [mx(p[0]), p[1]];
 const swapKeys = o => { const out = {}; for (const k in o) out[sw(k)] = o[k]; return out; };
 const mzone = z => { const c = z.slice(); c[0] = mx(c[0]); if (c.length > 6 && c[6] != null) c[6] = sw(c[6]); if (c.length > 7 && c[7] != null) c[7] = sw(c[7]); return c; };
 
+// motion (riddles-motion.js): the same play on the other side of the field
+const mteam = o => { const out = {}; for (const k in o) out[sw(k)] = mp(o[k]); return out; };
+const mref = v => typeof v === 'string' ? (v.includes(':') ? v.split(':')[0] + ':' + sw(v.split(':')[1]) : v) : Array.isArray(v) && typeof v[0] === 'number' ? mp(v) : v;
+const FACE_M = { left: 'right', right: 'left' };
+function mstep(st) {
+  const c = Object.assign({}, st);
+  if (st.us) c.us = mteam(st.us);
+  if (st.them) c.them = mteam(st.them);
+  if (st.pass) c.pass = mref(st.pass);
+  if (st.shot) c.shot = mref(st.shot);
+  if (st.face) { c.face = {}; for (const k in st.face) { const f = st.face[k]; c.face[mref(k)] = Array.isArray(f) ? [-f[0], f[1]] : (FACE_M[f] || f); } }
+  if (st.cam && st.cam !== 'wide') c.cam = Object.assign({}, st.cam, st.cam.at != null ? { at: mref(st.cam.at) } : {});
+  if (st.tag) { c.tag = {}; for (const k in st.tag) c.tag[mref(k)] = st.tag[k]; }
+  if (st.focus) c.focus = st.focus.map(mref);
+  if (st.chain) c.chain = st.chain.map(x => Object.assign({}, x, { ns: x.ns.map(mref) }));
+  if (st.hatch) c.hatch = st.hatch.map(x => Object.assign({}, x, { pts: x.pts.map(mref) }));
+  if (st.marks) c.marks = st.marks.map(m => { const o = Object.assign({}, m); for (const k of ['a', 'l']) if (m[k]) o[k] = m[k].map(mref); if (m.ring) o.ring = mref(m.ring); return o; });
+  return c;
+}
+function mmotion(mo) {
+  const c = {};
+  if (mo.intro === false) c.intro = false;
+  else if (mo.intro) {
+    const st = mo.intro.start || {};
+    c.intro = Object.assign({}, mo.intro, { steps: (mo.intro.steps || []).map(mstep),
+      start: Object.assign({}, st, st.us ? { us: mteam(st.us) } : {}, st.them ? { them: mteam(st.them) } : {}, st.ball ? { ball: mref(st.ball) } : {}) });
+    if (mo.intro.cam) c.intro.cam = Object.assign({}, mo.intro.cam, mo.intro.cam.at != null ? { at: mref(mo.intro.cam.at) } : {});
+  }
+  if (mo.after) {
+    c.after = {};
+    for (const k in mo.after) {
+      const x = mo.after[k], key = /^\d+$/.test(k) ? sw(k) : k;
+      c.after[key] = Array.isArray(x) ? x.map(mstep) : Object.assign({}, x, { steps: x.steps.map(mstep) });
+    }
+  }
+  return c;
+}
+
 function mirror(r) {
   const m = JSON.parse(JSON.stringify(r));
   m.us = {}; for (const k in r.us) m.us[sw(k)] = mp(r.us[k]);
@@ -72,6 +110,7 @@ function mirror(r) {
   if (r.best) { m.best = Object.assign({}, r.best); if (r.best.to) m.best.to = sw(r.best.to); if (r.best.at) m.best.at = mp(r.best.at); }
   if (r.follow) m.follow = r.follow.map(f => Object.assign({}, f, { n: sw(f.n), dx: f.dx ? -f.dx : f.dx }));
   if (r.payoff) m.payoff = { to: sw(r.payoff.to) };
+  if (r.motion) m.motion = mmotion(r.motion);
   m.me = sw(r.me);
   return m;
 }
