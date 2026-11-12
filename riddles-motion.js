@@ -3,7 +3,7 @@
    A puzzle can carry a `motion` object (see the top of riddles-6.js):
      intro  the build-up that plays when the puzzle opens, ending on the frozen moment you decide in
      after  what happens next, keyed by answer: a teammate's number for a pass to feet ('10'),
-            'lead0' / 'carry0' / 'zone0' for the answer zones, 'shoot', 'else'. The best answer's
+            'lead0' / 'carry0' / 'zone0' for the answer zones, 'out' (kicked out of play), 'shoot', 'else'. The best answer's
             entry is also what "Show the best answer" plays. { replace: true, steps } plays instead of
             the normal pass animation.
 

@@ -955,7 +955,7 @@ function showAnswerOnField() {
 // which answer this is, as the motion data names it: '10' (a pass to feet), 'lead0', 'carry1', 'zone0', 'shoot', 'else'
 function answerKey(s) {
   const pick = (zones, at) => { let b = -1; zones.forEach((z, i) => { if (dist(at, [z[0], z[1]]) <= z[2] && (b < 0 || z[3] > zones[b][3])) b = i; }); return b; };
-  if (s.kind === 'pass') { if (s.feet) return s.to; const i = pick(r.lead || [], s.at); return i >= 0 ? 'lead' + i : 'space'; }
+  if (s.kind === 'pass') { if (s.feet) return s.to; if (outOfPlay(s.at)) return 'out'; const i = pick(r.lead || [], s.at); return i >= 0 ? 'lead' + i : 'space'; }
   if (s.kind === 'shoot') return 'shoot';
   const i = pick(s.kind === 'carry' ? (r.carry || []) : r.zones, s.at);
   return i >= 0 ? (s.kind === 'carry' ? 'carry' : 'zone') + i : 'else';
