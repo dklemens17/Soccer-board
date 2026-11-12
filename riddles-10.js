@@ -524,5 +524,459 @@ const RIDDLES = [
   best: { kind: 'move', at: [31.5,15.5] } }
 ];
 
+
+/* ---------------- Motion: the build-ups and what happens next ----------------
+   Matched to the puzzles above by title. Format at the top of riddles-motion.js. */
+const { steal, offside, say } = window.RIDDLE_LIB;
+// the 10 turning with their 6 tight on its back
+const TURNED = { replace: true, steps: [
+        { t: .7, face: { 'us:10': 'up' }, them: { 6: [25.5, 27.4] }, tag: { 'them:6': 'TACKLE' }, head: 'Turned into trouble', sub: 'Their 6 was right on your back.',
+          cam: { at: [25, 29], zoom: 1.6, tilt: .45 } },
+        { t: .45, pass: 'them:6' },
+        { t: 1, them: { 6: [21, 36] }, head: 'Turned into trouble', sub: "And now they're running at us.", cam: { at: [22, 35], zoom: 1.35, tilt: .5 }, wait: .9 }] };
+const MOTION = {
+  /* ---- 1. Find the pocket ---- */
+  'Between the lines': {
+    intro: { start: { ball: 'us:4', us: { 2: [37, 59], 10: [24, 38] }, them: { 6: [26, 27] } },
+      cam: { at: [30, 58], zoom: 1.55, tilt: .5 },
+      steps: [
+        { t: 1.6, pass: 'us:2', pd: .2, us: { 2: [38, 56], 10: [25, 35] }, them: { 6: [25, 30] }, head: 'Your 2 has the ball',
+          sub: "And you're standing right next to their 6.", cam: { at: [32, 42], zoom: 1.35, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.1, face: { 'us:10': 'up' }, us: { 10: { by: [-1, -4] } }, chain: [{ ns: ['them:2', 'them:4', 'them:3'], c: 'good' }], tag: { 'us:10': ['TURNED', 'good'] },
+        head: 'In the pocket', sub: 'Behind their midfielders, in front of their defenders. Now turn and go at them.', cam: { at: 'us:10', zoom: 1.35, tilt: .6 }, wait: 1.2 }],
+      zone1: [{ t: .8, them: { 6: [25, 32] }, tag: { 'them:6': 'MARK' }, head: 'Marked', sub: 'Standing next to their 6, you are easy to mark.',
+        cam: { at: [25, 34], zoom: 1.5, tilt: .5 }, wait: 1.1 }],
+      zone3: offside('10', 13.5)
+    } },
+
+  'Out of the shadow': {
+    intro: { start: { ball: 'us:4', us: { 6: [26, 50], 10: [25, 27] }, them: { 6: [26, 34] } },
+      cam: { at: [25, 54], zoom: 1.55, tilt: .5 },
+      steps: [
+        { t: 1.5, pass: 'us:6', pd: .2, us: { 6: [25, 46], 10: [25, 30] }, them: { 6: [25, 37] }, head: 'Your 6 wants to pass to you',
+          sub: 'But their 6 is standing right between you.', cam: { at: [25, 39], zoom: 1.4, tilt: .55 } },
+        { t: 1.1, marks: [{ s: ['them:6', 'us:6'], len: 11 }], cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1, face: { 'us:10': 'up' }, us: { 10: { by: [0, -3] } }, marks: [{ s: ['them:6', 'us:6'], len: 11 }], tag: { 'us:10': ['OPEN', 'good'] },
+        head: 'Out of the shadow', sub: "Now your 6 can find you, and you're between their lines.", cam: { at: 'us:10', zoom: 1.35, tilt: .55 }, wait: 1.2 }],
+      zone1: [{ t: 1, face: { 'us:10': 'up' }, us: { 10: { by: [0, -3] } }, marks: [{ s: ['them:6', 'us:6'], len: 11 }], tag: { 'us:10': ['OPEN', 'good'] },
+        head: 'Out of the shadow', sub: "Now your 6 can find you, and you're between their lines.", cam: { at: 'us:10', zoom: 1.35, tilt: .55 }, wait: 1.2 }],
+      zone2: [{ t: .9, pass: 'them:6', marks: [{ s: ['them:6', 'us:6'], len: 11 }], tag: { 'them:6': 'CUT' }, head: 'Hidden',
+          sub: 'Their 6 is right between you and the ball, and cuts it out.', cam: { at: [25, 39], zoom: 1.5, tilt: .5 } },
+        { t: 1, them: { 6: [21, 42] }, wait: 1 }]
+    } },
+
+  'Help your winger': {
+    intro: { start: { ball: 'us:2', us: { 7: [43, 40], 10: [26, 37] }, them: { 11: [41, 27] } },
+      cam: { at: [40, 47], zoom: 1.55, tilt: .5 },
+      steps: [
+        { t: 1.5, pass: 'us:7', pd: .2, us: { 7: [44, 36], 10: [25, 34] }, them: { 11: [43, 30] }, tag: { 'them:11': 'PRESS' }, head: 'Your 7 has it on the right',
+          sub: 'Their 11 is in front of the 7. Help!', cam: { at: [40, 35], zoom: 1.45, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.1, face: { 'us:10': 'up' }, us: { 10: { by: [-1, -4] }, 7: [48, 25] }, tag: { 'us:10': ['TURNED', 'good'], 'us:7': ['GO', 'good'] },
+        head: 'Inside and a little ahead', sub: 'The 7 finds you in the gap, you turn, and the 7 runs past their 11.', cam: { at: [38, 28], zoom: 1.3, tilt: .55 }, wait: 1.2 }],
+      zone1: say('Crowding the 7', "You're right next to your 7, so their 11 can mark you both.", { at: [42, 31], zoom: 1.55, tilt: .5 }, { tag: { 'them:11': 'MARKS BOTH' } })
+    } },
+
+  'Opposite movement': {
+    intro: { start: { ball: 'us:4', us: { 6: [26, 48], 9: [25, 18.5], 10: [30, 33] }, them: { 4: [25, 14] } },
+      cam: { at: [25, 50], zoom: 1.5, tilt: .5 },
+      steps: [
+        { t: 1.6, pass: 'us:6', pd: .2, us: { 6: [25, 44], 9: [25, 25], 10: [31, 30] }, them: { 4: [25, 20.5] }, tag: { 'them:4': 'FOLLOW' },
+          head: 'Your 9 comes short', sub: 'And their 4 follows. What did their 4 leave behind?', cam: { at: [26, 26], zoom: 1.45, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1, face: { 'us:10': 'up' }, us: { 10: { by: [0, -4] } }, hatch: [{ pts: [[20, 10], [36, 10], [36, 18], [20, 18]], c: 'good' }],
+        tag: { 'us:10': ['IN BEHIND', 'good'], 'them:4': 'FOLLOWED' }, head: 'Opposite movement',
+        sub: 'Your 9 came short and took their 4 along, so you ran into the space their 4 left.', cam: { at: [28, 15], zoom: 1.4, tilt: .6 }, wait: 1.2 }],
+      zone1: say('Crowded', 'Coming short too puts you right next to your 9. Their 4 can mark you both.', { at: [26, 26], zoom: 1.5, tilt: .5 }, { tag: { 'them:4': 'MARKS BOTH' } }),
+      zone2: offside('10', 16)
+    } },
+
+  'Far-side pocket': {
+    intro: { start: { ball: 'us:3', us: { 6: [24, 49], 10: [23, 31] }, them: { 7: [12, 30], 10: [18, 40], 11: [40, 41], 6: [22, 33] } },
+      cam: { at: [15, 52], zoom: 1.5, tilt: .5 },
+      steps: [
+        { t: 1.6, pass: 'us:6', pd: .2, us: { 6: [25, 46], 10: [20, 30] }, them: { 7: [9, 31.5], 10: [14, 40], 11: [36, 41], 6: [19, 34.5] }, tag: { 'them:6': 'MARK' },
+          head: 'Their midfield shifts to your left', sub: 'And their 6 is marking you.', cam: { at: [20, 38], zoom: 1.3, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.1, face: { 'us:10': 'up' }, us: { 10: { by: [0, -3.5] } }, hatch: [{ pts: [[27, 18], [42, 18], [42, 32], [27, 32]], c: 'good' }], tag: { 'us:10': ['FREE', 'good'] },
+        head: 'The far-side pocket', sub: 'Their midfield shifted left, so the pocket on the right is empty.', cam: { at: [31, 25], zoom: 1.35, tilt: .55 }, wait: 1.2 }],
+      zone2: say('Into the crowd', "That's where all their midfielders are.", { at: [15, 36], zoom: 1.45, tilt: .5 }, { tag: { 'them:7': 'CROWD', 'them:10': 'CROWD', 'them:6': 'CROWD' } })
+    } },
+
+  /* ---- 2. Receive and decide ---- */
+  'Turn and release': {
+    intro: { start: { ball: 'us:6', us: { 10: [29, 30], 9: [24, 21] }, them: { 6: [21, 37] } },
+      cam: { at: [26, 38], zoom: 1.5, tilt: .5 },
+      steps: [
+        { t: 1.5, pass: 'us:10', pd: .15, face: { 'us:10': 'up' }, us: { 10: [30, 27], 9: [25, 19] }, them: { 6: [26, 35] }, tag: { 'them:6': 'PRESS' },
+          head: 'You turn in the pocket', sub: 'Their 6 chases you, and your 9 starts a run between their defenders.', cam: { at: [28, 25], zoom: 1.45, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      lead0: [{ t: .9, us: { 9: [28.5, 7.5] }, them: { 4: [25, 12], 3: [33, 11] }, chain: [{ ns: ['them:2', 'them:4', 'them:3'], c: 'good' }], tag: { 'us:9': ['THROUGH', 'good'] },
+          head: 'Release the runner', sub: 'Into the gap between their 4 and 3, and your 9 is through.', cam: { at: [28, 10], zoom: 1.45, tilt: .6 } },
+        { t: .6, shot: [27.5, -1.2], wait: 1.1 }]
+    } },
+
+  'Set it back': {
+    intro: { start: { ball: 'us:6', us: { 10: [25, 25] }, them: { 6: [25, 20] } },
+      cam: { at: [25, 36], zoom: 1.65, tilt: .45 },
+      steps: [
+        { t: 1.5, pass: 'us:10', pd: .3, face: { 'us:10': 'down' }, us: { 10: [25, 30] }, them: { 6: [25, 25.5] }, tag: { 'them:6': 'TIGHT' },
+          head: 'Your 6 plays it into you', sub: 'Back to goal, and their 6 is tight behind you.', cam: { at: [25, 30], zoom: 1.65, tilt: .45 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      6: [{ t: .9, face: { 'us:10': 'up' }, us: { 10: [30.5, 27.5] }, them: { 6: [25.5, 29] }, head: 'Set it back, then spin', sub: "Their 6 follows the ball. You're free.",
+          cam: { at: [27, 33], zoom: 1.45, tilt: .5 } },
+        { t: 1, pass: 'us:10', pd: .1, us: { 10: [30.5, 26] }, tag: { 'us:10': ['OPEN', 'good'], 'them:6': 'BEATEN' }, head: "Now you're facing their goal",
+          sub: 'One touch back, a quick spin, and their 6 is out of the play.', cam: { at: [28, 30], zoom: 1.4, tilt: .55 }, wait: 1.3 }],
+      7: TURNED, 9: TURNED, 11: TURNED
+    } },
+
+  'Switch it': {
+    intro: { start: { ball: 'us:7', us: { 10: [27, 32] }, them: { 6: [30, 22], 10: [29, 40], 11: [38, 22], 3: [35, 17], 7: [14, 33], 2: [15, 16], 4: [25, 13] } },
+      cam: { at: [40, 27], zoom: 1.55, tilt: .5 },
+      steps: [
+        { t: 1.6, pass: 'us:10', pd: .2, us: { 10: [25, 30] }, them: { 6: [31, 25], 10: [32, 38], 11: [41, 24], 3: [38, 18], 7: [18, 34], 2: [18, 16], 4: [28, 13.5] },
+          head: 'Your 7 plays it inside', sub: 'Their players are all crowding the right side.', cam: { at: [32, 28], zoom: 1.35, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      lead0: [{ t: 1.2, us: { 11: [9, 10] }, them: { 2: [13.5, 13] }, hatch: [{ pts: [[0, 6], [14, 6], [14, 36], [0, 36]], c: 'good' }], tag: { 'us:11': ['FREE', 'good'], 'them:2': 'LATE' },
+        head: "Switched. They're on the wrong side.", sub: 'Your 11 runs onto it with nobody near.', cam: { at: [11, 15], zoom: 1.45, tilt: .55 }, wait: 1.2 }],
+      7: steal('7', '11', [43, 26], 'Crowded', 'Their 11 is right on your 7, and their 3 is close. The right side is jammed.')
+    } },
+
+  'Drive at them': {
+    intro: { start: { ball: null, ballAt: [22, 42], us: { 10: [23, 38] }, them: { 6: [30, 47], 10: [18, 49] } },
+      cam: { at: [24, 40], zoom: 1.55, tilt: .5 },
+      steps: [
+        { t: 1.4, pass: 'us:10', us: { 10: [25, 32] }, them: { 6: [28, 40], 10: [19, 45] }, head: 'You win the race to the ball',
+          sub: 'Their midfielders are behind you, and every teammate in front is marked.', cam: { at: [25, 30], zoom: 1.3, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      carry0: [{ t: .6, us: { 9: [30, 15.5] } },
+        { t: .9, them: { 4: [24.5, 18.5] }, tag: { 'them:4': 'STEPS UP' }, head: 'Drive at them', sub: 'Now a defender has to leave someone to stop you…',
+          cam: { at: [26, 19], zoom: 1.4, tilt: .55 } },
+        { t: 1, pass: 'us:9', us: { 9: [31, 10] }, tag: { 'us:9': ['FREE', 'good'] }, head: 'Drive at them', sub: '…and that player is free.', wait: 1.1 }],
+      carry1: [{ t: .5, pass: 'them:4', tag: { 'them:4': 'TACKLE' }, head: 'Into their 4', sub: 'You dribbled right into their 4.',
+        cam: { at: [25, 16], zoom: 1.5, tilt: .45 }, wait: 1.1 }]
+    } },
+
+  'One-two': {
+    intro: { start: { ball: 'us:6', us: { 10: [25, 34], 9: [31, 19] }, them: { 6: [25, 20] } },
+      cam: { at: [25, 38], zoom: 1.55, tilt: .5 },
+      steps: [
+        { t: 1.5, pass: 'us:10', pd: .15, us: { 10: [25, 30], 9: [31, 23.5] }, them: { 6: [25, 25.5] }, tag: { 'them:6': 'PRESS' },
+          head: 'Their 6 runs at you', sub: 'And your 9 drops in right beside their 6.', cam: { at: [27, 27], zoom: 1.55, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      9: [{ t: .8, us: { 10: [20.5, 24] }, them: { 6: [26.5, 27] }, head: 'Pass…', sub: "To your 9's feet. Now run past their 6…", cam: { at: [25, 25], zoom: 1.5, tilt: .5 } },
+        { t: .9, pass: 'us:10', us: { 10: [21, 19.5] }, tag: { 'us:10': ['ONE-TWO', 'good'], 'them:6': 'BEATEN' }, head: 'Pass and go',
+          sub: '…and the 9 gives it straight back. Their 6 is out of the play.', cam: { at: [24, 22], zoom: 1.45, tilt: .55 }, wait: 1.2 }],
+      carry0: [{ t: .5, pass: 'them:6', tag: { 'them:6': 'TACKLE' }, head: 'Into their 6', sub: 'Their 6 is right there.', cam: { at: [25, 27], zoom: 1.55, tilt: .45 }, wait: 1.1 }]
+    } },
+
+  /* ---- 3. The final pass ---- */
+  'Coming to you': {
+    intro: { start: { ball: 'us:6', us: { 10: [25, 37], 9: [26.3, 17.5] }, them: { 4: [26, 13] } },
+      cam: { at: [25, 40], zoom: 1.55, tilt: .5 },
+      steps: [
+        { t: 1.5, pass: 'us:10', pd: .15, us: { 10: [25, 33], 9: [26, 23] }, them: { 4: [26, 18.5] }, tag: { 'them:4': 'TIGHT' },
+          head: 'Your 9 comes short toward you', sub: "Their 4 is right on the 9's back.", cam: { at: [26, 26], zoom: 1.5, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      9: [{ t: .9, face: { 'us:9': 'down' }, tag: { 'us:9': ['HOLD', 'good'], 'them:4': 'TIGHT' }, head: 'Firm, to feet', sub: 'The 9 holds it up, with their 4 stuck behind.',
+          cam: { at: [26, 25], zoom: 1.55, tilt: .5 } },
+        { t: 1, pass: 'us:10', us: { 10: [24, 29] }, face: { 'us:10': 'up' }, head: 'Lay it off', sub: 'Back to you, facing forward, and you go again.',
+          cam: { at: [25, 27], zoom: 1.45, tilt: .5 }, wait: 1.1 }]
+    } },
+
+  'Running away from you': {
+    intro: { start: { ball: 'us:6', us: { 10: [26, 37], 9: [24, 29] }, them: { 2: [12, 18], 4: [28, 17.5], 3: [38, 18.5] } },
+      cam: { at: [25, 33], zoom: 1.4, tilt: .6 },
+      steps: [
+        { t: 1.6, pass: 'us:10', pd: .2, us: { 10: [26, 33], 9: [23, 25.5] }, them: { 2: [12, 24], 4: [28, 23.5], 3: [38, 24.5] }, chain: [{ ns: ['them:2', 'them:4', 'them:3'], c: 'good' }],
+          head: 'Their defenders push up', sub: 'And your 9 is sprinting in behind them.', cam: { at: [25, 27], zoom: 1.35, tilt: .6 } },
+        { t: 1, cam: 'wide', head: '', chain: [] }] },
+    after: {
+      lead0: [{ t: 1, us: { 9: [20.5, 9] }, them: { 2: [15, 17], 4: [24, 16], 1: [24.5, 5.5] }, chain: [{ ns: ['them:2', 'them:4', 'them:3'], c: 'good' }],
+          hatch: [{ pts: [[4, 8], [46, 8], [46, 23], [4, 23]], c: 'good' }], tag: { 'us:9': ['THROUGH', 'good'] }, head: 'In behind',
+          sub: 'Into the space in front of your 9. Through on goal!', cam: { at: [22, 13], zoom: 1.45, tilt: .6 } },
+        { t: .6, shot: [27, -1.2], air: true, wait: 1.1 }]
+    } },
+
+  'Away from the defender': {
+    intro: { start: { ball: 'us:6', us: { 10: [25, 30], 7: [41, 21] }, them: { 3: [37, 18] } },
+      cam: { at: [26, 32], zoom: 1.5, tilt: .5 },
+      steps: [
+        { t: 1.5, pass: 'us:10', pd: .15, us: { 10: [25, 26], 7: [40, 17] }, them: { 3: [36.5, 13.5] }, head: 'Your 7 is near their box',
+          sub: "Their 3 is on the 7's inside.", cam: { at: [35, 17], zoom: 1.45, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      lead0: [{ t: 1, pass: 'us:9', air: true, pd: .3, us: { 9: [30, 9.5] }, tag: { 'us:7': ['OUTSIDE', 'good'] }, head: 'Away from the defender',
+        sub: "Played to the 7's outside, so their 3 can't reach it. Now the 7 can cross.", cam: { at: [34, 11], zoom: 1.4, tilt: .55 }, wait: 1.1 }]
+    } },
+
+  'The cutback': {
+    intro: { start: { ball: 'us:10', us: { 10: [36, 17], 6: [24, 22], 9: [28, 12.5], 11: [15, 13] }, them: { 3: [40, 21], 4: [23.5, 9], 2: [17.5, 9], 1: [27, 3] } },
+      cam: { at: [36, 16], zoom: 1.55, tilt: .55 },
+      steps: [
+        { t: 1.6, us: { 10: [38, 8], 6: [24, 17], 9: [27, 8], 11: [15, 9] }, them: { 3: [40, 13], 4: [23.5, 5.5], 2: [17.5, 5], 1: [29, 3] },
+          head: 'You dribble into their box', sub: 'Their defenders run back toward their goal.', cam: { at: [32, 9], zoom: 1.45, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      6: [{ t: .7, shot: [26, -1.2], air: true, tag: { 'us:6': ['CUTBACK', 'good'] }, head: 'The cutback',
+        sub: 'Their defenders ran back toward goal, so the space was at the edge of the box. Goal!', cam: { at: [25, 10], zoom: 1.4, tilt: .55 }, wait: 1.2 }],
+      9: steal('9', '4', [25, 6.5], 'Marked', 'Their 4 is right on your 9, and their keeper is close.')
+    } },
+
+  'Who is onside?': {
+    intro: { start: { ball: 'us:6', us: { 10: [26, 34], 9: [29, 19], 11: [9.5, 24] }, them: { 2: [14, 17], 4: [25, 16], 3: [36, 17] } },
+      cam: { at: [25, 36], zoom: 1.45, tilt: .55 },
+      steps: [
+        { t: 1.6, pass: 'us:10', pd: .15, us: { 10: [26, 30], 9: [28, 15], 11: [10, 21] }, them: { 2: [14, 20], 4: [25, 19], 3: [36, 20] },
+          chain: [{ ns: ['them:2', 'them:4', 'them:3'], c: 'good' }], head: 'Your 9 and 11 both want it', sub: 'Check the line first.', cam: { at: [22, 22], zoom: 1.35, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '', chain: [] }] },
+    after: {
+      lead0: [{ t: 1, us: { 11: [14, 6] }, chain: [{ ns: ['them:2', 'them:4', 'them:3'], c: 'good' }], marks: [{ ring: 'us:9', c: 'bad' }],
+        tag: { 'us:11': ['ONSIDE', 'good'], 'us:9': 'OFFSIDE' }, head: 'Check the line', sub: 'Your 9 was offside, but your 11 timed the run.',
+        cam: { at: [17, 12], zoom: 1.4, tilt: .55 }, wait: 1.2 }],
+      9: offside('9', 19, 'Your 9 is past their last defender.'),
+      lead1: offside('9', 19, 'Your 9 is past their last defender.')
+    } },
+
+  /* ---- 4. Shoot or pass ---- */
+  'Edge of the box': [{
+    intro: { start: { ball: 'us:6', us: { 10: [24, 22] }, them: { 6: [29, 29] } },
+      cam: { at: [25, 28], zoom: 1.55, tilt: .55 },
+      steps: [
+        { t: 1.4, pass: 'us:10', pd: .15, us: { 10: [25, 18] }, them: { 6: [28, 25] }, head: 'You get it at the edge of their box',
+          sub: 'With space, and their defenders a few yards away.', cam: { at: [25, 15], zoom: 1.5, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      shoot: say('Goal!', 'Space at the edge of the box means shoot, before they close you down.', { at: [25, 8], zoom: 1.4, tilt: .55 }, { tag: { 'us:10': ['GOAL', 'good'] }, wait: 1.3 }),
+      carry0: [{ t: .8, them: { 6: [27.5, 15.5] }, tag: { 'them:6': 'PRESS' }, head: 'Okay, but shoot sooner', sub: 'Their 6 closes you down while you dribble.',
+        cam: { at: [25, 13], zoom: 1.5, tilt: .5 }, wait: 1.1 }],
+      9: steal('9', '4', [30.5, 8], 'Marked', 'Their 4 is on your 9, and you had a clear shot.')
+    } }, {
+    // the second "Edge of the box" (chapter 6): arrive for the pullback
+    intro: { start: { ball: 'us:7', us: { 7: [43, 14], 9: [30, 12], 11: [16, 15], 10: [28, 29] }, them: { 4: [24, 11], 2: [17, 9], 3: [39, 7] } },
+      cam: { at: [40, 14], zoom: 1.55, tilt: .55 },
+      steps: [
+        { t: 1.6, us: { 7: [44, 6], 9: [30, 6.5], 11: [15, 9], 10: [29, 25] }, them: { 4: [26.5, 6], 2: [17.5, 5], 3: [40, 2.5] }, head: 'Your 7 reaches the end line',
+          sub: 'Your 9 goes near post, your 11 back post. Where do you go?', cam: { at: [36, 10], zoom: 1.4, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .7, shot: [27, -1.2], air: true, tag: { 'us:10': ['LATE', 'good'] }, head: 'Arrive at the edge',
+        sub: 'Everyone ran at the goal, so the pullback is yours. Goal!', cam: { at: [25, 8], zoom: 1.4, tilt: .55 }, wait: 1.2 }],
+      zone1: [{ t: 1, pass: 'them:4', air: true, head: 'Too crowded', sub: 'The goal mouth is jammed, and their 4 clears it.', cam: { at: [26, 6], zoom: 1.45, tilt: .5 } },
+        { t: 1, pass: 'them:10', air: true, wait: 1 }]
+    } }],
+
+  'Their 4 stepped out': {
+    intro: { start: { ball: 'us:10', us: { 10: [25, 25] }, them: { 4: [23.5, 11] } },
+      cam: { at: [25, 22], zoom: 1.55, tilt: .55 },
+      steps: [
+        { t: 1.4, us: { 10: [25, 20] }, them: { 4: [23, 15.5] }, tag: { 'them:4': 'BLOCK' }, head: 'You line up a shot',
+          sub: 'And their 4 steps out to block it. Look at your 9.', cam: { at: [25, 16], zoom: 1.5, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      9: [{ t: .7, shot: [27.5, -1.2], tag: { 'us:9': ['FREE', 'good'], 'them:4': 'LEFT IT' }, head: 'Their 4 left your 9',
+        sub: 'Their 4 stepped out to block you, so your 9 was free behind. Goal!', cam: { at: [26, 9], zoom: 1.45, tilt: .55 }, wait: 1.2 }],
+      shoot: { replace: true, steps: [
+        { t: .45, pass: 'them:4', tag: { 'them:4': 'BLOCK' }, head: 'Blocked', sub: 'Their 4 stepped out right in front of you. Your 9 was free behind.',
+          cam: { at: [24, 17], zoom: 1.55, tilt: .5 } },
+        { t: 1, pass: 'them:6', air: true, wait: 1 }] }
+    } },
+
+  'Too far out': {
+    intro: { start: { ball: 'us:10', us: { 10: [24, 34.5], 7: [43, 26] } },
+      cam: { at: [25, 33], zoom: 1.5, tilt: .55 },
+      steps: [
+        { t: 1.4, us: { 10: [25, 29], 7: [44, 22] }, head: 'Nobody is pressing you', sub: 'Nearly 30 yards out. Shoot, or something better?',
+          cam: { at: [28, 26], zoom: 1.4, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      7: [{ t: 1, us: { 7: [44, 14] }, tag: { 'us:7': ['FREE', 'good'] }, head: 'Find the free 7',
+        sub: 'From 30 yards a shot rarely beats the keeper. The 7 drives at their box instead.', cam: { at: [40, 17], zoom: 1.4, tilt: .55 }, wait: 1.1 }],
+      shoot: say('Too far', 'The keeper has it easily. Your 7 was free on the wing.', { at: [25, 6], zoom: 1.4, tilt: .5 })
+    } },
+
+  'Keeper off the line': {
+    intro: { start: { ball: 'us:7', us: { 10: [23, 26] }, them: { 1: [27, 4] } },
+      cam: { at: [36, 10], zoom: 1.5, tilt: .55 },
+      steps: [
+        { t: 1, pass: 'them:1', air: true, pd: .1, them: { 1: [31, 7.5] }, tag: { 'them:1': 'OUT' }, head: 'Your 7 crosses', sub: 'Their keeper comes out to punch it…',
+          cam: { at: [31, 9], zoom: 1.5, tilt: .55 } },
+        { t: 1.1, pass: 'us:10', air: true, us: { 10: [24, 22] }, head: 'It drops to you!', sub: 'And their keeper is out of position.', cam: { at: [27, 15], zoom: 1.35, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      shoot: say('Goal!', "Their keeper was out of position, and you didn't wait.", { at: [26, 8], zoom: 1.4, tilt: .55 }, { tag: { 'us:10': ['GOAL', 'good'] }, wait: 1.3 }),
+      9: [{ t: 1, them: { 1: [26, 3] }, tag: { 'them:1': 'BACK' }, head: 'Too slow', sub: 'Every extra pass gives their keeper time to get back.',
+        cam: { at: [27, 8], zoom: 1.4, tilt: .5 }, wait: 1.1 }]
+    } },
+
+  'Lay it off': {
+    intro: { start: { ball: 'us:10', us: { 10: [26, 22], 6: [24, 33] }, them: { 6: [29, 26], 4: [25, 9.5] } },
+      cam: { at: [26, 22], zoom: 1.55, tilt: .55 },
+      steps: [
+        { t: 1.5, us: { 10: [26, 17], 6: [24, 26] }, them: { 6: [29, 21], 4: [26, 12.5] }, tag: { 'them:4': 'BLOCK', 'them:6': 'TIGHT' },
+          head: 'Boxed in at the edge', sub: 'Their 4 in front, their 6 on your back. Your 6 is arriving behind you.', cam: { at: [26, 18], zoom: 1.5, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      6: [{ t: .7, shot: [22.5, -1.2], air: true, tag: { 'us:6': ['LATE', 'good'] }, head: 'Lay it off',
+        sub: 'Boxed in, so you laid it off to your 6, arriving with a clear shot. Goal!', cam: { at: [24, 12], zoom: 1.4, tilt: .55 }, wait: 1.2 }],
+      shoot: { replace: true, steps: [
+        { t: .45, pass: 'them:4', tag: { 'them:4': 'BLOCK' }, head: 'Blocked', sub: 'Their 4 was right in front of you. Your 6 was arriving with a clear shot.',
+          cam: { at: [26, 15], zoom: 1.55, tilt: .5 } },
+        { t: 1, pass: 'them:10', air: true, wait: 1 }] }
+    } },
+
+  /* ---- 5. Defend from the front ---- */
+  'Mark their 6': {
+    intro: { start: { ball: 'them:1', us: { 9: [25, 26], 10: [30, 39] }, them: { 4: [26, 12], 6: [27, 33] } },
+      cam: { at: [25, 12], zoom: 1.5, tilt: .5 },
+      steps: [
+        { t: 1.6, pass: 'them:4', pd: .1, us: { 9: [25, 21], 10: [31, 36] }, them: { 4: [25, 16], 6: [24, 30] }, tag: { 'us:9': ['PRESS', 'good'] },
+          head: 'Their 4 has it, and your 9 presses', sub: 'Their 6 is free in front of your 9.', cam: { at: [25, 22], zoom: 1.45, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .9, marks: [{ l: ['them:4', 'them:6'], c: 'bad', x: true }], tag: { 'us:10': ['MARK', 'good'], 'us:9': ['PRESS', 'good'] }, head: 'Their 6 is marked',
+          sub: 'Your 9 presses their 4, and you are right behind their 6. No way to turn.', cam: { at: [25, 25], zoom: 1.4, tilt: .5 } },
+        { t: 1, pass: 'them:1', head: 'Nowhere to go', sub: 'They have to go all the way back to their keeper.', wait: 1 }],
+      zone1: [{ t: 1, pass: 'them:6', air: true, tag: { 'them:6': 'FREE' }, head: 'Their 6 is free', sub: 'Their 4 plays it over your 9 to their 6…', cam: { at: [25, 30], zoom: 1.4, tilt: .5 } },
+        { t: 1, them: { 6: [23, 37] }, head: 'Their 6 is free', sub: '…who turns and runs at our midfield.', wait: 1 }],
+      zone2: [{ t: 1, pass: 'them:6', air: true, tag: { 'them:6': 'FREE' }, head: 'Two on one', sub: 'Your 9 already had their 4, so their 6 is free…', cam: { at: [25, 30], zoom: 1.4, tilt: .5 } },
+        { t: 1, them: { 6: [23, 37] }, head: 'Two on one', sub: '…and turns to run at our midfield.', wait: 1 }]
+    } },
+
+  'Shadow their 6': {
+    intro: { start: { ball: 'them:4', us: { 7: [41, 30], 10: [24, 37] }, them: { 3: [36, 15], 6: [27, 31] } },
+      cam: { at: [30, 16], zoom: 1.5, tilt: .5 },
+      steps: [
+        { t: 1.6, pass: 'them:3', pd: .1, us: { 7: [40, 26], 10: [22, 34] }, them: { 3: [37, 18], 6: [26, 28] }, tag: { 'us:7': ['PRESS', 'good'] },
+          head: 'Their 3 has it on the right', sub: 'And your 7 is pressing.', cam: { at: [32, 23], zoom: 1.45, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .9, marks: [{ l: ['them:3', 'them:6'], c: 'bad', x: true }], tag: { 'us:10': ['BLOCKING', 'good'], 'us:7': ['PRESS', 'good'] }, head: 'In the lane',
+          sub: 'Your 7 presses their 3, and you stand right in the pass to their 6.', cam: { at: [31, 23], zoom: 1.45, tilt: .5 } },
+        { t: 1, pass: 'them:4', head: 'Nowhere to go', sub: 'Their 3 has to go backward.', wait: 1 }],
+      zone1: [{ t: 1, pass: 'them:6', head: 'Marking works', sub: 'But the ball still reaches their 6. Standing in the lane stops it sooner.',
+        cam: { at: [28, 27], zoom: 1.4, tilt: .5 }, wait: 1.1 }],
+      zone2: [{ t: 1, pass: 'them:6', air: true, tag: { 'them:6': 'FREE' }, head: 'Two on the ball', sub: 'Your 7 already had their 3. Now their 6 is free.',
+        cam: { at: [28, 27], zoom: 1.4, tilt: .5 }, wait: 1.1 }]
+    } },
+
+  'Win it back': {
+    intro: { start: { ball: 'us:10', us: { 10: [30, 26] }, them: { 6: [25, 31] } },
+      cam: { at: [28, 27], zoom: 1.65, tilt: .5 },
+      steps: [
+        { t: .8, us: { 10: [28.5, 27.5] }, them: { 6: [26.5, 29.5] }, tag: { 'them:6': 'TACKLE' }, head: 'You run into their 6', sub: '' },
+        { t: .6, pass: 'them:6', us: { 10: [31, 24] }, them: { 6: [26, 30] }, head: 'You lose it', sub: 'Their 6 takes it right off you.' },
+        { t: 1, untag: true, cam: 'wide' }] },
+    after: {
+      zone0: [{ t: .8, us: { 6: [24, 36] }, tag: { 'us:10': ['PRESS', 'good'], 'us:6': ['PRESS', 'good'] }, head: 'Win it right back',
+          sub: 'You lost it, so you hunt it back, with your 6 closing in front.', cam: { at: [26, 31], zoom: 1.55, tilt: .5 } },
+        { t: .5, pass: 'us:10', tag: { 'us:10': ['WON IT', 'good'] }, wait: 1.1 }],
+      zone1: [{ t: 1, pass: 'them:10', head: 'Watching', sub: 'You stood and watched, so they had time to look up and pass.', cam: { at: [23, 35], zoom: 1.35, tilt: .5 }, wait: 1.1 }],
+      zone2: [{ t: 1, pass: 'them:10', head: 'Dropped off', sub: 'Running all the way back gave them time to look up and pass.', cam: { at: [23, 35], zoom: 1.35, tilt: .5 }, wait: 1.1 }]
+    } },
+
+  'Track the run': {
+    intro: { start: { ball: 'them:4', us: { 10: [31, 30.5] }, them: { 3: [36, 30], 6: [26, 28.5] } },
+      cam: { at: [33, 22], zoom: 1.45, tilt: .5 },
+      steps: [
+        { t: 1.6, pass: 'them:3', pd: .1, us: { 10: [29, 27] }, them: { 3: [40, 32], 6: [28, 32] }, head: 'Their 3 has it',
+          sub: 'Watch their 6. A run is coming past you.', cam: { at: [33, 29], zoom: 1.4, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .6, them: { 6: [27, 40] }, head: 'Run tracked', sub: 'You went with their 6 all the way…', cam: { at: [27, 43], zoom: 1.4, tilt: .5 } },
+        { t: .8, pass: 'us:10', air: true, tag: { 'us:10': ['WON IT', 'good'] }, head: 'Run tracked', sub: '…so the pass into the run is yours.', wait: 1.1 }],
+      zone1: [{ t: 1.1, them: { 6: [25.5, 44] }, pass: 'them:6', pd: .3, tag: { 'them:6': 'FREE' }, head: 'Left behind',
+        sub: 'Their 6 ran right past you, into the space behind our midfield.', cam: { at: [27, 41], zoom: 1.35, tilt: .5 }, wait: 1.1 }],
+      zone2: [{ t: 1.1, them: { 6: [25.5, 44] }, pass: 'them:6', pd: .3, tag: { 'them:6': 'FREE' }, head: 'Ball watching',
+        sub: 'Your 7 had their 3. Their 6 was the danger, running into the space behind our midfield.', cam: { at: [28, 40], zoom: 1.3, tilt: .5 }, wait: 1.1 }]
+    } },
+
+  "Don't get pulled wide": {
+    intro: { start: { ball: 'them:4', us: { 11: [14, 33], 10: [17, 37] }, them: { 2: [12, 20], 6: [25, 31] } },
+      cam: { at: [18, 18], zoom: 1.5, tilt: .5 },
+      steps: [
+        { t: 1.6, pass: 'them:2', pd: .1, us: { 11: [13, 29.5], 10: [13, 35.5] }, them: { 2: [12, 24], 6: [24, 28] }, tag: { 'us:11': ['PRESS', 'good'] },
+          head: 'Their 2 has it on your left', sub: 'Your 11 presses. And you drifted out wide.', cam: { at: [16, 28], zoom: 1.45, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .9, us: { 11: [12.6, 27] }, marks: [{ l: ['them:2', 'them:6'], c: 'bad', x: true }], tag: { 'us:10': ['BLOCKING', 'good'], 'us:11': ['PRESS', 'good'] },
+          head: 'Trapped on the sideline', sub: 'Your 11 presses their 2, and you block the pass into their 6.', cam: { at: [16, 26], zoom: 1.45, tilt: .5 } },
+        { t: .5, pass: 'us:11', tag: { 'us:11': ['WON IT', 'good'] }, wait: 1.1 }],
+      zone2: [{ t: 1, pass: 'them:6', tag: { 'them:6': 'FREE' }, head: 'Pulled wide', sub: 'Two of you out wide leaves their 6 free in the middle…',
+          cam: { at: [20, 28], zoom: 1.4, tilt: .5 } },
+        { t: 1, them: { 6: [24, 34] }, head: 'Pulled wide', sub: '…and their 6 turns and goes.', wait: 1 }]
+    } },
+
+  /* ---- 6. Arrive in the box ---- */
+  'Back post': {
+    intro: { start: { ball: 'us:7', us: { 7: [44.5, 21], 9: [28, 16], 10: [28, 24] }, them: { 4: [27, 9] } },
+      cam: { at: [42, 20], zoom: 1.5, tilt: .55 },
+      steps: [
+        { t: 1.5, us: { 7: [44, 12], 9: [30, 9], 10: [25, 20] }, them: { 4: [28, 5.5] }, head: 'Your 7 is about to cross',
+          sub: 'Your 9 attacks the near post. Where do you go?', cam: { at: [35, 12], zoom: 1.45, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: { replace: true, steps: [
+        { t: 1.1, pass: 'us:10', air: true, pd: .1, head: 'Attack the back post', sub: 'Nobody was there, so you got there. The cross flies past the near post…',
+          cam: { at: [24, 7], zoom: 1.35, tilt: .55 } },
+        { t: .6, shot: [24, -1.2], tag: { 'us:10': ['BACK POST', 'good'] }, sub: '…and it is yours. Goal!', head: 'Attack the back post', wait: 1.2 }] },
+      zone1: [{ t: 1, pass: 'them:1', air: true, head: 'Same spot as the 9', sub: 'Two of you at the near post and nobody at the back. Their keeper takes it.',
+        cam: { at: [29, 6], zoom: 1.45, tilt: .55 }, wait: 1.1 }]
+    } },
+
+  'Follow the shot': {
+    intro: { start: { ball: 'us:6', us: { 9: [27, 18], 10: [21, 23] } },
+      cam: { at: [25, 26], zoom: 1.5, tilt: .55 },
+      steps: [
+        { t: 1.4, pass: 'us:9', pd: .15, us: { 9: [28, 14], 10: [19, 19] }, head: 'Your 9 is about to shoot', sub: 'Where do you go?', cam: { at: [25, 14], zoom: 1.45, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .6, shot: [25.5, 3], head: 'Follow the shot', sub: 'The keeper can only push it out…', cam: { at: [24, 6], zoom: 1.5, tilt: .55 } },
+        { t: .45, pass: 'us:10' },
+        { t: .45, shot: [23, -1.2], tag: { 'us:10': ['REBOUND', 'good'] }, head: 'Follow the shot', sub: '…and you are first to the rebound. Goal!', wait: 1.2 }],
+      zone1: [{ t: .6, shot: [25.5, 3], head: 'Watching', sub: 'The keeper pushes it out…', cam: { at: [24, 8], zoom: 1.45, tilt: .55 } },
+        { t: .5, pass: 'them:4', head: 'Watching', sub: '…and their defenders get there first.', wait: 1.1 }]
+    } },
+
+  'Out of the way': {
+    intro: { start: { ball: 'us:6', us: { 6: [25, 36], 10: [24, 24] } },
+      cam: { at: [25, 32], zoom: 1.5, tilt: .55 },
+      steps: [
+        { t: 1.4, us: { 6: [25, 30], 10: [25, 21] }, head: 'Your 6 is about to shoot', sub: "And you're standing right in front of the 6.", cam: { at: [25, 24], zoom: 1.45, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .7, shot: [22.5, -1.2], tag: { 'us:10': ['FOLLOW', 'good'] }, head: 'Out of the way',
+        sub: 'You stepped out of the line of the shot, ready to follow it in. Goal!', cam: { at: [24, 12], zoom: 1.35, tilt: .55 }, wait: 1.2 }],
+      zone1: [{ t: .7, shot: [22.5, -1.2], tag: { 'us:10': ['FOLLOW', 'good'] }, head: 'Out of the way',
+        sub: 'You stepped out of the line of the shot, ready to follow it in. Goal!', cam: { at: [26, 12], zoom: 1.35, tilt: .55 }, wait: 1.2 }],
+      zone2: [{ t: .45, pass: 'us:10', head: 'In the way', sub: "You're standing right in the way of your 6's shot.", cam: { at: [25, 24], zoom: 1.55, tilt: .5 }, wait: 1.2 }]
+    } },
+
+  'Run past your 9': {
+    intro: { start: { ball: 'us:7', us: { 9: [25, 16.5], 10: [26, 34] }, them: { 4: [25, 11.5] } },
+      cam: { at: [38, 22], zoom: 1.5, tilt: .55 },
+      steps: [
+        { t: 1.5, pass: 'us:9', pd: .2, us: { 9: [25, 20], 10: [26, 30] }, them: { 4: [25, 15.5] }, tag: { 'them:4': 'TIGHT' }, head: 'Your 9 holds it up',
+          sub: 'Facing away from goal, with their 4 tight behind.', cam: { at: [25, 22], zoom: 1.5, tilt: .55 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .7, shot: [27.5, -1.2], tag: { 'us:10': ['IN ON GOAL', 'good'] }, head: 'Run past your 9',
+        sub: 'Into the gap between their 4 and 3. The 9 lays it off, and you are in on goal. Goal!', cam: { at: [28, 10], zoom: 1.45, tilt: .55 }, wait: 1.2 }],
+      zone2: steal('9', '4', [25, 17.5], 'Standing still', 'Your 9 needs help now, and their 4 nicks it.')
+    } },
+};
+window.RIDDLE_LIB.withMotion(RIDDLES, MOTION);
 window.RIDDLE_LIB.defineSet({ me: '10', chapters: CHAPTERS, riddles: RIDDLES });
 })();

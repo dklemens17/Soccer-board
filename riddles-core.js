@@ -21,6 +21,22 @@ window.RIDDLE_SETS = window.RIDDLE_SETS || {};
 LIB.P = (g, t, w, extra) => Object.assign({ g, t, w }, extra || {});
 LIB.TOO_SAFE = w => LIB.P(1, 'Too safe', w);
 LIB.FAR = LIB.P(0, 'Out of range', 'Way too far from goal. Keep the ball and build the attack.');
+// motion helpers for the plays at the bottom of each position's file (format: riddles-motion.js)
+// a teammate gets the ball, and one of theirs steps in and takes it
+LIB.steal = (who, them, to, head, sub) => [
+  { t: .8, them: { [them]: to }, tag: { ['them:' + them]: 'TACKLE' }, head, sub, cam: { at: 'us:' + who, zoom: 1.5, tilt: .45 } },
+  { t: .5, pass: 'them:' + them, wait: 1.1 }];
+// a player who ran past their last defender: draw the offside line
+LIB.offside = (me, y, sub) => [{ t: .6, marks: [{ l: [[0, y], [50, y]], c: 'bad' }], tag: { ['us:' + me]: 'OFFSIDE' }, head: 'Offside',
+  sub: sub || "You're past their last defender.", cam: { at: [25, y - 2], zoom: 1.35, tilt: .5 }, wait: 1.2 }];
+// just a caption over the field, with optional tags and marks
+LIB.say = (head, sub, cam, extra) => [Object.assign({ t: .6, head, sub, cam, wait: 1.2 }, extra || {})];
+// attach each play to its puzzle by title
+// (two puzzles with the same title: give a list, one play per puzzle in order)
+LIB.withMotion = (riddles, motion) => { const seen = {}; riddles.forEach(r => {
+  const m = motion[r.title], i = seen[r.title] = (seen[r.title] || 0) + 1;
+  const pick = Array.isArray(m) ? m[i - 1] : m; if (pick) r.motion = pick;
+}); };
 
 window.POSITIONS = [
   { n: '1',  name: 'Keeper',          title: 'the keeper',  file: 'riddles-gk.js' },
@@ -82,7 +98,7 @@ function mmotion(mo) {
   else if (mo.intro) {
     const st = mo.intro.start || {};
     c.intro = Object.assign({}, mo.intro, { steps: (mo.intro.steps || []).map(mstep),
-      start: Object.assign({}, st, st.us ? { us: mteam(st.us) } : {}, st.them ? { them: mteam(st.them) } : {}, st.ball ? { ball: mref(st.ball) } : {}) });
+      start: Object.assign({}, st, st.us ? { us: mteam(st.us) } : {}, st.them ? { them: mteam(st.them) } : {}, st.ball ? { ball: mref(st.ball) } : {}, st.ballAt ? { ballAt: mp(st.ballAt) } : {}) });
     if (mo.intro.cam) c.intro.cam = Object.assign({}, mo.intro.cam, mo.intro.cam.at != null ? { at: mref(mo.intro.cam.at) } : {});
   }
   if (mo.after) {

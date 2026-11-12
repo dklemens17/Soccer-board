@@ -290,6 +290,7 @@ window.RiddleMotion = function (api) {
       const finalUs = clone(snap.us), finalThem = clone(snap.them), holder = snap.spot ? null : snap.ball;
       for (const team of ['us', 'them']) Object.assign(S[team], clone((intro.start || {})[team] || {}));
       if (intro.start && 'ball' in intro.start) S.ball.h = intro.start.ball;
+      if (intro.start && intro.start.ballAt) S.ball.at = intro.start.ballAt.slice();
       if (intro.start && intro.start.dir) Object.assign(S.dir, intro.start.dir);
       placeAll();
       if (intro.cam) camTo(intro.cam, 0, posOf);
