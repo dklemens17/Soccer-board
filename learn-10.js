@@ -189,5 +189,27 @@ const KEYS = [
     ]
   }
 ];
+// Labels under players for the moment each step shows (format: learn-core.js, LEARN_LIB.withTags)
+const TAGS = {
+  'Find the pocket': {
+    2: { 'us:10': ['MARKED', 'bad'] }, '2.fix.0': { 'us:10': ['POCKET', 'good'] }, '2.fix.2': { 'us:10': ['TURNED', 'good'] },
+    '2.after': { 'us:10': ['POCKET', 'good'] } },
+  'Open up on the half-turn': {
+    1: { 'us:9': ['RUN', 'good'] }, 3: { 'us:10': ['FACING BACK', 'bad'], 'them:6': 'PRESS' },
+    '3.fix.0': { 'us:10': ['HALF-TURN', 'good'] }, '3.fix.1': { 'us:9': ['THROUGH', 'good'] }, '3.fix.3': { 'us:9': ['GOAL', 'good'] },
+    '3.after': { 'us:10': ['HALF-TURN', 'good'] } },
+  'Arrive late at the top of the box': {
+    2: { 'them:6': 'FREE' }, 4: { 'us:10': ['TOO EARLY', 'bad'] },
+    '4.fix.0': { 'us:10': ['WAITS', 'good'] }, '4.fix.2': { 'us:10': ['GOAL', 'good'] }, '4.after': { 'us:10': ['ARRIVED LATE', 'good'] } },
+  'Pass and go': {
+    0: { 'them:6': 'PRESS' }, 2: { 'us:10': ['STANDS', 'bad'] }, 3: { 'them:4': 'TACKLE' },
+    '5.fix.0': { 'them:6': 'PRESS' }, '5.fix.2': { 'us:10': ['GO', 'good'], 'them:6': 'BEATEN' }, '5.fix.4': { 'us:10': ['GOAL', 'good'] },
+    '5.after': { 'us:10': ['PASS AND GO', 'good'] } },
+  'Press first': {
+    0: { 'us:9': ['PRESS', 'good'] }, 2: { 'them:6': 'FREE' }, 3: { 'us:10': ['JOGGED BACK', 'bad'] },
+    '3.fix.0': { 'us:9': ['PRESS', 'good'], 'us:10': ['BLOCKS', 'good'] }, '3.fix.1': { 'them:6': 'BLOCKED' },
+    '3.fix.3': { 'them:2': 'TRAPPED' }, '3.fix.4': { 'us:11': ['WON IT', 'good'] }, '3.after': { 'us:10': ['PRESSED', 'good'] } }
+};
+window.LEARN_LIB.withTags(KEYS, TAGS);
 window.LEARN_LIB.define({ me: '10', keys: KEYS });
 })();

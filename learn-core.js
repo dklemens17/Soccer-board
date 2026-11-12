@@ -22,12 +22,15 @@
        shot: [x, y], goal: true,  // a shot; goal plays the crowd
        face: { 'us:6': 'down' },  // which way a player faces (up, down, left, right), for where the ball sits
        look: ['us:6', [x, y]],    // flash a "look over the shoulder" cone toward that spot
-       say: 'Caption while this step plays.',
+       say: 'Caption while this step plays.',  // shown on the field under the key's name
+       tag: { 'them:9': 'PRESS', 'us:6': ['FREE', 'good'] }, untag: true,  // labels under players (null removes one)
+       cam: { at: 'us:6' | [x, y], zoom: 1.4, tilt: .5 } | 'wide',  // otherwise the camera follows the ball and the player
        snap: 's0' }               // remember the field before this step, so a mistake can rewind here
 
    A freeze frame:
      { freeze: 'good' | 'bad', head: 'See what the 6 just did?' (default), text: '...',
        marks: [ ...marks ], trail: false (hide the auto trail of the player's run and passes),
+       tag: { 'them:9': 'PRESS' } (labels for this timeout; players in the marks or tags stay bright, the rest fade),
        // for 'bad' only:
        ask: 'What should the 6 have done instead?', options: [ { t: '...', ok: true, why: '...' }, ... ],
        rewind: 's0', fix: [ ...steps showing the better choice ], after: { text, marks } }
@@ -84,6 +87,8 @@ function mstep(s) {
   if (s.look) c.look = s.look.map(mref);
   if (s.face) { c.face = {}; for (const k in s.face) { const f = s.face[k]; c.face[mref(k)] = isPt(f) ? [-f[0], f[1]] : (FACE[f] || f); } }
   if (s.marks) c.marks = s.marks.map(mmark);
+  if (s.tag) { c.tag = {}; for (const k in s.tag) c.tag[mref(k)] = s.tag[k]; }
+  if (s.cam && s.cam !== 'wide' && s.cam.at != null) c.cam = Object.assign({}, s.cam, { at: mref(s.cam.at) });
   if (s.fix) c.fix = s.fix.map(mstep);
   if (s.after) c.after = mstep(s.after);
   return c;
@@ -96,6 +101,20 @@ function mkey(k) {
 }
 
 window.LEARN_LIB = {
+  // labels under players, kept in a table at the bottom of each file: { 'Key name': { path: { 'them:9': 'PRESS' } } }
+  // where a path is a step's index in the key ('2'), or inside a mistake's replay ('4.fix.1') or its last timeout ('4.after')
+  withTags(keys, tags) {
+    for (const k of keys) {
+      const t = tags[k.key]; if (!t) continue;
+      for (const path in t) {
+        let cur = k.steps;
+        for (const p of String(path).split('.')) cur = cur == null ? null : p === 'fix' ? cur.fix : p === 'after' ? (cur.after = cur.after || {}) : cur[+p];
+        if (!cur || Array.isArray(cur)) throw new Error(`Learn tags: no step ${path} in "${k.key}"`);
+        cur.tag = Object.assign({}, cur.tag || {}, t[path]);
+      }
+    }
+    return keys;
+  },
   define(def) {
     window.LEARN_SETS[def.me] = { me: def.me, keys: fillText(def.keys, TEXT_LEFT) };
     if (def.mirrorTo) window.LEARN_SETS[def.mirrorTo] = { me: def.mirrorTo, keys: fillText(def.keys.map(mkey), TEXT_RIGHT) };

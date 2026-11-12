@@ -176,5 +176,24 @@ const KEYS = [
     ]
   }
 ];
+// Labels under players for the moment each step shows (format: learn-core.js, LEARN_LIB.withTags)
+const TAGS = {
+  'Set your angle': {
+    2: { 'us:1': ['OFF ANGLE', 'bad'] }, '2.fix.0': { 'us:1': ['SHIFTS', 'good'] }, '2.fix.1': { 'us:1': ['SAVED', 'good'] },
+    '2.after': { 'us:1': ['SET', 'good'] } },
+  'Sweep behind our backs': {
+    2: { 'them:9': 'FIRST' }, 4: { 'us:1': ['TOO DEEP', 'bad'] },
+    '4.fix.0': { 'us:1': ['STEPPED UP', 'good'] }, '4.fix.1': { 'us:1': ['SWEEPS', 'good'] }, '4.after': { 'us:1': ['SWEEPER', 'good'] } },
+  'Start the attack fast': {
+    1: { 'us:1': ['HOLDS IT', 'bad'] }, 3: { 'them:6': 'WON IT' }, 4: { 'us:2': ['WAS FREE', 'good'] },
+    '4.fix.0': { 'us:2': ['FREE', 'good'] }, '4.fix.1': { 'us:2': ['AWAY', 'good'] }, '4.after': { 'us:1': ['FAST', 'good'] } },
+  'Close down the breakaway': {
+    2: { 'us:1': ['ON THE LINE', 'bad'] }, '2.fix.0': { 'us:1': ['RUSHES OUT', 'good'] }, '2.fix.1': { 'us:1': ['BIG', 'good'] },
+    '2.fix.2': { 'us:1': ['SAVED', 'good'] }, '2.after': { 'us:1': ['SAVED', 'good'] } },
+  'Own your 6-yard box': {
+    1: { 'us:1': ['ON THE LINE', 'bad'] }, 2: { 'them:9': 'HEADER' },
+    '3.fix.1': { 'us:1': ['CAUGHT', 'good'] }, '3.after': { 'us:1': ['MY BALL', 'good'] } }
+};
+window.LEARN_LIB.withTags(KEYS, TAGS);
 window.LEARN_LIB.define({ me: '1', keys: KEYS });
 })();

@@ -183,5 +183,26 @@ const KEYS = [
     ]
   }
 ];
+// Labels under players for the moment each step shows (format: learn-core.js, LEARN_LIB.withTags)
+const TAGS = {
+  'Push the winger down the line': {
+    2: { 'us:3': ['DIVES IN', 'bad'] }, 3: { 'them:7': 'PAST' },
+    '6.fix.0': { 'us:3': ['INSIDE', 'good'] }, '6.fix.2': { 'us:3': ['WON IT', 'good'] }, '6.after': { 'us:3': ['PUSHED WIDE', 'good'] } },
+  'Tuck in': {
+    1: { 'us:3': ['TOO WIDE', 'bad'] }, 2: { 'them:9': 'FREE' },
+    '4.fix.0': { 'us:3': ['TUCKS IN', 'good'] }, '4.fix.1': { 'us:3': ['FIRST', 'good'] }, '4.after': { 'us:3': ['TUCKED IN', 'good'] } },
+  'Support the winger': {
+    0: { 'them:2': 'PRESS', 'them:10': 'PRESS' }, 1: { 'us:3': ['TOO FAR', 'bad'] }, 2: { 'them:10': 'WON IT' },
+    '4.fix.0': { 'them:2': 'PRESS', 'them:10': 'PRESS', 'us:3': ['SUPPORT', 'good'] }, '4.fix.2': { 'us:6': ['FREE', 'good'] },
+    '4.after': { 'us:3': ['SUPPORT', 'good'] } },
+  'Open up to the field': {
+    1: { 'them:7': 'PRESS' }, 3: { 'us:3': ['FACING OUT', 'bad'], 'us:11': ['FREE', 'good'] },
+    '3.fix.0': { 'us:3': ['OPENS UP', 'good'] }, '3.fix.1': { 'us:11': ['FREE', 'good'] }, '3.after': { 'them:7': 'BEATEN' } },
+  'Recovery run': {
+    1: { 'us:3': ['BEHIND', 'bad'] }, 2: { 'them:7': 'INSIDE' },
+    '4.fix.0': { 'us:3': ['RECOVERS', 'good'] }, '4.fix.1': { 'them:7': 'WIDE' }, '4.fix.2': { 'us:4': ['WON IT', 'good'] },
+    '4.after': { 'us:3': ['INSIDE', 'good'] } }
+};
+window.LEARN_LIB.withTags(KEYS, TAGS);
 window.LEARN_LIB.define({ me: '3', mirrorTo: '2', keys: KEYS });
 })();

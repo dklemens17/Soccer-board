@@ -215,5 +215,27 @@ const KEYS = [
     ]
   }
 ];
+// Labels under players for the moment each step shows (format: learn-core.js, LEARN_LIB.withTags)
+const TAGS = {
+  'Get out of their shadow': {
+    0: { 'them:9': 'PRESS' }, 1: { 'us:6': ['HIDDEN', 'bad'] },
+    '1.fix.0': { 'them:9': 'PRESS', 'us:6': ['IN THE GAP', 'good'] }, '1.after': { 'us:6': ['FREE', 'good'], 'them:9': 'BYPASSED' },
+    5: { 'them:9': 'BEATEN', 'them:7': 'BEATEN', 'them:11': 'BEATEN' } },
+  'Check your shoulder': {
+    2: { 'them:10': 'TACKLE' }, 4: { 'us:6': ['NO LOOK', 'bad'] },
+    '4.fix.0': { 'us:6': ['LOOKS', 'good'], 'them:10': 'CLOSE' }, '4.after': { 'us:6': ['FIRST TIME', 'good'], 'them:10': 'BEATEN' },
+    7: { 'us:6': ['TURNS', 'good'] }, 8: { 'us:6': ['LOOKED', 'good'] } },
+  'Switch the play': {
+    0: { 'them:7': 'PRESS' }, 2: { 'us:6': ['SUPPORT', 'good'] }, 4: { 'them:6': 'CUT' }, 5: { 'us:2': ['WIDE OPEN', 'good'] },
+    '5.fix.1': { 'us:2': ['SPACE', 'good'] }, '5.after': { 'us:2': ['FREE', 'good'] }, 7: { 'us:7': ['FREE', 'good'] } },
+  'Protect the middle': {
+    1: { 'us:6': ['IN THE WAY', 'good'], 'them:9': 'BLOCKED' }, 5: { 'them:10': 'FREE' }, 6: { 'us:6': ['PULLED WIDE', 'bad'] },
+    '6.fix.0': { 'us:2': ['PRESS', 'good'] }, '6.fix.1': { 'us:6': ['IN THE WAY', 'good'] }, '6.after': { 'us:6': ['STAYED', 'good'] } },
+  'Stay home, slow the counter': {
+    1: { 'us:6': ['STAYS HOME', 'good'] }, 2: { 'them:6': 'CUT' }, 4: { 'us:6': ['DIVES IN', 'bad'] }, 5: { 'them:10': 'PAST' },
+    '6.fix.0': { 'them:6': 'CUT' }, '6.fix.1': { 'us:6': ['IN FRONT', 'good'] }, '6.fix.2': { 'us:6': ['JOCKEY', 'good'] },
+    '6.after': { 'us:10': ['BACK', 'good'], 'us:11': ['BACK', 'good'], 'us:3': ['BACK', 'good'] } }
+};
+window.LEARN_LIB.withTags(KEYS, TAGS);
 window.LEARN_LIB.define({ me: '6', keys: KEYS });
 })();

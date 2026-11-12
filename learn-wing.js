@@ -185,5 +185,25 @@ const KEYS = [
     ]
   }
 ];
+// Labels under players for the moment each step shows (format: learn-core.js, LEARN_LIB.withTags)
+const TAGS = {
+  'Stay wide': {
+    2: { 'us:11': ['DRIFTED IN', 'bad'], 'them:2': 'FOLLOWED' }, '2.fix.0': { 'us:11': ['WIDE', 'good'], 'them:2': 'FOLLOWS' },
+    '2.fix.1': { 'us:10': ['FREE', 'good'] }, '2.after': { 'us:11': ['STAYED WIDE', 'good'] } },
+  'Take on your defender': {
+    0: { 'them:2': '1 V 1' }, 1: { 'us:11': ['WAITS', 'bad'] }, 2: { 'them:6': 'HELP' },
+    '4.fix.0': { 'us:11': ['ATTACK', 'good'] }, '4.fix.1': { 'them:2': 'BEATEN' }, '4.fix.4': { 'us:10': ['GOAL', 'good'] },
+    '4.after': { 'us:11': ['TOOK THEM ON', 'good'] } },
+  'Run in behind': {
+    1: { 'them:2': 'TIGHT' }, 2: { 'them:2': 'CUT' },
+    '4.fix.1': { 'us:11': ['IN BEHIND', 'good'] }, '4.fix.4': { 'us:11': ['GOAL', 'good'] }, '4.after': { 'us:11': ['IN BEHIND', 'good'] } },
+  'Attack the far post': {
+    1: { 'us:11': ['TOO WIDE', 'bad'] }, 3: { 'them:2': 'CLEARS' },
+    '4.fix.0': { 'us:11': ['FAR POST', 'good'] }, '4.fix.2': { 'us:11': ['GOAL', 'good'] }, '4.after': { 'us:11': ['FAR POST', 'good'] } },
+  'Track back': {
+    1: { 'them:2': 'RUN', 'us:11': ['WATCHES', 'bad'] }, 2: { 'us:3': ['2 V 1', 'bad'] },
+    '5.fix.1': { 'us:11': ['TRACKS', 'good'], 'them:2': 'RUN' }, '5.after': { 'us:11': ['TRACKED BACK', 'good'] } }
+};
+window.LEARN_LIB.withTags(KEYS, TAGS);
 window.LEARN_LIB.define({ me: '11', mirrorTo: '7', keys: KEYS });
 })();

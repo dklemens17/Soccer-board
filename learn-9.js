@@ -190,5 +190,26 @@ const KEYS = [
     ]
   }
 ];
+// Labels under players for the moment each step shows (format: learn-core.js, LEARN_LIB.withTags)
+const TAGS = {
+  'Time your run in behind': {
+    2: { 'us:9': ['OFFSIDE', 'bad'] }, '2.fix.0': { 'us:9': ['WAITS', 'good'] }, '2.fix.1': { 'us:9': ['GO', 'good'] },
+    '2.fix.2': { 'us:9': ['ONSIDE', 'good'] }, '2.fix.4': { 'us:9': ['GOAL', 'good'] }, '2.after': { 'us:9': ['ONSIDE', 'good'] } },
+  'Hold it up': {
+    0: { 'them:4': 'TIGHT' }, 2: { 'them:4': 'TACKLE' }, 4: { 'us:10': ['FREE', 'good'] },
+    '4.fix.1': { 'us:9': ['SHIELDS', 'good'], 'them:4': 'TIGHT' }, '4.fix.3': { 'us:9': ['SPINS', 'good'] },
+    '4.after': { 'us:9': ['HELD IT UP', 'good'] } },
+  'Attack the near post': {
+    1: { 'us:9': ['BEHIND', 'bad'] }, 2: { 'them:4': 'CLEARS' },
+    '4.fix.0': { 'us:9': ['IN FRONT', 'good'] }, '4.fix.2': { 'us:9': ['GOAL', 'good'] }, '4.after': { 'us:9': ['NEAR POST', 'good'] } },
+  'Shoot early': {
+    2: { 'us:9': ['TOO SLOW', 'bad'] }, 3: { 'them:3': 'BLOCKED' },
+    '5.fix.0': { 'us:9': ['FIRST TIME', 'good'] }, '5.after': { 'us:9': ['SHOT EARLY', 'good'] } },
+  'Press from the front': {
+    2: { 'them:3': 'FREE' }, 3: { 'us:9': ['STRAIGHT IN', 'bad'] },
+    '3.fix.0': { 'us:9': ['CURVED RUN', 'good'] }, '3.fix.2': { 'them:3': 'CUT OFF' }, '3.fix.4': { 'them:2': 'TRAPPED' },
+    '3.fix.5': { 'us:11': ['WON IT', 'good'] }, '3.after': { 'us:9': ['PRESSED', 'good'] } }
+};
+window.LEARN_LIB.withTags(KEYS, TAGS);
 window.LEARN_LIB.define({ me: '9', keys: KEYS });
 })();

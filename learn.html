@@ -73,9 +73,10 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
 .stage{flex:1;min-height:0;position:relative;padding:8px 12px 12px}
 .pitch{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(var(--rot,0deg));border-radius:5px;touch-action:none;
   box-shadow:0 0 0 3px #f3f5f6,0 0 0 4px #97a1aa,0 10px 20px -6px rgba(20,30,38,.5);transition:box-shadow .25s,filter .3s}
-.pitch.frozen{box-shadow:0 0 0 3px #fff,0 0 0 7px #ffd23f,0 10px 20px -6px rgba(20,30,38,.5)}
 .pitch.rewinding{filter:saturate(.25) brightness(1.08)}
-.pitch>svg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.pitch>.cam{position:absolute;inset:0;transform-origin:50% 50%}
+.cam>svg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.pitch.cam-on{overflow:hidden}
 .field{border-radius:5px}
 .ink{filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
 .tokens{position:absolute;inset:0;pointer-events:none}
@@ -96,21 +97,34 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(-
 .tok.me::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:3px solid #ffd23f;animation:ring 1.6s ease-in-out infinite}
 @keyframes ring{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.12);opacity:.55}}
 .tok.hl{z-index:3;box-shadow:0 0 0 2px var(--rim),0 0 0 6px var(--hl),0 3px 8px rgba(0,0,0,.4)}
-.pitch.dim .tok:not(.hl):not(.me){opacity:.6}
+.tok.faded{opacity:.35}
+/* tags, captions and the stamp: the same look as the moving puzzles (riddles-motion.js) */
+.tok.tagged{z-index:5}
+.mtag-a{position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(var(--unrot,0deg));pointer-events:none;z-index:8}
+.mtag{position:absolute;left:0;top:calc(var(--tok) * .5 + 3px);transform:translateX(-50%);white-space:nowrap;font:800 max(10px,calc(var(--tok) * .3))/1 var(--ui);letter-spacing:.05em;
+  color:#16222b;background:var(--tc,#ffd23f);border-radius:4px;padding:3px 5px 2px;box-shadow:0 1px 3px rgba(0,0,0,.4);animation:mtag .28s cubic-bezier(.2,.9,.3,1.3) both}
+.mtag-a.up .mtag{top:auto;bottom:calc(var(--tok) * .5 + 3px)}
+@keyframes mtag{from{opacity:0;transform:translateX(-50%) scale(.6)}}
+.mfade{animation:mfade .35s ease-out both}
+@keyframes mfade{from{opacity:0}}
+.mcap{position:absolute;z-index:5;pointer-events:none;box-sizing:border-box;padding:12px 14px 26px;border-radius:5px 5px 0 0;
+  background:linear-gradient(180deg,rgba(6,24,13,.78),rgba(6,24,13,.5) 60%,rgba(6,24,13,0));color:#fff;opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s}
+.mcap.low{padding:26px 14px 12px;border-radius:0 0 5px 5px;background:linear-gradient(0deg,rgba(6,24,13,.78),rgba(6,24,13,.5) 60%,rgba(6,24,13,0));transform:translateY(6px)}
+.mcap.on{opacity:1;transform:none}
+.mcap b{display:block;font:800 clamp(21px,6vw,28px)/1.05 var(--display);text-shadow:0 2px 6px rgba(0,0,0,.5)}
+.mcap span{display:block;margin-top:4px;font:600 clamp(14px,3.9vw,16px)/1.3 var(--ui);color:rgba(255,255,255,.88);text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.mcap span:empty{display:none}
 .ball{width:calc(var(--tok) * .6);height:calc(var(--tok) * .6);margin:calc(var(--tok) * -.3) 0 0 calc(var(--tok) * -.3);z-index:6;filter:drop-shadow(0 2px 2px rgba(0,0,0,.45))}
 .ball svg{display:block;width:100%;height:100%}
 .look{animation:look 1.3s ease-out both}
 @keyframes look{0%{opacity:0}25%{opacity:1}70%{opacity:1}100%{opacity:0}}
 
 /* TIMEOUT! */
-.stamp{position:absolute;left:50%;top:50%;z-index:15;transform:translate(-50%,-50%);pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:6px}
-.stamp b{display:flex;align-items:center;gap:10px;padding:10px 18px 8px;border-radius:14px;background:#13191e;color:#fff;font:800 clamp(34px,11vw,54px)/1 var(--display);letter-spacing:.03em;
-  box-shadow:0 0 0 3px #ffd23f,0 12px 28px rgba(0,0,0,.45)}
-.stamp svg{width:.82em;height:.82em;fill:#ffd23f}
-.stamp.play{animation:stampIn 1s cubic-bezier(.2,.9,.3,1.25) both}
-@keyframes stampIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(-10deg)}30%{opacity:1;transform:translate(-50%,-50%) scale(1.12) rotate(-3deg)}
-  45%{transform:translate(-50%,-50%) scale(.97) rotate(-5deg)}75%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-5deg)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.04) rotate(-5deg)}}
-.rewtag{position:absolute;left:50%;top:14px;z-index:15;transform:translateX(-50%);background:#13191e;color:#fff;border-radius:20px;padding:7px 14px 6px;font:800 18px/1 var(--display);letter-spacing:.06em;pointer-events:none}
+.stamp{position:absolute;left:50%;top:50%;z-index:15;transform:translate(-50%,-50%);pointer-events:none;white-space:nowrap;text-align:center;
+  font:800 clamp(34px,11vw,52px)/1 var(--display);color:#fff;letter-spacing:.02em;text-shadow:0 3px 0 #b98700,0 6px 14px rgba(0,0,0,.45)}
+.stamp.play{animation:stampIn 1.1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes stampIn{0%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}18%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  75%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.96)}}
 
 /* tray */
 .tray{flex:none;width:min(100%,640px);margin:0 auto;display:flex;align-items:stretch;gap:0;
@@ -239,7 +253,7 @@ html.land .pos{transform:translate(-50%,-22px)}
 html.land .stamp{left:calc(50% - var(--side) / 2)}
 @media (max-height:360px){html.land .modes a{padding:6px 9px 5px}}
 @media (max-width:370px){.modes a{padding:8px 8px 7px;font-size:16px}}
-@media (prefers-reduced-motion:reduce){.stamp.play,.panel,.look,.tok.me::after{animation:none!important}.stamp.play{opacity:1}}
+@media (prefers-reduced-motion:reduce){.stamp.play,.panel,.look,.tok.me::after,.mtag,.mfade{animation:none!important}.stamp.play{opacity:1}.mcap{transition:none}}
 </style>
 </head>
 <body>
@@ -256,13 +270,13 @@ html.land .stamp{left:calc(50% - var(--side) / 2)}
 </section>
 
 <main class="stage" id="stage">
-  <div class="pitch" id="pitch">
+  <div class="pitch" id="pitch"><div class="cam" id="cam">
     <svg class="field" id="field" aria-hidden="true"></svg>
     <svg class="ink" id="ink" aria-hidden="true"><defs id="inkDefs"></defs><g id="markInk"></g><g id="lookInk"></g></svg>
     <div class="tokens" id="tokens" aria-hidden="true"></div>
-  </div>
-  <div class="stamp" id="stamp" hidden><b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h20v5H14.5v13h-5V8H2z"/></svg>TIMEOUT!</b></div>
-  <div class="rewtag" id="rewTag" hidden>&#9664;&#9664; REWIND</div>
+  </div></div>
+  <div class="stamp" id="stamp" hidden>TIMEOUT!</div>
+  <div class="mcap" id="cap" aria-live="polite"><b></b><span></span></div>
 </main>
 
 <nav class="tray" aria-label="Learn tools">
@@ -331,6 +345,7 @@ const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = s => document.querySelector(s);
 const stage = $('#stage'), pitch = $('#pitch'), field = $('#field'), ink = $('#ink'), tokensEl = $('#tokens');
 const markInk = $('#markInk'), lookInk = $('#lookInk'), goBtn = $('#goBtn'), panel = $('#panel'), scrim = $('#scrim');
+const cam = $('#cam'), capEl = $('#cap');
 
 /* ---------- helpers ---------- */
 const r2 = n => Math.round(n * 100) / 100;
@@ -407,7 +422,8 @@ function buildField() {
   field.innerHTML = s;
   ink.setAttribute('viewBox', `${-M} ${-M} ${VW} ${VH}`); ink.setAttribute('preserveAspectRatio', 'none');
   $('#inkDefs').innerHTML = Object.entries(INK).map(([k, c]) =>
-    `<marker id="ah-${k}" viewBox="0 0 10 10" refX="4" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto" markerUnits="strokeWidth"><path d="M0 0L10 5L0 10Z" fill="${c}"/></marker>`).join('');
+    `<marker id="ah-${k}" viewBox="0 0 10 10" refX="4" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto" markerUnits="strokeWidth"><path d="M0 0L10 5L0 10Z" fill="${c}"/></marker>`).join('') +
+    Object.entries(INK).map(([k, c]) => `<pattern id="mh-${k}" width="1.5" height="1.5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="1.5" height="1.5" fill="${c}" fill-opacity=".12"/><rect width=".42" height="1.5" fill="${c}" fill-opacity=".85"/></pattern>`).join('');
 }
 
 /* ---------- players and ball ---------- */
@@ -468,6 +484,65 @@ function placeAll() {
   put(ballEl, S.ball.at);
 }
 
+/* ---------- camera, captions and tags: the same look as the moving puzzles ---------- */
+// The camera follows the ball and the player we're learning, zoomed in and tilted, like a tactics video,
+// and pulls back to the whole field for every timeout. A step can also set it: cam: { at, zoom, tilt } | 'wide'.
+let camOn = false, camTimer = 0, lastCam = 'wide';
+function camTo(c, secs) {
+  if (calm) c = 'wide';
+  clearTimeout(camTimer); lastCam = c;
+  const wide = !c || c === 'wide';
+  let tf = 'none';
+  if (!wide) {
+    const p = typeof c.at === 'string' ? at(c.at) : c.at, z = c.zoom || 1.35, tilt = land ? 0 : (c.tilt == null ? .5 : c.tilt);
+    const hx = 50 / z, hy = 50 / z;
+    const fx = clamp((p[0] + M) / VW * 100, hx, 100 - hx), fy = clamp((p[1] + M) / VH * 100, hy, 100 - hy);
+    tf = `perspective(${Math.round(pitch.clientHeight * 1.7)}px) rotateX(${r2(tilt * 26)}deg) scale(${z}) translate(${r2(50 - fx)}%, ${r2(50 - fy)}%)`;
+  }
+  const t = secs ? secs / Math.max(.2, rate * debugRate) : 0;
+  cam.style.transition = t ? `transform ${r2(t)}s cubic-bezier(.45,.05,.25,1)` : 'none';
+  if (!wide) { pitch.classList.add('cam-on'); camOn = true; }
+  cam.style.transform = tf;
+  if (wide && camOn) { const off = () => { pitch.classList.remove('cam-on'); camOn = false; }; if (!t) off(); else camTimer = setTimeout(off, t * 1000 + 30); }
+}
+// frame the ball's path and the player we're learning; too spread out to zoom, show the whole field
+function autoCam(pts) {
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  const bw = Math.max(...xs) - Math.min(...xs), bh = Math.max(...ys) - Math.min(...ys);
+  const z = Math.min(1.4, VW / (bw + 18), VH / (bh + 26));
+  if (z < 1.12) return 'wide';
+  return { at: [(Math.max(...xs) + Math.min(...xs)) / 2, (Math.max(...ys) + Math.min(...ys)) / 2], zoom: r2(z), tilt: .5 };
+}
+function fitOverlay(el) {
+  const p = pitch.getBoundingClientRect(), st = stage.getBoundingClientRect();
+  el.style.left = (p.left - st.left) + 'px'; el.style.width = p.width + 'px';
+  return { p, st };
+}
+function caption(head, sub, where) {
+  if (!head) { capEl.classList.remove('on'); return; }
+  capEl.querySelector('b').textContent = head; capEl.querySelector('span').textContent = sub || '';
+  const { p, st } = fitOverlay(capEl);
+  capEl.classList.toggle('low', where === 'low');
+  capEl.style.top = where === 'low' ? '' : (p.top - st.top) + 'px';
+  capEl.style.bottom = where === 'low' ? (st.bottom - p.bottom) + 'px' : '';
+  capEl.classList.remove('on'); void capEl.offsetWidth; capEl.classList.add('on');
+}
+const TAG_COL = { gold: '#ffd23f', good: '#7cffb2', bad: '#ff5a5a', w: '#ffffff' };
+function setTag(key, v) {
+  const [team, n] = ref(key), el = tok[team][n];
+  let a = el.querySelector('.mtag-a');
+  if (v == null) { if (a) a.remove(); el.classList.remove('tagged'); return; }
+  const [text, c] = Array.isArray(v) ? v : [v, 'gold'];
+  // their players are usually closing down one of ours below them, so their tags sit on top
+  if (!a) { a = document.createElement('b'); a.className = 'mtag-a' + (team === 'them' ? ' up' : ''); a.innerHTML = '<i class="mtag"></i>'; el.appendChild(a); }
+  el.classList.add('tagged');
+  const i = a.querySelector('.mtag'); i.textContent = text; i.style.setProperty('--tc', TAG_COL[c] || c);
+}
+function setTags(o) { for (const k in (o || {})) setTag(k, o[k]); }
+function untagAll() { pitch.querySelectorAll('.mtag-a').forEach(a => a.remove()); pitch.querySelectorAll('.tok.tagged').forEach(t => t.classList.remove('tagged')); }
+const taggedKeys = () => { const out = []; for (const team of ['us', 'them']) for (const n of NUMS) if (tok[team][n].classList.contains('tagged')) out.push(team + ':' + n); return out; };
+function fade(keys) { for (const team of ['us', 'them']) for (const n of NUMS) tok[team][n].classList.toggle('faded', !!keys && !keys.includes(team + ':' + n)); }
+
 /* ---------- the clock: runs while playing, waits while paused ---------- */
 let gen = 0, paused = false, rate = 1, debugRate = 1;
 function tween(dur, onFrame) {
@@ -490,7 +565,8 @@ function tween(dur, onFrame) {
 /* ---------- one step of a play ---------- */
 async function runStep(st) {
   if (st.snap) snaps[st.snap] = clone(S);
-  if (st.say) say(st.say);
+  if (st.untag) untagAll();
+  setTags(st.tag);
   const moves = [];
   for (const team of ['us', 'them']) for (const n in (st[team] || {})) {
     const from = S[team][n].slice(), to = st[team][n].slice();
@@ -517,6 +593,15 @@ async function runStep(st) {
     kick = { recv, to, from: null, by: S.ball.h, pd: st.pd || 0 };
   }
   if (st.look) showLook(at(st.look[0]), st.look[1], st.look[0]);
+  // the camera: follow the ball (where it starts and where it ends up) and the player we're learning
+  const holder = S.ball.h && !kick ? endPos(...ref(S.ball.h)) : null;
+  const ballEnd = kick ? kick.to : holder || S.ball.at;
+  const c = st.cam || autoCam([S.ball.at, ballEnd, endPos('us', ME)]);
+  camTo(c, st.t || 1);
+  if (st.say) {
+    const mid = c === 'wide' ? lerp(ballEnd, endPos('us', ME), .5) : null;
+    caption(capHead, st.say, mid && mid[1] < 24 ? 'low' : '');
+  }
   const meStart = S.us[ME].slice();
   const ok = await tween(st.t || 1, u => {
     const e = easeIO(u);
@@ -584,7 +669,7 @@ const R_TOK = () => tokYards() * .55;
 function drawMarks(fz) {
   clearMarks();
   const rt = R_TOK();
-  let dimmed = false;
+  const keep = new Set();
   // what the player just did: the run, and the passes made or received
   if (fz.trail !== false) {
     if (trail.length > 1 && dist(trail[0], trail[trail.length - 1]) > 1.5) {
@@ -603,18 +688,20 @@ function drawMarks(fz) {
         svg('path', { d: `M${r2(mid[0] - s)} ${r2(mid[1] - s)}L${r2(mid[0] + s)} ${r2(mid[1] + s)}M${r2(mid[0] + s)} ${r2(mid[1] - s)}L${r2(mid[0] - s)} ${r2(mid[1] + s)}`,
           stroke: INK.bad, 'stroke-width': .75, 'stroke-linecap': 'round' }); }
     }
-    if (m.z) svg('circle', { cx: m.z[0], cy: m.z[1], r: m.z[2], fill: c === 'bad' ? 'rgba(255,90,90,.2)' : c === 'good' ? 'rgba(124,255,178,.2)' : 'rgba(255,255,255,.16)',
-      stroke: INK[c] || c, 'stroke-width': .3, 'stroke-dasharray': '1 .7' });
+    if (m.z) svg('circle', { cx: m.z[0], cy: m.z[1], r: m.z[2], fill: `url(#mh-${c in INK ? (c === 'w' ? 'us' : c) : 'us'})`, stroke: INK[c] || c, 'stroke-width': .28, class: 'mfade' });
     if (m.v) cone(at(m.v[0]), at(m.v[1]));
     if (m.s) shadow(at(m.s[0]), at(m.s[1]), m.len || 13);
-    if (m.h) for (const r of m.h) { const [team, n] = ref(r); const el = tok[team][n]; el.classList.add('hl'); el.style.setProperty('--hl', INK[c] || c); dimmed = true; }
+    if (m.h) for (const r of m.h) { const [team, n] = ref(r); const el = tok[team][n]; el.classList.add('hl'); el.style.setProperty('--hl', INK[c] || c); }
+    for (const k of ['a', 'l', 'v', 's', 'h']) for (const r of m[k] || []) if (typeof r === 'string') keep.add(r);
   }
-  pitch.classList.toggle('dim', dimmed);
+  // the players the timeout is about stay bright; the rest fade back
+  for (const k of taggedKeys()) keep.add(k);
+  if (keep.size) { keep.add('us:' + ME); if (S.ball.h) keep.add(S.ball.h); fade([...keep]); }
 }
 function clearMarks() {
   markInk.innerHTML = '';
   for (const team of ['us', 'them']) for (const n of NUMS) tok[team][n].classList.remove('hl');
-  pitch.classList.remove('dim');
+  fade(null);
 }
 
 /* ---------- the timeout panel ---------- */
@@ -674,7 +761,9 @@ const userTap = () => new Promise(res => { panelDone = res; });
 function headFor(fz) { return fz.head || `See what ${nameOf(ME)} just did?`; }
 async function freeze(fz) {
   const my = gen;
-  setGo('timeout'); pitch.classList.add('frozen');
+  setGo('timeout'); pitch.classList.add('frozen'); caption('');
+  if (camOn) { camTo('wide', .55); await wait(560 / Math.max(.2, rate * debugRate)); if (my !== gen) return false; }
+  setTags(fz.tag);
   drawMarks(fz);
   await stamp(); if (my !== gen) return false;
   if (fz.freeze === 'good') {
@@ -694,18 +783,20 @@ async function freeze(fz) {
   if (!land) { panel.classList.remove('top', 'bottom'); panel.classList.add(side); }
   $('#pHead').focus({ preventScroll: true });
   await userTap(); if (my !== gen) return false;
-  closePanel(); clearMarks(); pitch.classList.remove('frozen');
+  closePanel(); clearMarks(); untagAll(); pitch.classList.remove('frozen');
   if (!(await rewind(fz.rewind))) return false;
-  setGo('pause');
+  setGo('pause'); capHead = 'The better way';
   for (const st of fz.fix || []) if (!(st.freeze ? await freeze(st) : await runStep(st))) return false;
   const after = Object.assign({ freeze: 'good', head: "That's it!" }, fz.after || {});
+  caption(''); if (camOn) { camTo('wide', .55); await wait(560 / Math.max(.2, rate * debugRate)); if (my !== gen) return false; }
+  setTags(after.tag);
   pitch.classList.add('frozen'); drawMarks(after); setGo('timeout');
   openPanel({ tag: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>THE RIGHT CALL', kind: 'good', head: after.head, text: after.text, focus: focusOf(after),
     actions: [{ label: 'Keep playing', primary: true, go: () => panelDone && panelDone(true) }] });
   await userTap(); if (my !== gen) return false;
-  endFreeze(); return true;
+  endFreeze(); capHead = K.key; return true;
 }
-function endFreeze() { closePanel(); clearMarks(); pitch.classList.remove('frozen'); trail = [S.us[ME].slice()]; passes = []; setGo('pause'); }
+function endFreeze() { closePanel(); clearMarks(); untagAll(); pitch.classList.remove('frozen'); trail = [S.us[ME].slice()]; passes = []; setGo('pause'); }
 function askQuiz(fz) {
   const q = $('#quiz'); q.hidden = false;
   $('#pAsk').textContent = fz.ask || `What should ${nameOf(ME)} have done instead?`;
@@ -735,15 +826,15 @@ function askQuiz(fz) {
 async function rewind(name) {
   const snap = snaps[name]; if (!snap) return true;
   const my = gen, from = clone(S);
-  pitch.classList.add('rewinding'); $('#rewTag').hidden = false; setGo('timeout');
-  say('Rewind. Watch the better way.');
+  pitch.classList.add('rewinding'); setGo('timeout'); camTo('wide', .5);
+  caption('\u25c0\u25c0 Rewind', 'Watch the better way.');
   const ok = await tween(.9 / (rate * debugRate) * rate * debugRate, u => {
     const e = easeIO(u);
     for (const team of ['us', 'them']) for (const n of NUMS) put(tok[team][n], lerp(from[team][n], snap[team][n], e));
     const bTo = snap.ball.h ? footAt(snap[ref(snap.ball.h)[0]][ref(snap.ball.h)[1]], snap.dir[snap.ball.h] || teamDir(ref(snap.ball.h)[0])) : snap.ball.at;
     put(ballEl, lerp(from.ball.at, bTo, e));
   });
-  pitch.classList.remove('rewinding'); $('#rewTag').hidden = true;
+  pitch.classList.remove('rewinding');
   if (!ok || my !== gen) return false;
   S = clone(snap); placeAll(); trail = [S.us[ME].slice()]; passes = [];
   await wait(250);
@@ -751,7 +842,7 @@ async function rewind(name) {
 }
 
 /* ---------- playing a key ---------- */
-let SET = '6', ME = '6', KEYS = [], ki = 0, K = null, phase = 'ready';
+let SET = '6', ME = '6', KEYS = [], ki = 0, K = null, phase = 'ready', capHead = '';
 function say(t) { $('#say').textContent = t; }
 const GO_ICON = { play: '<svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></svg>', pause: '<svg viewBox="0 0 24 24"><path d="M6 4.5h4.2v15H6zM13.8 4.5H18v15h-4.2z"/></svg>',
   again: '<svg class="ol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v5h5"/></svg>' };
@@ -762,8 +853,9 @@ function setGo(state) {
     : state === 'timeout' ? 'Timeout' : `${GO_ICON.again}Watch again`;
 }
 function resetKey() {
-  gen++; paused = false; snaps = {}; closePanel(); clearMarks(); lookInk.innerHTML = '';
-  pitch.classList.remove('frozen', 'rewinding'); $('#stamp').hidden = true; $('#rewTag').hidden = true;
+  gen++; paused = false; snaps = {}; closePanel(); clearMarks(); untagAll(); lookInk.innerHTML = '';
+  pitch.classList.remove('frozen', 'rewinding'); $('#stamp').hidden = true;
+  camTo('wide', 0); caption(''); capHead = K.key;
   S = { us: clone(K.start.us), them: clone(K.start.them), ball: { h: K.start.ball, at: [25, 37.5] }, dir: {} };
   placeAll(); trail = [S.us[ME].slice()]; passes = [];
   say(K.intro || ''); setGo('ready');
@@ -791,6 +883,7 @@ async function play() {
   finish();
 }
 function finish() {
+  caption(''); camTo('wide', .6);
   doneOf(SET)[ki] = true; saveLearn(); renderCount();
   setGo('again');
   const last = ki === KEYS.length - 1, all = doneCount(SET) === KEYS.length;
@@ -905,6 +998,8 @@ function fit() {
   pitch.style.setProperty('--tok', clamp(w * .0828, 25, 47) + 'px');
   const st = $('#stamp'); st.style.left = (pl + aw / 2) + 'px'; st.style.top = (pt + ah / 2) + 'px';
   if (S && S.ball.h) { S.ball.at = footAt(at(S.ball.h), dirOf(...ref(S.ball.h))); put(ballEl, S.ball.at); }
+  if (S) camTo(lastCam, 0);
+  if (capEl.classList.contains('on')) { const { p, st } = fitOverlay(capEl); if (!capEl.classList.contains('low')) capEl.style.top = (p.top - st.top) + 'px'; }
 }
 addEventListener('resize', () => { setOrientation(); fit(); if (!panel.hidden) placePanel(lastFocus); });
 

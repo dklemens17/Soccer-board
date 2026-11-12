@@ -183,5 +183,26 @@ const KEYS = [
     ]
   }
 ];
+// Labels under players for the moment each step shows (format: learn-core.js, LEARN_LIB.withTags)
+const TAGS = {
+  'Cover behind the 3 and 2': {
+    0: { 'us:3': ['PRESS', 'good'] }, 3: { 'them:9': 'THROUGH' }, 4: { 'us:4': ['TOO FAR', 'bad'] },
+    '4.fix.0': { 'us:3': ['PRESS', 'good'], 'us:4': ['COVER', 'good'] }, '4.fix.1': { 'us:4': ['WON IT', 'good'] },
+    '4.after': { 'us:4': ['COVER', 'good'] } },
+  'Step up together': {
+    1: { 'us:4': ['DEEP', 'bad'] }, 3: { 'them:9': 'ONSIDE' },
+    '5.fix.0': { 'us:4': ['STEPS UP', 'good'] }, '5.fix.1': { 'them:9': 'OFFSIDE' }, '5.after': { 'them:9': 'OFFSIDE' } },
+  "Don't let their 9 turn": {
+    1: { 'us:4': ['DIVES IN', 'bad'] }, 2: { 'them:9': 'TURNED' },
+    '4.fix.1': { 'us:4': ['TIGHT', 'good'] }, '4.fix.3': { 'them:9': 'NO TURN' }, '4.after': { 'us:4': ['TIGHT', 'good'] } },
+  'Play through their press': {
+    0: { 'them:9': 'PRESS' }, 2: { 'them:4': 'WON IT' }, 4: { 'us:6': ['FREE', 'good'] },
+    '4.fix.0': { 'them:9': 'PRESS' }, '4.fix.1': { 'us:6': ['IN THE GAP', 'good'] }, '4.fix.3': { 'us:10': ['FREE', 'good'] },
+    '4.after': { 'them:9': 'BEATEN', 'them:7': 'BEATEN', 'them:11': 'BEATEN' } },
+  'When in doubt, clear it': {
+    1: { 'us:4': ['DRIBBLES', 'bad'] }, 2: { 'them:9': 'TACKLE' },
+    '4.fix.0': { 'us:4': ['CLEARED', 'good'] }, '4.after': { 'us:4': ['CLEARED', 'good'] } }
+};
+window.LEARN_LIB.withTags(KEYS, TAGS);
 window.LEARN_LIB.define({ me: '4', keys: KEYS });
 })();
