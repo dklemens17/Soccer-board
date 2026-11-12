@@ -349,7 +349,7 @@ window.RiddleMotion.autoIntro = function (r) {
       const [ta, na] = keys[i], [tb, nb] = keys[j];
       const a0 = start[ta][na], a1 = fin[ta][na], b0 = start[tb][nb], b1 = fin[tb][nb];
       if (dist(a0, a1) < .01 && dist(b0, b1) < .01) continue;
-      for (let u = 0; u <= 1; u += .125) {
+      for (let u = 0; u <= 1.001; u += .05) {
         const d = dist(lerp(a0, a1, u), lerp(b0, b1, u)), need = u === 0 ? 4.2 : 2.8;
         if (d < need && d < dist(a1, b1) - .05) { bad = dist(a0, a1) >= dist(b0, b1) ? [ta, na] : [tb, nb]; break outer; }
       }
