@@ -767,7 +767,7 @@ const MOTION = {
     intro: { start: { ball: 'them:10', us: { 3: [14, 66], 6: [22, 58] }, them: { 9: [24, 62] } },
       cam: { at: [20, 62], zoom: 1.45, tilt: .45 },
       steps: [
-        { t: 1.5, us: { 3: [16.5, 63.2], 6: [19.9, 62.2] }, them: { 9: [22, 66] }, tag: { 'us:3': ['WALL', 'good'], 'us:6': ['WALL', 'good'] }, head: 'Free kick to them',
+        { t: 1.5, us: { 3: [16.5, 63.2], 6: [19.9, 62.2] }, them: { 9: [22, 66] }, tag: { 'us:6': ['WALL', 'good'] }, head: 'Free kick to them',
           sub: 'Your 3 and 6 make a wall to block the near side of the goal.', cam: { at: [20, 65], zoom: 1.4, tilt: .45 } },
         { t: 1, cam: 'wide', head: '' }] },
     after: {

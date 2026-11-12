@@ -3,7 +3,7 @@
    `restart` names the set piece (no offside on corners, throw-ins and goal kicks),
    `noCarry` means you can't dribble from a dead ball, and `range` is how far a throw-in can go. */
 (function () {
-const { P, TOO_SAFE, FAR } = window.RIDDLE_LIB;
+const { P, TOO_SAFE, FAR, steal, say, offside } = window.RIDDLE_LIB;
 const CORNER_R = [49.6, 0.4], CORNER_L = [0.4, 0.4], THEIR_CORNER = [0.4, 74.6];
 const LONG = w => P(1, 'Long ball', w);
 
@@ -552,5 +552,509 @@ const RIDDLES = [
   best: { kind: 'pass', to: '11', at: [8,32] } }
 ];
 
+// ---------------------------------------------------------------------------
+// Motion: the written plays (format at the top of riddles-motion.js). The ball stays on its spot
+// during the build-up; only the players move.
+const MOTION = {
+  /* ---- 1. Our corners ---- */
+  'Near post': {
+    intro: { start: { us: { 9: [36, 15], 10: [16, 19], 11: [17, 14] } },
+      cam: { at: [40, 8], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.5, us: { 9: [31, 11], 10: [18, 13], 11: [14, 7] }, head: 'Corner kick to us from the right', sub: 'Your 9 is about to sprint to the near post.',
+          cam: { at: [30, 9], zoom: 1.3, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      lead0: [{ t: .5, tag: { 'us:9': ['FIRST', 'good'] }, head: 'Near post', sub: 'Your 9 attacked the near post, so you whipped it into the space ahead…',
+          cam: { at: [28, 5], zoom: 1.55, tilt: .45 } },
+        { t: .5, shot: [26.5, -1], head: 'Near post', sub: '…and the 9 gets there before their keeper.', wait: 1.1 }],
+      9: say('Behind the run', 'The 9 was running to the near post. Put it in front of the run.', { at: [30, 10], zoom: 1.4, tilt: .5 }),
+      10: steal('10', '6', [20.5, 14], 'Crowded', 'Their 6 is on your 10, and their 4 is right there.'),
+      11: steal('11', '2', [16, 5], 'Marked', 'Their 2 is right on your 11 at the back post.'),
+      6: say('Too safe', 'Back to the edge of the box wastes the corner. Your 9 was attacking the near post.', { at: [28, 20], zoom: 1.3, tilt: .5 })
+    } },
+
+  'Take it short': {
+    intro: { start: { us: { 10: [42, 13] }, them: { 3: [34, 11], 10: [32, 19] } },
+      cam: { at: [40, 8], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.5, us: { 10: [43, 6] }, them: { 3: [33, 6], 10: [33, 14] }, tag: { 'us:10': ['FREE', 'good'] }, head: 'Corner kick to us from the right',
+          sub: 'Their box is packed, and your 10 comes short to you.', cam: { at: [36, 8], zoom: 1.3, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      10: [{ t: 1, them: { 11: [40.5, 8.5], 3: [37, 6.5] }, tag: { 'them:11': 'PRESS', 'them:3': 'PRESS' }, head: 'Take it short',
+        sub: 'Their box was packed and your 10 was free, so you took it short. Now their defenders have to come out to the 10.', cam: { at: [38, 7], zoom: 1.45, tilt: .5 }, wait: 1.2 }],
+      9: steal('9', '4', [27, 5.5], 'Marked', 'Their 4 is right on your 9, and their keeper is close.'),
+      11: steal('11', '2', [18.5, 5.5], 'Marked', 'Their 2 is right on your 11.'),
+      6: say('Not the best', 'A long pass back to the edge of the box. Your 10 was free right next to you.', { at: [30, 16], zoom: 1.25, tilt: .5 })
+    } },
+
+  'Edge of the box': {
+    intro: { start: { us: { 6: [26.5, 15], 9: [34, 13], 10: [16, 16] } },
+      cam: { at: [28, 14], zoom: 1.35, tilt: .5 },
+      steps: [
+        { t: 1.5, us: { 6: [25, 7.5], 9: [30, 9], 10: [19, 10] }, head: 'Corner kick to us', sub: 'Everyone runs into the box, and you go with them.',
+          cam: { at: [26, 10], zoom: 1.3, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.2, pass: 'them:6', air: true, head: 'Edge of the box', sub: 'Everyone else attacks the goal, so you held the edge of the box…', cam: { at: [25, 12], zoom: 1.3, tilt: .5 } },
+        { t: .8, pass: 'us:6', air: true, tag: { 'us:6': ['YOURS', 'good'] }, head: 'Edge of the box', sub: '…so the clearance comes to you, and their counter is over.', wait: 1.1 }],
+      zone1: [{ t: 1.2, pass: 'them:6', air: true, head: 'Too crowded', sub: 'One more player in the crowd, and nobody guarding the edge of the box…', cam: { at: [25, 12], zoom: 1.3, tilt: .5 } },
+        { t: .8, pass: 'them:10', air: true, tag: { 'them:10': 'FREE' }, head: 'Too crowded', sub: '…so the clearance goes to their 10, who starts the counter.', cam: { at: [29, 18], zoom: 1.3, tilt: .5 }, wait: 1.1 }],
+      zone2: [{ t: 1.2, pass: 'them:6', air: true, head: 'Too deep', sub: 'Too far back to win the clearance…', cam: { at: [25, 14], zoom: 1.2, tilt: .5 } },
+        { t: .8, pass: 'them:10', air: true, tag: { 'them:10': 'FREE' }, head: 'Too deep', sub: '…so their 10 gets it and starts the counter.', cam: { at: [29, 20], zoom: 1.25, tilt: .5 }, wait: 1.1 }]
+    } },
+
+  'Back post': {
+    intro: { start: { us: { 10: [36, 14], 11: [33, 12] } },
+      cam: { at: [38, 8], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.5, us: { 10: [32, 11], 11: [30, 6] }, head: 'Corner kick to us from the right', sub: "Everyone crowds the near post, and you're stuck in there too.",
+          cam: { at: [29, 8], zoom: 1.4, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .5, tag: { 'us:11': ['FREE', 'good'] }, head: 'Back post', sub: 'Everyone crowded the near post, so you went to the back post. The cross drops to you…',
+          cam: { at: [19, 5], zoom: 1.5, tilt: .45 } },
+        { t: .5, shot: [23, -1], head: 'Back post', sub: '…and you finish it.', wait: 1.1 }],
+      zone1: say('Crowded', 'Their 4, their 3 and your teammates are all there already.', { at: [30, 7], zoom: 1.45, tilt: .5 }),
+      zone2: say('Into the crowd', 'Their 2 and 10 are waiting there.', { at: [22, 10], zoom: 1.45, tilt: .5 })
+    } },
+
+  'Find the free player': {
+    intro: { start: { us: { 4: [20, 28] } },
+      cam: { at: [10, 8], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.5, us: { 4: [22, 15] }, tag: { 'us:4': ['FREE', 'good'] }, head: 'Corner kick to us from the left', sub: 'Your 4 comes up for it, and nobody picks up the 4.',
+          cam: { at: [18, 12], zoom: 1.3, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      lead0: [{ t: .5, head: 'Find the free player', sub: 'Nobody picked up your 4, so you put it into the space ahead…', cam: { at: [23, 8], zoom: 1.5, tilt: .45 } },
+        { t: .5, shot: [22.5, -1], them: { 1: [27.5, 2.2] }, head: 'Find the free player', sub: '…and the 4 heads it in.', wait: 1.1 }],
+      4: say('To feet', 'Right player, but the 4 was running in. Put it in front of the run.', { at: [22, 12], zoom: 1.4, tilt: .5 }),
+      6: say('Too safe', 'Your 4 was free, attacking the middle of the box.', { at: [24, 18], zoom: 1.3, tilt: .5 }),
+      7: steal('7', '3', [40, 8], 'Marked', 'Their 3 is right on your 7.'),
+      9: steal('9', '4', [32, 6], 'Marked', 'Their 4 is right on your 9.'),
+      10: steal('10', '2', [14.5, 4.5], 'Marked', 'Their 2 is right on your 10.')
+    } },
+
+  /* ---- 2. Their corners ---- */
+  'Goal side': {
+    intro: { start: { them: { 9: [27, 60], 4: [35, 58] } },
+      cam: { at: [10, 70], zoom: 1.4, tilt: .45 },
+      steps: [
+        { t: 1.5, them: { 9: [25, 65], 4: [33, 63.5] }, head: 'Corner kick to them from our left', sub: "Their 9 goes to the penalty spot, and you're in front of their 9.",
+          cam: { at: [22, 64], zoom: 1.25, tilt: .45 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.3, pass: 'us:4', air: true, tag: { 'us:4': ['HEADER', 'good'] }, head: 'Goal side',
+          sub: 'You got goal side of their 9, on the ball side. Their 9 has to go through you…', cam: { at: [20, 69], zoom: 1.4, tilt: .45 } },
+        { t: 1, pass: 'us:11', air: true, head: 'Goal side', sub: '…and you head it away.', cam: { at: [16, 58], zoom: 1.1, tilt: .5 }, wait: 1.1 }],
+      zone1: [{ t: 1.3, pass: 'them:9', air: true, tag: { 'them:9': 'FREE' }, head: 'Wrong side', sub: 'In front of their 9? The cross goes over you to their 9.',
+          cam: { at: [22, 68], zoom: 1.4, tilt: .45 } },
+        { t: .5, shot: [23.5, 75.8], wait: 1 }],
+      zone2: [{ t: 1.3, pass: 'them:9', air: true, tag: { 'them:9': 'FREE' }, head: 'Far side', sub: 'Goal side, but on the far side. A cross from our left reaches their 9 first.',
+          cam: { at: [22, 68], zoom: 1.4, tilt: .45 } },
+        { t: .5, shot: [23.5, 75.8], wait: 1 }]
+    } },
+
+  'Near post guard': {
+    intro: { start: { them: { 9: [27, 60], 4: [35, 58] } },
+      cam: { at: [10, 70], zoom: 1.4, tilt: .45 },
+      steps: [
+        { t: 1.5, them: { 9: [25.5, 64.6], 4: [33, 63.5] }, head: 'Corner kick to them from our left', sub: 'Their players crowd the box, and nobody is guarding the near post.',
+          cam: { at: [17, 68], zoom: 1.3, tilt: .45 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .8, pass: 'us:3', tag: { 'us:3': ['BLOCKED', 'good'] }, head: 'Near post guard',
+        sub: 'You guarded the near post, facing the ball. A low corner there hits you, not the net.', cam: { at: [16, 72], zoom: 1.5, tilt: .45 }, wait: 1.2 }],
+      zone1: [{ t: .8, pass: 'us:3', tag: { 'us:3': ['BLOCKED', 'good'] }, head: 'Close',
+        sub: 'It hits you. Next time get right up to the near post.', cam: { at: [16, 72], zoom: 1.5, tilt: .45 }, wait: 1.2 }],
+      zone2: [{ t: .9, shot: [22.3, 75.8], head: 'Wandering', sub: 'Nobody was guarding the near post. A low cross there goes right in.',
+        cam: { at: [16, 72], zoom: 1.45, tilt: .45 }, wait: 1.1 }]
+    } },
+
+  'Stay up': {
+    intro: { start: { us: { 9: [20, 50] } },
+      cam: { at: [20, 52], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.5, us: { 9: [22, 61] }, head: 'Corner kick to them', sub: 'You came all the way back into our box.', cam: { at: [20, 63], zoom: 1.25, tilt: .45 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.2, pass: 'us:4', air: true, tag: { 'us:4': ['HEADER', 'good'] }, head: 'Stay up', sub: 'We win the corner…', cam: { at: [22, 64], zoom: 1.3, tilt: .45 } },
+        { t: 1.1, pass: 'us:9', air: true, tag: { 'us:9': ['OUTLET', 'good'] }, head: 'Stay up',
+          sub: '…and you are the outlet near the halfway line. Two of theirs had to stay back to watch you.', cam: { at: [25, 46], zoom: 1.15, tilt: .5 }, wait: 1.2 }],
+      zone1: [{ t: 1.2, pass: 'us:4', air: true, head: 'Everyone back', sub: 'We win the corner…', cam: { at: [22, 64], zoom: 1.3, tilt: .45 } },
+        { t: 1.1, pass: 'them:6', air: true, tag: { 'them:6': 'THEIR BALL' }, head: 'Everyone back',
+          sub: '…but with you back here too, there is nobody to pass to, and they get it back.', cam: { at: [24, 54], zoom: 1.3, tilt: .5 }, wait: 1.1 }]
+    } },
+
+  'Counter': {
+    intro: { start: { ball: 'us:4' },
+      cam: { at: [22, 66], zoom: 1.4, tilt: .45 },
+      steps: [
+        { t: 1.3, pass: 'us:6', air: true, pd: .1, tag: { 'us:6': ['YOURS', 'good'] }, head: 'We head their corner away', sub: 'It drops to you, and their players are still in our box.',
+          cam: { at: [24, 58], zoom: 1.2, tilt: .45 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      lead0: [{ t: 1.1, us: { 9: [24, 20] }, tag: { 'us:9': ['THROUGH', 'good'], 'them:6': 'BYPASSED' }, hatch: [{ pts: [[12, 12], [38, 12], [38, 40], [12, 40]], c: 'good' }],
+        head: 'Counter', sub: 'Their players were still in our box, so you played it into the space behind their 6. Your 9 is through.', cam: { at: [25, 28], zoom: 1.15, tilt: .55 }, wait: 1.2 }],
+      lead1: [{ t: 1.1, us: { 11: [8, 28] }, tag: { 'us:11': ['AWAY', 'good'] }, head: 'Counter',
+        sub: 'Their players were still in our box, so you sent your 11 away down the wing.', cam: { at: [12, 36], zoom: 1.15, tilt: .55 }, wait: 1.2 }],
+      9: say('To feet', 'Right idea: look forward. But the 9 had open grass behind their 6. Play it into that space.', { at: [25, 42], zoom: 1.3, tilt: .5 }),
+      7: say('Slow', 'Sideways, and their players get back.', { at: [32, 56], zoom: 1.2, tilt: .5 }),
+      10: say('Slow', 'Sideways, and their players get back.', { at: [27, 60], zoom: 1.25, tilt: .5 }),
+      1: say('Too safe', 'Their players are still in our box. Look forward.', { at: [25, 64], zoom: 1.2, tilt: .45 }),
+      2: say('Too safe', 'Their players are still in our box. Look forward.', { at: [28, 64], zoom: 1.2, tilt: .45 }),
+      3: say('Too safe', 'Their players are still in our box. Look forward.', { at: [21, 64], zoom: 1.2, tilt: .45 }),
+      4: say('Too safe', 'Their players are still in our box. Look forward.', { at: [24, 62], zoom: 1.2, tilt: .45 })
+    } },
+
+  'Edge of our box': {
+    intro: { start: { us: { 10: [21, 60] }, them: { 6: [24, 50] } },
+      cam: { at: [22, 56], zoom: 1.4, tilt: .45 },
+      steps: [
+        { t: 1.5, us: { 10: [18.5, 65] }, them: { 6: [25, 56.5] }, tag: { 'them:6': 'FREE' }, head: 'Corner kick to them',
+          sub: 'Their 6 waits at the edge of our box, and nobody is on their 6.', cam: { at: [22, 62], zoom: 1.3, tilt: .45 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.3, pass: 'us:4', air: true, head: 'Edge of our box', sub: 'You picked up their 6, goal side…', cam: { at: [24, 64], zoom: 1.35, tilt: .45 } },
+        { t: .8, pass: 'us:10', air: true, tag: { 'us:10': ['YOURS', 'good'] }, head: 'Edge of our box', sub: "…so the clearance can't find their 6 free.", wait: 1.1 }],
+      zone1: [{ t: 1.3, pass: 'us:4', air: true, head: 'Crowded', sub: 'Your teammates had the players in the box…', cam: { at: [24, 64], zoom: 1.35, tilt: .45 } },
+        { t: .8, pass: 'them:6', air: true, tag: { 'them:6': 'FREE' }, head: 'Crowded', sub: '…and the clearance falls to their 6, free at the edge of it.' },
+        { t: .6, shot: [26.5, 75.8], wait: 1 }]
+    } },
+
+  /* ---- 3. Our free kicks ---- */
+  'Over the wall': {
+    intro: { start: { them: { 4: [17, 16], 6: [26, 16] } },
+      cam: { at: [21, 22], zoom: 1.45, tilt: .5 },
+      steps: [
+        { t: 1.4, them: { 4: [19.5, 12], 6: [23.1, 12] }, tag: { 'them:6': 'WALL' }, head: 'Free kick to us, about 20 yards out',
+          sub: 'Their wall covers the near side of the goal.', cam: { at: [22, 14], zoom: 1.4, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      shoot: { replace: true, steps: [{ t: 1, shot: [22.5, -1], air: true, them: { 1: [27, 2] }, tag: { 'us:10': ['GOAL', 'good'] }, head: 'Over the wall',
+        sub: 'In range, so you went for goal: up over the wall and down into the near side.', cam: { at: [23, 10], zoom: 1.35, tilt: .5 }, wait: 1.2 }] },
+      6: say('Too safe', 'Backwards, from a free kick in shooting range?', { at: [24, 26], zoom: 1.3, tilt: .5 }),
+      7: say('Too wide', 'Passing it out wide wastes a free kick in shooting range.', { at: [30, 16], zoom: 1.3, tilt: .5 }),
+      9: steal('9', '3', [28.5, 8.5], 'Marked', 'Their 3 and 6 are right next to your 9. You were in range to shoot.'),
+      11: steal('11', '2', [13.5, 9.5], 'Marked', 'Their 2 is right on your 11. You were in range to shoot.')
+    } },
+
+  'Quick free kick': {
+    intro: { start: { us: { 10: [30, 37] }, them: { 6: [21, 46], 10: [32, 53] } },
+      cam: { at: [25, 46], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.5, us: { 10: [28, 33] }, them: { 6: [18, 40], 10: [32, 49] }, tag: { 'us:10': ['FREE', 'good'] }, head: 'We win a free kick at midfield',
+          sub: 'Their players are still jogging back, and your 10 is free right now.', cam: { at: [26, 42], zoom: 1.25, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      10: [{ t: 1.1, us: { 10: [30, 27] }, tag: { 'us:10': ['TURNED', 'good'] }, head: 'Quick free kick',
+        sub: 'Their players were still jogging back, so you took it quickly. Your 10 gets it free, facing their goal.', cam: { at: [27, 30], zoom: 1.25, tilt: .55 }, wait: 1.2 }],
+      9: steal('9', '4', [25.5, 22.5], 'Marked', 'Their 4 is right behind your 9.'),
+      7: say('Not the best', 'Your 10 was free in the middle, right now.', { at: [36, 36], zoom: 1.2, tilt: .5 }),
+      11: say('Not the best', 'Your 10 was free in the middle, right now.', { at: [14, 36], zoom: 1.2, tilt: .5 }),
+      2: say('Too safe', 'Backwards, while they are still getting organized? Your 10 was free.', { at: [32, 52], zoom: 1.2, tilt: .5 }),
+      3: say('Too safe', 'Backwards, while they are still getting organized? Your 10 was free.', { at: [18, 52], zoom: 1.2, tilt: .5 }),
+      4: say('Too safe', 'Backwards, while they are still getting organized? Your 10 was free.', { at: [25, 52], zoom: 1.2, tilt: .5 })
+    } },
+
+  'Whip it in': {
+    intro: { start: { us: { 9: [27, 21], 4: [22, 22] }, them: { 2: [17, 15], 4: [23.5, 16], 3: [30, 16] } },
+      cam: { at: [36, 16], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.5, us: { 9: [27, 13.5], 4: [20.5, 13.5] }, them: { 2: [17, 11], 4: [23.5, 11], 3: [30, 11] }, head: 'Free kick to us on the right wing',
+          sub: 'Their defenders line up near the penalty spot, and your 9 and 4 get ready to run.', cam: { at: [30, 12], zoom: 1.3, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      lead0: [{ t: .5, tag: { 'us:9': ['FIRST', 'good'] }, head: 'Whip it in', sub: 'You whipped it into the space between their defenders and their keeper…',
+          cam: { at: [25, 7], zoom: 1.5, tilt: .45 } },
+        { t: .5, shot: [22.5, -1], them: { 1: [27.5, 2.5] }, head: 'Whip it in', sub: '…and your 9 gets there first, while their defenders have to turn.', wait: 1.1 }],
+      9: say('To feet?', 'The 9 was about to run in behind. Put it in the space ahead.', { at: [27, 12], zoom: 1.4, tilt: .5 }),
+      4: say('To feet?', 'The 4 was about to run in behind. Put it in the space ahead.', { at: [21, 12], zoom: 1.4, tilt: .5 }),
+      10: steal('10', '10', [32, 17.8], 'Marked', 'Their 10 is right on your 10.'),
+      11: steal('11', '2', [15, 12], 'Marked', 'Their 2 is right on your 11.'),
+      6: say('Too safe', 'Backwards, from a free kick near their box?', { at: [28, 22], zoom: 1.3, tilt: .5 })
+    } },
+
+  'Stay onside': {
+    intro: { start: { us: { 9: [27, 14] } },
+      cam: { at: [36, 14], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.5, us: { 9: [26, 6] }, head: 'Free kick to us on the right wing', sub: 'You drift in behind their defenders.', cam: { at: [28, 10], zoom: 1.35, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .9, chain: [{ ns: ['them:2', 'them:4', 'them:3'], c: 'good' }], tag: { 'us:9': ['ONSIDE', 'good'] }, head: 'Stay onside',
+        sub: 'You got back level with their defenders. When the ball is kicked, you can attack it without being offside.', cam: { at: [26, 12], zoom: 1.4, tilt: .5 }, wait: 1.2 }],
+      zone1: offside('9', 11, 'You are behind their last defender. If the ball comes to you, it is offside.'),
+      zone2: say('Too deep', 'Onside, but too far from goal to attack the ball.', { at: [26, 16], zoom: 1.3, tilt: .5 })
+    } },
+
+  'Too far to shoot': {
+    intro: { start: { us: { 11: [9, 32] }, them: { 6: [21, 28], 10: [29, 28] } },
+      cam: { at: [25, 32], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.4, us: { 11: [7, 26] }, them: { 6: [23.2, 24], 10: [26.8, 24] }, tag: { 'them:6': 'WALL' }, head: 'Free kick to us, about 32 yards out',
+          sub: 'Their wall is set, and your 11 is free on the left.', cam: { at: [19, 27], zoom: 1.2, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      lead0: [{ t: 1.1, us: { 11: [8, 10] }, tag: { 'us:11': ['AWAY', 'good'] }, head: 'Too far to shoot',
+        sub: 'Too far to score from, so you found your 11 in space. The 11 can attack their defense from there.', cam: { at: [12, 16], zoom: 1.25, tilt: .55 }, wait: 1.2 }],
+      11: say('To feet', 'Good idea, but the 11 had grass ahead. Play it into the space.', { at: [9, 26], zoom: 1.3, tilt: .5 }),
+      shoot: say('Too far', 'From 32 yards, their keeper sees it coming all the way.', { at: [25, 10], zoom: 1.3, tilt: .5 }),
+      7: steal('7', '3', [40.5, 21.5], 'Marked', 'Their 3 is right on your 7.'),
+      9: steal('9', '4', [25, 15.5], 'Marked', 'Their 4 is right behind your 9, and the wall is in the way.'),
+      4: say('Too safe', 'Backwards? Your 11 was free in space.', { at: [25, 44], zoom: 1.2, tilt: .5 }),
+      6: say('Too safe', 'Backwards? Your 11 was free in space.', { at: [23, 38], zoom: 1.2, tilt: .5 })
+    } },
+
+  /* ---- 4. Their free kicks ---- */
+  'Hold the line': {
+    intro: { start: { us: { 4: [26, 65] }, them: { 3: [17, 55], 9: [25, 55], 4: [32, 55] } },
+      cam: { at: [12, 58], zoom: 1.4, tilt: .45 },
+      steps: [
+        { t: 1.5, us: { 4: [27, 69.5] }, them: { 3: [19, 60.5], 9: [25, 60.5], 4: [30, 60] }, head: 'Free kick to them, out on our left',
+          sub: 'Your 3 and 2 hold a line, but you drop deep.', cam: { at: [21, 63], zoom: 1.2, tilt: .45 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .8, chain: [{ ns: ['us:3', 'us:4', 'us:2'], c: 'good' }], head: 'Hold the line',
+          sub: 'You stepped up level with your 3 and 2, so their runners have to start from out there…', cam: { at: [22, 65], zoom: 1.25, tilt: .45 } },
+        { t: 1.2, pass: 'us:1', air: true, tag: { 'us:1': ['CAUGHT', 'good'] }, head: 'Hold the line', sub: '…and your keeper has room to come for the ball.', wait: 1.2 }],
+      zone1: [{ t: 1.2, pass: 'them:9', air: true, them: { 9: [23.5, 65.5] }, chain: [{ ns: ['us:3', 'us:4', 'us:2'], c: 'bad' }], tag: { 'them:9': 'FREE' }, head: 'Too deep',
+          sub: 'Back there you kept everyone onside, and their runners get a free header in front of goal.', cam: { at: [23, 67], zoom: 1.35, tilt: .45 } },
+        { t: .5, shot: [23.5, 75.8], wait: 1 }],
+      zone2: [{ t: 1.2, pass: 'them:9', air: true, them: { 9: [24, 66] }, tag: { 'them:9': 'FREE' }, head: 'Too high',
+          sub: 'Stepping past their runners left all the space behind you.', cam: { at: [23, 66], zoom: 1.35, tilt: .45 } },
+        { t: .5, shot: [23.5, 75.8], wait: 1 }]
+    } },
+
+  'Get behind the ball': {
+    intro: { start: { us: { 6: [18, 38] }, them: { 10: [29, 45] } },
+      cam: { at: [23, 40], zoom: 1.45, tilt: .5 },
+      steps: [
+        { t: 1.3, us: { 6: [20, 41] }, them: { 10: [29, 49] }, head: 'We foul them at midfield', sub: 'Their 6 takes it quickly, and you are standing next to the ball.',
+          cam: { at: [24, 45], zoom: 1.3, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1, pass: 'them:10', them: { 10: [28, 51.8] }, tag: { 'us:6': ['TIGHT', 'good'] }, head: 'Get behind the ball',
+          sub: 'They took it quickly, so you sprinted back behind the ball, into the middle…', cam: { at: [26, 50], zoom: 1.4, tilt: .5 } },
+        { t: .5, pass: 'us:6', tag: { 'us:6': ['WON IT', 'good'] }, head: 'Get behind the ball', sub: '…in front of your defenders, and you win it.', wait: 1.1 }],
+      zone1: [{ t: 1, pass: 'them:10', them: { 10: [28, 51.8] }, head: 'Wrong side', sub: 'Standing next to the ball does nothing. Their pass goes right past you…',
+          cam: { at: [25, 48], zoom: 1.3, tilt: .5 } },
+        { t: 1, them: { 10: [31, 58] }, tag: { 'them:10': 'FREE' }, head: 'Wrong side', sub: '…and their 10 runs at our defense.', wait: 1 }],
+      zone2: [{ t: 1, pass: 'them:10', them: { 10: [28, 51.8] }, head: 'Ball watching', sub: 'Still on the wrong side of the ball. Their pass goes past you…',
+          cam: { at: [25, 48], zoom: 1.3, tilt: .5 } },
+        { t: 1, them: { 10: [31, 58] }, tag: { 'them:10': 'FREE' }, head: 'Ball watching', sub: '…and their 10 runs at our defense.', wait: 1 }]
+    } },
+
+  'Back post runner': {
+    intro: { start: { them: { 9: [25, 55], 4: [32, 55], 7: [15, 56] } },
+      cam: { at: [38, 56], zoom: 1.4, tilt: .45 },
+      steps: [
+        { t: 1.5, them: { 9: [25, 60.5], 4: [31, 60], 7: [13.5, 62.5] }, head: 'Free kick to them on our right wing', sub: 'Their 7 sneaks toward the back post.',
+          cam: { at: [24, 62], zoom: 1.15, tilt: .45 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.3, pass: 'us:3', air: true, them: { 7: [14.5, 64.5] }, tag: { 'us:3': ['BACK POST', 'good'] }, head: 'Back post runner',
+          sub: 'Their 7 was sneaking to the back post, so you got there first, goal side…', cam: { at: [18, 66], zoom: 1.4, tilt: .45 } },
+        { t: .9, pass: 'us:11', air: true, head: 'Back post runner', sub: '…and head it away.', cam: { at: [16, 58], zoom: 1.1, tilt: .5 }, wait: 1.1 }],
+      zone1: [{ t: 1.3, pass: 'them:7', air: true, pd: .2, them: { 7: [16.6, 66.8] }, tag: { 'them:7': 'FREE' }, head: 'Ball watching',
+          sub: 'Their 7 ran right past you to the back post.', cam: { at: [18, 67], zoom: 1.4, tilt: .45 } },
+        { t: .5, shot: [22.5, 75.8], wait: 1 }]
+    } },
+
+  'Block the easy pass': {
+    intro: { start: { us: { 9: [30, 30] }, them: { 4: [25, 16], 3: [36, 16] } },
+      cam: { at: [32, 20], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.5, us: { 9: [31, 24] }, them: { 4: [25, 10], 3: [38.5, 10.3] }, tag: { 'them:4': 'FREE' }, head: 'Free kick to them, deep in their half',
+          sub: 'Their 3 takes it, and their 4 is free in the middle.', cam: { at: [31, 15], zoom: 1.3, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.3, pass: 'us:6', air: true, tag: { 'us:9': ['BLOCKS IT', 'good'] }, head: 'Block the easy pass',
+          sub: 'You stood in the pass to their 4, eight yards from the ball, so their 3 has to go long…', cam: { at: [30, 24], zoom: 1.05, tilt: .5 } },
+        { t: .6, tag: { 'us:6': ['OURS', 'good'] }, head: 'Block the easy pass', sub: '…where our team is waiting.', cam: { at: [24, 38], zoom: 1.25, tilt: .5 }, wait: 1.1 }],
+      zone1: [{ t: .9, pass: 'them:4', tag: { 'them:4': 'FREE' }, head: 'Too far', sub: 'From there their 4 gets an easy pass…', cam: { at: [28, 13], zoom: 1.35, tilt: .5 } },
+        { t: 1, them: { 4: [23, 17] }, head: 'Too far', sub: '…and starts the attack.', wait: 1 }],
+      zone2: say('Too close', 'Inside eight yards of the ball. The referee makes you move back.', { at: [35, 12], zoom: 1.5, tilt: .5 })
+    } },
+
+  'End of the wall': {
+    intro: { start: { us: { 6: [26, 61], 2: [38, 58] } },
+      cam: { at: [33, 58], zoom: 1.45, tilt: .45 },
+      steps: [
+        { t: 1.4, us: { 6: [28.2, 63.4], 2: [38, 64] }, tag: { 'us:6': ['WALL', 'good'] }, head: 'Free kick to them, 20 yards out on our right',
+          sub: 'Your 6 is in the wall, and you are the end of it.', cam: { at: [32, 63], zoom: 1.4, tilt: .45 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .6, pass: 'us:2', tag: { 'us:2': ['BLOCKED', 'good'] }, head: 'End of the wall',
+        sub: 'You lined up between the ball and the near post, eight yards away. The near side is covered, and your keeper takes the rest.', cam: { at: [31, 63], zoom: 1.5, tilt: .45 }, wait: 1.2 }],
+      zone1: [{ t: .6, pass: 'us:2', tag: { 'us:2': ['BLOCKED', 'good'] }, head: 'Close',
+        sub: 'It hits you. Next time line up exactly between the ball and the near post.', cam: { at: [31, 63], zoom: 1.5, tilt: .45 }, wait: 1.2 }],
+      zone2: [{ t: .7, shot: [27.6, 75.8], head: 'Too wide', sub: 'The wall had a gap at the near post.', cam: { at: [30, 68], zoom: 1.4, tilt: .45 }, wait: 1.1 }],
+      zone3: say('Too close', 'Inside eight yards. The referee moves you back.', { at: [33, 60], zoom: 1.5, tilt: .45 })
+    } },
+
+  /* ---- 5. Throw-ins ---- */
+  'Down the line': {
+    intro: { start: { us: { 11: [8, 42] } },
+      cam: { at: [6, 42], zoom: 1.45, tilt: .5 },
+      steps: [
+        { t: 1.4, us: { 11: [6, 36] }, tag: { 'us:11': ['RUN', 'good'] }, head: 'Throw-in to us on the left', sub: 'Near halfway. Your 11 sprints down the line.',
+          cam: { at: [8, 38], zoom: 1.4, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      lead0: [{ t: 1.1, us: { 11: [5, 20] }, tag: { 'us:11': ['AWAY', 'good'] }, head: 'Down the line',
+        sub: 'Your 11 was sprinting down the line, so you threw it into the space ahead. The 11 runs onto it.', cam: { at: [9, 26], zoom: 1.3, tilt: .55 }, wait: 1.2 }],
+      11: say('To feet', 'The 11 was free and running down the line. Throw it into the space ahead.', { at: [8, 38], zoom: 1.4, tilt: .5 }),
+      6: steal('6', '7', [10, 46], 'Marked', 'Their 7 is right on your 6.')
+    } },
+
+  'To feet': {
+    intro: { start: { us: { 7: [44, 26] }, them: { 3: [44.5, 22] } },
+      cam: { at: [46, 28], zoom: 1.45, tilt: .5 },
+      steps: [
+        { t: 1.4, us: { 7: [44, 33] }, them: { 3: [44.5, 28.5] }, tag: { 'them:3': 'FOLLOW' }, head: 'Throw-in to us on the right',
+          sub: 'Your 7 comes short, but their 3 follows right behind.', cam: { at: [45, 31], zoom: 1.45, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      7: [{ t: .8, tag: { 'us:7': ['HOLDS IT', 'good'] }, head: 'To feet', sub: 'The 7 came short with their 3 right behind, so you threw it to feet…',
+          cam: { at: [46, 32], zoom: 1.5, tilt: .5 } },
+        { t: .8, us: { 2: [48.5, 36] }, pass: 'us:2', pd: .3, head: 'To feet', sub: '…and the 7 lays it back to you.', wait: 1.1 }],
+      10: steal('10', '6', [37.5, 23.5], 'Marked', 'Their 6 is right on your 10.')
+    } },
+
+  'Forward, not across': {
+    intro: { start: { us: { 11: [9, 58] }, them: { 9: [18, 58] } },
+      cam: { at: [8, 60], zoom: 1.45, tilt: .5 },
+      steps: [
+        { t: 1.4, us: { 11: [7, 52] }, them: { 9: [14, 62.5] }, tag: { 'them:9': 'PRESS' }, head: 'Throw-in to us on the left',
+          sub: 'Near our own box. Their 9 closes in on your 4.', cam: { at: [9, 60], zoom: 1.4, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      11: [{ t: 1, us: { 11: [6.5, 49] }, tag: { 'us:11': ['FREE', 'good'] }, head: 'Forward, not across',
+        sub: 'You threw it forward, down the line to your 11. Away from our goal, and the 11 is free.', cam: { at: [9, 52], zoom: 1.35, tilt: .5 }, wait: 1.2 }],
+      4: steal('4', '9', [13.5, 63.5], 'Across our box', 'A throw across the front of our goal with their 9 right there. Steal it there, and their 9 scores.'),
+      6: steal('6', '7', [13, 55.5], 'Marked', 'Their 7 is right on your 6.')
+    } },
+
+  'Get free for it': {
+    intro: { start: { us: { 10: [16, 30] }, them: { 6: [17, 26] } },
+      cam: { at: [8, 40], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.4, us: { 10: [14, 34] }, them: { 6: [15, 30.5] }, tag: { 'them:6': 'MARK' }, head: 'Your 3 has a throw-in', sub: 'Their 6 is right on your back.',
+          cam: { at: [11, 36], zoom: 1.4, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1, face: { 'us:10': 'up' }, tag: { 'us:10': ['FREE', 'good'] }, head: 'Get free for it',
+        sub: 'Their 6 was tight on you, so you moved into the open space near the line. An easy throw, and you can face forward.', cam: { at: [10, 44], zoom: 1.4, tilt: .5 }, wait: 1.2 }],
+      zone1: say('Marked', "Their 6 is right behind you. Your 3 can't throw it to you there.", { at: [13, 33], zoom: 1.45, tilt: .5 }),
+      zone2: say('Good', "You're open, but that was a long throw past their 6 and 10. The space near the line is shorter and safer.", { at: [14, 38], zoom: 1.3, tilt: .5 }),
+      zone3: say('Too far', 'Out of throwing range.', { at: [14, 36], zoom: 1.1, tilt: .5 })
+    } },
+
+  'Their throw-in': {
+    intro: { start: { them: { 11: [40, 42] } },
+      cam: { at: [46, 46], zoom: 1.45, tilt: .5 },
+      steps: [
+        { t: 1.4, them: { 11: [44, 46] }, tag: { 'them:11': 'FREE' }, head: 'Throw-in to them on our right', sub: 'Their 11 waits near the line, and nobody is on their 11.',
+          cam: { at: [43, 46], zoom: 1.35, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: .8, pass: 'them:11', air: true, tag: { 'us:7': ['TIGHT', 'good'] }, head: 'Their throw-in', sub: 'You marked their 11 tight, goal side…', cam: { at: [46, 48], zoom: 1.5, tilt: .5 } },
+        { t: .5, pass: 'us:7', tag: { 'us:7': ['WON IT', 'good'] }, head: 'Their throw-in', sub: '…so a throw to feet has you right behind, and you win it.', wait: 1.1 }],
+      zone1: [{ t: .8, pass: 'them:11', air: true, tag: { 'them:11': 'FREE' }, head: 'Too far', sub: 'Their 11 is free for an easy throw…', cam: { at: [44, 48], zoom: 1.4, tilt: .5 } },
+        { t: 1, them: { 11: [44, 56] }, head: 'Too far', sub: '…and runs at our defense.', wait: 1 }],
+      zone2: [{ t: .8, pass: 'them:11', air: true, head: 'Wrong side', sub: 'In front of their 11…', cam: { at: [44, 48], zoom: 1.4, tilt: .5 } },
+        { t: 1, them: { 11: [46, 56] }, tag: { 'them:11': 'PAST YOU' }, head: 'Wrong side', sub: '…so one spin and their 11 is away down the line.', wait: 1 }]
+    } },
+
+  /* ---- 6. Goal kicks ---- */
+  'Short to the free back': {
+    intro: { start: { us: { 3: [12, 64], 2: [36, 64] }, them: { 9: [27, 56], 11: [35, 55], 7: [17, 54] } },
+      cam: { at: [22, 68], zoom: 1.4, tilt: .45 },
+      steps: [
+        { t: 1.5, us: { 3: [6, 63], 2: [42, 63] }, them: { 9: [25.5, 59.5], 11: [38, 59], 7: [15, 58] }, tag: { 'them:9': 'MARK' }, head: 'Goal kick to us',
+          sub: 'Your 3 and 2 split wide, and their 9 marks your 4.', cam: { at: [24, 62], zoom: 1.1, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      3: [{ t: 1.1, us: { 3: [6, 54] }, tag: { 'us:3': ['FREE', 'good'] }, head: 'Short to the free back',
+        sub: 'Your 3 split wide and nobody was near, so you passed it to the 3. Short, simple, and we keep the ball.', cam: { at: [11, 58], zoom: 1.3, tilt: .5 }, wait: 1.2 }],
+      2: steal('2', '11', [39.5, 60.5], 'Marked', 'Their 11 is ready to jump on your 2.'),
+      4: steal('4', '9', [25.5, 61], 'Pressed', 'Their 9 is right on your 4.'),
+      6: steal('6', '10', [21.5, 51], 'Marked', 'Their 10 is right on your 6.'),
+      7: say('Long ball', 'A long goal kick is a 50-50. Your 3 was free and close.', { at: [25, 36], zoom: 1.1, tilt: .5 }),
+      9: say('Long ball', 'A long goal kick is a 50-50. Your 3 was free and close.', { at: [25, 36], zoom: 1.1, tilt: .5 }),
+      10: say('Long ball', 'A long goal kick is a 50-50. Your 3 was free and close.', { at: [25, 36], zoom: 1.1, tilt: .5 }),
+      11: say('Long ball', 'A long goal kick is a 50-50. Your 3 was free and close.', { at: [25, 36], zoom: 1.1, tilt: .5 }),
+    } },
+
+  'Split wide': {
+    intro: { start: { us: { 2: [30, 60], 3: [12, 64] } },
+      cam: { at: [28, 66], zoom: 1.4, tilt: .45 },
+      steps: [
+        { t: 1.4, us: { 2: [32, 66], 3: [7, 63] }, head: 'Goal kick to us', sub: "You're standing right next to your 4.", cam: { at: [28, 66], zoom: 1.35, tilt: .45 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.1, us: { 2: [45, 54] }, tag: { 'us:2': ['TIME', 'good'] }, head: 'Split wide',
+        sub: 'Goal kick, so you split wide by the sideline. An easy pass, and time to look up.', cam: { at: [40, 58], zoom: 1.3, tilt: .5 }, wait: 1.2 }],
+      zone1: say('Too narrow', 'Too close to your 4. One player can press you both.', { at: [28, 64], zoom: 1.4, tilt: .45 },
+        { t: 1, them: { 9: [28, 62] }, tag: { 'them:9': 'PRESS' } }),
+      zone2: say('Too high', 'Their 11 is right there.', { at: [38, 56], zoom: 1.45, tilt: .5 }, { tag: { 'them:11': 'MARK' } })
+    } },
+
+  'Show for it': {
+    intro: { start: { us: { 6: [32, 41] }, them: { 10: [33, 44] } },
+      cam: { at: [30, 46], zoom: 1.4, tilt: .5 },
+      steps: [
+        { t: 1.4, us: { 6: [30, 46] }, them: { 10: [31, 49.5] }, tag: { 'them:10': 'MARK' }, head: 'Goal kick to us', sub: 'Their 10 marks you, and their 9 is near your 4.',
+          cam: { at: [28, 54], zoom: 1.25, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.1, us: { 6: [19, 52] }, tag: { 'us:6': ['TURNED', 'good'], 'them:10': 'BYPASSED' }, head: 'Show for it',
+        sub: 'Their 10 was on you, so you dropped into the space next to their 9. A clear pass, and you can turn.', cam: { at: [20, 56], zoom: 1.3, tilt: .5 }, wait: 1.2 }],
+      zone1: say('Marked', "Their 10 is right on you. The keeper can't find you there.", { at: [30, 48], zoom: 1.45, tilt: .5 }),
+      zone2: say('Behind their 9', 'Their 9 is standing in the passing lane.', { at: [25, 62], zoom: 1.45, tilt: .45 })
+    } },
+
+  'Their goal kick': {
+    intro: { start: { us: { 11: [13, 20], 7: [37, 20] }, them: { 2: [12, 14], 3: [38, 14], 4: [25, 14] } },
+      cam: { at: [25, 12], zoom: 1.3, tilt: .5 },
+      steps: [
+        { t: 1.5, us: { 11: [9, 17], 7: [41, 17] }, them: { 2: [6, 13], 3: [44, 13], 4: [25, 9.5] }, head: 'Goal kick to them',
+          sub: 'Their 2 and 3 split wide, and your wingers go with them.', cam: { at: [25, 16], zoom: 1.1, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      zone0: [{ t: 1.2, pass: 'us:11', air: true, tag: { 'us:9': ['BLOCKS IT', 'good'], 'us:11': ['WON IT', 'good'] }, head: 'Their goal kick',
+        sub: 'You stood in the pass to their 4, so their keeper had to go wide, where your 11 was waiting.', cam: { at: [16, 14], zoom: 1.2, tilt: .5 }, wait: 1.2 }],
+      zone1: say('Inside the box', 'On a goal kick you have to stay outside the box until the ball is kicked. The kick is taken again.', { at: [25, 10], zoom: 1.45, tilt: .5 }),
+      zone2: [{ t: .8, pass: 'them:4', tag: { 'them:4': 'FREE' }, head: 'Too far', sub: 'Their keeper rolls it to their 4…', cam: { at: [25, 10], zoom: 1.4, tilt: .5 } },
+        { t: 1, them: { 4: [23, 18] }, head: 'Too far', sub: '…and they are away.', wait: 1 }]
+    } },
+
+  'Over the press': {
+    intro: { start: { them: { 9: [27, 55], 7: [12, 54], 11: [36, 54], 10: [27, 45], 6: [19, 43], 2: [11, 40], 3: [40, 40], 4: [29, 38], 1: [25, 6] } },
+      cam: { at: [22, 66], zoom: 1.35, tilt: .45 },
+      steps: [
+        { t: 1.6, them: { 9: [24, 59.5], 7: [10, 59.5], 11: [38, 59.5], 10: [27, 50], 6: [19, 48], 2: [11, 46], 3: [40, 46], 4: [27, 43.5], 1: [25, 12] },
+          tag: { 'them:9': 'PRESS' }, head: 'Goal kick to us', sub: 'They press everyone, and their defenders push up to halfway.', cam: { at: [25, 52], zoom: 1, tilt: .5 } },
+        { t: 1, cam: 'wide', head: '' }] },
+    after: {
+      lead0: [{ t: 1.1, us: { 11: [9, 22] }, tag: { 'us:11': ['AWAY', 'good'], 'them:2': 'BYPASSED' }, hatch: [{ pts: [[0, 16], [18, 16], [18, 40], [0, 40]], c: 'good' }],
+        head: 'Over the press', sub: 'They pressed with everyone, so you kicked it long into the channel behind their 2. Your 11 runs onto it, away from their keeper.',
+        cam: { at: [12, 30], zoom: 1.15, tilt: .55 }, wait: 1.2 }],
+      lead1: [{ t: 1, them: { 1: [25, 19] }, tag: { 'them:1': 'COMES OUT' }, head: 'Over the press',
+        sub: 'Over the press works, but their keeper can come out for that one. The channel was safer.', cam: { at: [25, 24], zoom: 1.3, tilt: .55 }, wait: 1.1 }],
+      9: steal('9', '4', [26.5, 42.3], 'To feet?', 'Their 4 is right behind your 9. The space is behind their defenders.'),
+      11: steal('11', '2', [9, 44], 'To feet?', 'Their 2 is right on your 11. The space is behind their 2.'),
+      2: steal('2', '11', [40, 61], 'Pressed', 'Their 11 is right on your 2.'),
+      3: steal('3', '7', [8, 61], 'Pressed', 'Their 7 is right on your 3.'),
+      4: steal('4', '9', [24.5, 60.6], 'Pressed', 'Their 9 is right on your 4.'),
+      6: steal('6', '10', [26, 51], 'Marked', 'Their 10 is right on your 6.'),
+      7: steal('7', '3', [41.5, 44], 'Marked', 'Their 3 is right on your 7.'),
+      10: steal('10', '6', [20.5, 46], 'Marked', 'Their 6 and 4 are close to your 10.')
+    } },
+};
+window.RIDDLE_LIB.withMotion(RIDDLES, MOTION);
 window.RIDDLE_LIB.defineSet({ key: 'sp', chapters: CHAPTERS, riddles: RIDDLES });
 })();
