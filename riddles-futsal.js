@@ -21,7 +21,9 @@ const CHAPTERS = [
   { name: 'Switches', blurb: 'Move the ball faster than they can shift.' },
   { name: 'The pivo', blurb: 'Play into the pivo and combine around it.' },
   { name: 'Create the shot', blurb: 'Make the space, then hit it early.' },
-  { name: 'Counters and routines', blurb: 'Outnumber them, and plays that are planned.' }
+  { name: 'Counters and routines', blurb: 'Outnumber them, and plays that are planned.' },
+  { name: 'Kick-ins', blurb: 'Their players stand 5 m back. Use it.' },
+  { name: 'Free kicks', blurb: 'Change the angle, find the far post, and take it quick.' }
 ];
 
 const RIDDLES = [
@@ -498,12 +500,12 @@ const RIDDLES = [
   elsewhere: P(1, 'Not quite', 'Stay wide, and get forward.'),
   best: { kind: 'move', at: [44.7, 30.7] } },
 
-{ ch: 5, type: 'ball', me: '7', title: 'Kick-in for the fixo', noCarry: true, restart: 'kickin',
+{ ch: 5, type: 'ball', me: '7', kind: 'Kick-in', title: 'Kick-in for the fixo', noCarry: true, restart: 'kickin',
   prompt: 'Kick-in to us on the right, near their area. Their players mark your pivo and left ala. Your fixo is running up from behind.',
   hint: 'Who is free, and arriving facing the goal?',
   lesson: 'On a kick-in, the late runner from behind is usually free. Play it into the run for a first-time shot.',
   us:   { 1:[25,93], 4:[34,40], 11:[8,18], 9:[26,13], 7:[51.8,24.5] },
-  them: { 1:[25,3], 9:[20,32], 7:[11,14], 11:[42,15], 4:[25,8] },
+  them: { 1:[25,3], 9:[20,32], 7:[11,14], 11:[40,13], 4:[25,8] },
   ball: '7', ballAt: [50, 22],
   arrows: [{ team: 'us', from: [34, 42], to: [32.5, 36] }],
   pass: {
@@ -516,7 +518,7 @@ const RIDDLES = [
   elsewhere: P(1, 'Not quite', 'Find the runner arriving from behind.'),
   best: { kind: 'pass', to: '4', at: [30, 28] } },
 
-{ ch: 5, type: 'ball', me: '11', title: 'Corner to the far post', noCarry: true, restart: 'corner', air: true,
+{ ch: 5, type: 'ball', me: '11', kind: 'Corner kick', title: 'Corner to the far post', noCarry: true, restart: 'corner', air: true,
   prompt: 'Corner kick to us from the left. Their keeper and their fixo crowd the near post. Your right ala is sneaking to the far post.',
   hint: 'Where is nobody looking?',
   lesson: 'Defenders crowd the near post on a corner. A ball across to the far post finds the runner nobody followed.',
@@ -550,7 +552,175 @@ const RIDDLES = [
   carry: [[18, 30, 3, 0, 'Into their pivo', 'Their pivo is right there.']],
   shoot: P(0, 'Blocked', 'Through their whole diamond? It hits a defender.'),
   elsewhere: P(1, 'Not quite', 'Move it across the top, to the free player.'),
-  best: { kind: 'pass', to: '1' } }
+  best: { kind: 'pass', to: '1' } },
+/* ---------------- 7. Kick-ins ---------------- */
+{ ch: 6, type: 'ball', me: '7', kind: 'Kick-in', title: 'Short for the fixo', noCarry: true, restart: 'kickin',
+  prompt: 'Kick-in to us on the right, next to their area. Their players have to stand 5 m away. Your pivo and left ala are marked, and your fixo is open just inside you.',
+  hint: 'How far away do their players have to stand?',
+  lesson: "On a kick-in, their players stand 5 m back. Roll it very short into your fixo's stride, and the fixo shoots before anyone can close.",
+  us:   { 1:[25,93], 4:[36,31], 11:[14,16], 9:[29,10], 7:[51.8,26.5] },
+  them: { 1:[25,2.5], 9:[27,42], 7:[17,12], 11:[40,13], 4:[29,6.3] },
+  ball: '7', ballAt: [50, 24],
+  pass: {
+    4:  P(2, 'Good', "Right player, but roll it in front of your fixo, into the stride. Then the shot is first time, before their right ala closes."),
+    9:  P(1, 'Marked', 'Their fixo is right on your pivo, and their keeper is close.'),
+    11: P(1, 'Marked', 'A long kick-in across their whole area, and their left ala is right on your left ala.')
+  },
+  lead: [[43.5, 27, 3.5, 3, 'Pro choice', "Their players had to stand 5 m away, so you rolled it very short into your fixo's stride. The fixo steps onto it and shoots first time, before anyone can close.", '4']],
+  shoot: null,
+  elsewhere: P(1, 'Not quite', 'Their players are 5 m away. Who is open close to you?'),
+  best: { kind: 'pass', to: '4', at: [43.5, 27] } },
+
+{ ch: 6, type: 'move', me: '4', kind: 'Kick-in', title: 'Open for the short one', restart: 'kickin',
+  prompt: 'Kick-in to us on the left, next to their area. Your left ala will take it, and their players have to stand 5 m away. Drag the fixo.',
+  hint: 'Where can you shoot from after one short pass?',
+  lesson: 'On a kick-in near their goal, the fixo steps up: a few steps from the taker, inside, facing goal. One short pass, one shot.',
+  us:   { 1:[25,93], 4:[24,48], 11:[-1.8,26.5], 9:[24,10], 7:[38,16] },
+  them: { 1:[25,2.5], 9:[26,38], 7:[10,14], 11:[35,12.5], 4:[22.5,6.5] },
+  ball: { team: 'us', n: '11' }, ballAt: [0, 24],
+  zones: [
+    [9, 30, 4, 3, 'Pro spot', 'You stepped up a few steps from the taker, inside and facing goal, with nobody near you. One short pass, and you shoot.'],
+    [24, 48, 3, 1, 'Too deep', 'From there the pass is long, and their pivo closes you before you can shoot.'],
+    [4, 21, 2.6, 1, 'Too close', 'Right next to the taker on the line, you have no angle to shoot.'],
+    [16, 16, 2.6, 0, 'Into the crowd', 'Toward the goal you run into their left ala and fixo, and the shot is gone.']
+  ],
+  elsewhere: P(1, 'Not quite', 'Step up close to the taker, inside, where you can shoot.'),
+  best: { kind: 'move', at: [9, 30] } },
+
+{ ch: 6, type: 'move', me: '9', kind: 'Kick-in', title: 'Set a screen', restart: 'kickin', noPayoff: true,
+  prompt: 'Kick-in to us on the right. Your left ala wants to run across toward the ball, but their left ala is tight on the ala. Drag the pivo.',
+  hint: "Can you get in their left ala's way?",
+  lesson: 'Set a screen: stand still right next to the defender, on the side your teammate runs past. The defender runs into you, and your teammate is free.',
+  us:   { 1:[25,93], 4:[32,42], 11:[15,25], 9:[27,10], 7:[51.8,24.5] },
+  them: { 1:[25,2.5], 9:[31,37], 7:[18.5,21.5], 11:[38,14], 4:[27.5,6] },
+  ball: { team: 'us', n: '7' }, ballAt: [50, 22],
+  zones: [
+    [21, 25, 3, 3, 'Pro spot', 'You stood right next to their left ala, on the side your left ala runs past. Their left ala runs into you, and your left ala is free for the kick-in. That is a screen.'],
+    [27, 10, 3, 1, 'Stayed at the post', "Nobody got in their left ala's way, so the ala follows your left ala everywhere."],
+    [12, 28, 2.6, 1, 'Wrong side', "You got in your own left ala's way, not their left ala's."]
+  ],
+  elsewhere: P(1, 'Not quite', 'Stand right next to their left ala, in the way of the chase.'),
+  best: { kind: 'move', at: [21, 25] } },
+
+{ ch: 6, type: 'ball', me: '11', kind: 'Kick-in', title: 'Over the press', noCarry: true, restart: 'kickin', air: true,
+  prompt: 'Kick-in to us in our half. They press man to man, so everyone is marked, and the space behind them is empty. Your pivo is about to spin.',
+  hint: 'Where is the space when everyone is marked?',
+  lesson: 'When they press everyone man to man, the space is behind them. Lift it over the press into the run.',
+  us:   { 1:[25,93], 4:[13,72], 11:[-1.8,64.5], 9:[12,51], 7:[32,58] },
+  them: { 1:[25,3], 9:[15.5,67], 7:[12.5,57], 11:[30,53.5], 4:[14.5,47] },
+  ball: '11', ballAt: [0, 62],
+  arrows: [{ team: 'us', from: [12, 49], to: [9.5, 43] }],
+  pass: {
+    4:  P(1, 'Risky', 'Their pivo is right on your fixo, in front of our goal. Lose it there and they score.'),
+    9:  P(1, 'Marked', 'Their fixo is tight on your pivo, who would have to turn with the ball.'),
+    7:  P(1, 'Marked', 'Their right ala is on your right ala, and the pass goes right across our half.'),
+    1:  TOO_SAFE('Back to the keeper. Safe, but their press comes again, and the space is behind them.')
+  },
+  lead: [[8, 38, 5, 3, 'Pro choice', 'They pressed everyone man to man, so you lifted the kick-in over the press for your pivo to spin onto. Their whole press is beaten.', '9']],
+  shoot: null,
+  elsewhere: P(1, 'Not quite', 'Everyone is marked. The space is behind them.'),
+  best: { kind: 'pass', to: '9', at: [8, 38] } },
+
+{ ch: 6, type: 'move', me: '7', kind: 'Kick-in', title: 'Step back in',
+  prompt: 'You took the kick-in short to your fixo, and their right ala is closing the fixo down. Nobody is watching you. Drag the right ala.',
+  hint: 'Who forgets about the kick-in taker?',
+  lesson: "After a short kick-in, step straight back on and go. Defenders forget the taker, and one pass puts you in behind.",
+  us:   { 1:[25,93], 4:[42,27], 11:[15,17], 9:[29,10], 7:[51.8,24.5] },
+  them: { 1:[25,2.5], 9:[33,40], 7:[18,13], 11:[40,21.5], 4:[28,6.3] },
+  ball: { team: 'us', n: '4' },
+  zones: [
+    [45, 14, 4, 3, 'Pro spot', "Their right ala went to your fixo and forgot about you, so you stepped straight back in behind. Your fixo gives it back, and you're in behind."],
+    [51.8, 24.5, 3, 1, 'Stayed off', 'You stayed off the court, so your fixo has nobody close to play with.'],
+    [44, 31, 2.6, 1, 'Too close', 'Right next to your fixo, their right ala closes you both down.']
+  ],
+  elsewhere: P(1, 'Not quite', 'Step back on, in behind their right ala.'),
+  best: { kind: 'move', at: [45, 14] } },
+
+/* ---------------- 8. Free kicks ---------------- */
+{ ch: 7, type: 'ball', me: '11', kind: 'Free kick', title: 'Roll it to the side', noCarry: true, restart: 'freekick',
+  prompt: 'Free kick to us at the edge of their area, on the left. Their wall of two blocks the shot from here. Your fixo is behind the ball, ready to run in.',
+  hint: 'Can you change the angle?',
+  lesson: "A wall only blocks one angle. Roll the free kick square, and the shot comes from where the wall isn't.",
+  us:   { 1:[25,93], 4:[31,33], 11:[10,24.8], 9:[33,10], 7:[41,20] },
+  them: { 1:[26,3], 9:[16.2,9.9], 7:[20.6,12.5], 11:[37.5,16.5], 4:[31.5,6.5] },
+  ball: '11', ballAt: [12, 22],
+  pass: {
+    4:  P(2, 'Good', "Right player, but roll it into the fixo's run, so the shot is first time."),
+    9:  P(1, 'Marked', 'Their fixo is right on your pivo, behind the wall.'),
+    7:  P(1, 'Marked', 'Their right ala is on your right ala, and the pass goes across the whole area.')
+  },
+  lead: [[25, 25, 4, 3, 'Pro choice', "Their wall blocked the shot from where the ball was, so you rolled it square into your fixo's run. From there the wall isn't in the way.", '4']],
+  shoot: P(0, 'Into the wall', 'From here their wall is right in the way. The shot hits the wall.'),
+  elsewhere: P(1, 'Not quite', 'Change the angle, so the wall is not in the way.'),
+  best: { kind: 'pass', to: '4', at: [25, 25] } },
+
+{ ch: 7, type: 'ball', me: '4', kind: 'Free kick', title: 'Take it quick', noCarry: true, restart: 'freekick', quick: true,
+  prompt: 'Free kick to us in our half. Three of theirs are still jogging back, and your right ala is free up the right.',
+  hint: 'Are they ready yet?',
+  lesson: "A free kick when they aren't set is a chance. Take it quickly, before they get organized.",
+  us:   { 1:[25,93], 4:[30,64.8], 11:[12,48], 9:[25,24], 7:[44,44] },
+  them: { 1:[25,3], 9:[23,55], 7:[15,52], 11:[38,57], 4:[24,29] },
+  ball: '4', ballAt: [30, 62],
+  pass: {
+    7:  P(2, 'Good', 'Right player, but put it ahead of your right ala, who is facing forward with space.'),
+    11: P(0, 'Intercepted', 'Their left ala is right in that lane.', { cut: '7' }),
+    9:  P(1, 'Marked', "Their fixo is tight on your pivo, and it's a long way."),
+    1:  TOO_SAFE('Back to the keeper gives them time to get back and set up.')
+  },
+  lead: [[45, 35, 5, 3, 'Pro choice', "They were still getting back, so you took it quickly into the space ahead of your right ala, who runs at their goal before they're set.", '7']],
+  shoot: null,
+  elsewhere: P(1, 'Not quite', "They aren't set yet. Find the free player, quickly."),
+  best: { kind: 'pass', to: '7', at: [45, 35] } },
+
+{ ch: 7, type: 'ball', me: '7', kind: 'Free kick', title: 'Across the face', noCarry: true, restart: 'freekick',
+  prompt: 'Free kick to us on the right, close to their goal. Their wall of two and the keeper cover the near post. Your left ala is sneaking in at the far post.',
+  hint: 'Where is nobody looking?',
+  lesson: 'On a free kick from the side, the wall and keeper guard the near post. A low ball across the face of the goal finds the far post.',
+  us:   { 1:[25,93], 4:[30,36], 11:[13,19], 9:[27,19], 7:[42,18.2] },
+  them: { 1:[27,2.5], 9:[30.7,7.3], 7:[10,14], 11:[34.9,4.3], 4:[27,15] },
+  ball: '7', ballAt: [40, 16],
+  arrows: [{ team: 'us', from: [13.5, 18], to: [17, 12] }],
+  pass: {
+    11: P(2, 'Good', 'Right player, but the left ala is running to the far post. Put it in front of the run.'),
+    9:  P(1, 'Marked', 'Their fixo is right on your pivo.'),
+    4:  TOO_SAFE('Back to the fixo. Safe, but the far post was wide open.')
+  },
+  lead: [[21, 5, 3.5, 3, 'Pro choice', 'Their wall and keeper covered the near post, so you rolled it across the face of the goal. Your left ala slides in at the far post.', '11']],
+  shoot: P(1, 'Blocked', 'Their wall and keeper cover the near post. That shot hits the wall.'),
+  elsewhere: P(1, 'Not quite', 'Find the runner at the far post.'),
+  best: { kind: 'pass', to: '11', at: [21, 5] } },
+
+{ ch: 7, type: 'move', me: '4', kind: 'Free kick', title: 'Find the shooting lane', restart: 'freekick',
+  prompt: 'Free kick to us on the right of their area. Your right ala will roll it to you, and their wall of two blocks the straight shot. Drag the fixo.',
+  hint: 'Where is the wall not in the way?',
+  lesson: "On a free kick, find the spot the wall doesn't cover: square of the ball, at the top of the area. That's where the shot is.",
+  us:   { 1:[25,93], 4:[30,45], 11:[10,24], 9:[16,12], 7:[38,26.2] },
+  them: { 1:[26,3], 9:[28.4,13.7], 7:[13,20.5], 11:[33.2,11.5], 4:[17.5,8.5] },
+  ball: { team: 'us', n: '7' }, ballAt: [36, 24],
+  zones: [
+    [24, 28, 4, 3, 'Pro spot', "You stood square of the ball, at the top of the area, where the wall doesn't cover. The pass comes to you, and the shot is clear."],
+    [30, 45, 3, 1, 'Too deep', 'From back there the shot is long, and the wall has time to shift across.'],
+    [33, 30, 2.6, 1, 'Same angle', 'Right behind the ball, the wall is still between you and the goal.'],
+    [27, 19, 2.6, 0, 'Too close to the wall', "Right next to the wall, there's no room to shoot."]
+  ],
+  elsewhere: P(1, 'Not quite', "Find the spot the wall doesn't cover."),
+  best: { kind: 'move', at: [24, 28] } },
+
+{ ch: 7, type: 'move', me: '9', kind: 'Free kick', title: 'Spin behind your marker', restart: 'freekick',
+  prompt: 'Free kick to us out on the right. Their fixo is behind your pivo, but watching the ball, not you. Drag the pivo.',
+  hint: 'What is their fixo looking at?',
+  lesson: 'When your marker watches the ball, spin in behind. The free kick goes into the space, and you are through on goal.',
+  us:   { 1:[25,93], 4:[28,40], 11:[12,22], 9:[28,18], 7:[47.5,32.5] },
+  them: { 1:[26,2.5], 9:[29,35.5], 7:[15,18.5], 11:[40,16], 4:[28.5,14] },
+  ball: { team: 'us', n: '7' }, ballAt: [46, 30],
+  zones: [
+    [30.5, 7.5, 3.5, 3, 'Pro spot', 'Their fixo was watching the ball, so you spun in behind. The free kick goes into the space, and you are through on goal.'],
+    [28, 18, 3, 1, 'Stayed in front', 'You stayed in front of their fixo, who steps in and wins it.'],
+    [36, 26, 2.6, 1, 'Came short', 'Coming short brings their fixo with you, and the space behind is gone.']
+  ],
+  elsewhere: P(1, 'Not quite', 'Spin in behind their fixo, into the space by the goal.'),
+  best: { kind: 'move', at: [30.5, 7.5] } }
+
 ];
 
 /* ---------------- plays (format: riddles-motion.js) ---------------- */
@@ -1028,10 +1198,10 @@ const MOTION = {
     } },
 
   'Kick-in for the fixo': {
-    intro: { start: { us: { 4: [33, 50], 9: [28, 18], 11: [10, 24] }, them: { 9: [23, 38], 4: [27, 12], 7: [13, 19], 11: [40, 20] } },
+    intro: { start: { us: { 4: [33, 50], 9: [28, 18], 11: [10, 24] }, them: { 9: [23, 38], 4: [27, 12], 7: [13, 19], 11: [39, 18] } },
       cam: C([36, 26], 1.3),
       steps: [
-        { t: 1.6, us: { 4: [34, 40], 9: [26, 13], 11: [8, 18] }, them: { 9: [20, 32], 4: [25, 8], 7: [11, 14], 11: [42, 15] }, tag: { 'them:4': 'MARK', 'them:7': 'MARK' },
+        { t: 1.6, us: { 4: [34, 40], 9: [26, 13], 11: [8, 18] }, them: { 9: [20, 32], 4: [25, 8], 7: [11, 14], 11: [40, 13] }, tag: { 'them:4': 'MARK', 'them:7': 'MARK' },
           head: 'Kick-in to us near their area', sub: 'Their players mark your pivo and left ala. Your fixo is running up from behind.', cam: C([34, 24], 1.3) },
         { t: 1, cam: W_, head: '' }] },
     after: {
@@ -1075,7 +1245,178 @@ const MOTION = {
         { t: 1.3, shot: [25, 101], head: 'Into their pivo', sub: '…and with our keeper up the court, our goal is empty.', cam: W_, wait: 1 }],
       shoot: { replace: true, steps: [{ t: .5, pass: 'them:9', tag: { 'them:9': 'BLOCK' }, head: 'Blocked', sub: 'Through their whole diamond? It hits a defender.',
         cam: C([17, 34], 1.5, .45), wait: 1.2 }] }
+    } },
+  /* ---- 7. Kick-ins ---- */
+  'Short for the fixo': {
+    intro: { start: { us: { 4: [33, 38], 9: [30, 15], 11: [16, 20] }, them: { 4: [29, 10], 7: [18, 16], 11: [42, 18], 9: [27, 46] } },
+      cam: C([40, 22], 1.35),
+      steps: [
+        { t: 1.6, us: { 4: [36, 31], 9: [29, 10], 11: [14, 16] }, them: { 4: [29, 6.3], 7: [17, 12], 11: [40, 13], 9: [27, 42] },
+          tag: { 'them:11': 'BACK 5 M', 'us:4': GOOD('OPEN') }, head: 'Kick-in to us', sub: 'Their players have to stand 5 m back. Your fixo is open just inside you.', cam: C([38, 22], 1.3) },
+        { t: 1, cam: W_, head: '' }] },
+    after: {
+      lead0: [{ t: .6, us: { 9: [24, 13] }, them: { 4: [24, 9.3], 11: [41, 19] }, tag: { 'us:4': GOOD('FIRST TIME'), 'them:11': 'TOO LATE' }, head: 'Short for the fixo',
+          sub: "Their players had to stand 5 m back, so you rolled it very short into your fixo's stride…", cam: C([36, 18], 1.35) },
+        { t: .5, shot: [27.5, -1], head: 'Short for the fixo', sub: '…and the fixo shoots before anyone can close.', wait: 1.1 }],
+      4: say('Good', 'Right player, but roll it in front of your fixo, into the stride. Then the shot is first time.', C([40, 28], 1.4)),
+      9: steal('9', '4', [28.5, 7.6], 'Marked', 'Their fixo is right on your pivo, and their keeper is close.'),
+      11: steal('11', '7', [16, 13.5], 'Marked', 'A long kick-in across their whole area, and their left ala is right on your left ala.')
+    } },
+
+  'Open for the short one': {
+    intro: { start: { us: { 4: [24, 52], 9: [26, 16], 7: [40, 22] }, them: { 4: [24, 11], 11: [37, 18], 7: [8, 18], 9: [26, 42] } },
+      cam: C([14, 26], 1.3),
+      steps: [
+        { t: 1.6, us: { 4: [24, 48], 9: [24, 10], 7: [38, 16] }, them: { 4: [22.5, 6.5], 11: [35, 12.5], 7: [10, 14], 9: [26, 38] }, tag: { 'them:7': 'BACK 5 M' },
+          head: 'Kick-in to us', sub: 'Your left ala will take it. Their players have to stand 5 m back.', cam: C([16, 26], 1.25) },
+        { t: 1, cam: W_, head: '' }] },
+    after: {
+      zone0: [{ t: .5, tag: { 'us:4': GOOD('FREE SHOT') }, head: 'Open for the short one', sub: 'You stepped up a few steps from the taker, inside and facing goal…', cam: C([14, 20], 1.4) },
+        { t: .5, shot: [22, -1], head: 'Open for the short one', sub: '…one short pass, one shot.', wait: 1.1 }],
+      zone1: [{ t: .9, them: { 9: [25, 43] }, tag: { 'them:9': 'PRESS' }, head: 'Too deep', sub: 'From there the pass is long, and their pivo closes you before you can shoot.', cam: C([22, 44], 1.4), wait: 1.2 }],
+      zone2: say('Too close', 'Right next to the taker on the line, you have no angle to shoot.', C([6, 22], 1.5)),
+      zone3: [{ t: .8, them: { 7: [13, 15] }, tag: { 'them:7': 'MARK' }, head: 'Into the crowd', sub: 'Toward the goal you run into their left ala and fixo, and the shot is gone.', cam: C([16, 14], 1.5), wait: 1.2 }]
+    } },
+
+  'Set a screen': {
+    intro: { start: { us: { 11: [13, 30], 9: [27, 14], 4: [32, 46] }, them: { 7: [17, 26], 4: [27.5, 10], 9: [31, 41], 11: [41, 17] } },
+      cam: C([24, 22], 1.3),
+      steps: [
+        { t: 1.6, us: { 11: [15, 25], 9: [27, 10], 4: [32, 42] }, them: { 7: [18.5, 21.5], 4: [27.5, 6], 9: [31, 37], 11: [38, 14] }, tag: { 'them:7': 'TIGHT' },
+          head: 'Kick-in to us', sub: 'Your left ala wants to run across to the ball, but their left ala is tight on the ala.', cam: C([22, 20], 1.3) },
+        { t: 1, cam: W_, head: '' }] },
+    after: {
+      zone0: [{ t: 1.1, us: { 11: [23, 29.5] }, them: { 7: [19, 23], 4: [24, 18] }, tag: { 'us:9': GOOD('SCREEN'), 'them:7': 'BLOCKED', 'them:4': 'FOLLOWS' }, head: 'Set a screen',
+          sub: 'You stood still right next to their left ala. Your left ala runs past you, and their left ala runs into you…', cam: C([21, 25], 1.5) },
+        { t: 1, us: { 11: [31, 26] }, pass: 'us:11', pd: .35, tag: { 'us:11': GOOD('FREE') }, head: 'Set a screen', sub: '…so your left ala is free for the kick-in.', cam: C([32, 20], 1.35) },
+        { t: .5, shot: [28, -1], them: { 1: [23.5, 3] }, wait: 1.1 }],
+      zone1: [{ t: 1.1, us: { 11: [25, 27] }, them: { 7: [23, 23.5] }, tag: { 'them:7': 'MARK' }, head: 'Stayed at the post',
+        sub: "Nobody got in their left ala's way, so the ala follows your left ala across.", cam: C([22, 24], 1.45), wait: 1.2 }],
+      zone2: [{ t: 1.1, us: { 11: [20, 30] }, them: { 7: [19, 25.5] }, tag: { 'them:7': 'MARK' }, head: 'Wrong side',
+        sub: "You got in your own left ala's way, not their left ala's.", cam: C([17, 27], 1.45), wait: 1.2 }]
+    } },
+
+  'Over the press': {
+    intro: { start: { us: { 9: [12, 46], 4: [14, 78], 7: [33, 64] }, them: { 4: [14, 42], 9: [17, 72], 11: [31, 59], 7: [14, 52] } },
+      cam: C([14, 58], 1.25),
+      steps: [
+        { t: 1.6, us: { 9: [12, 51], 4: [13, 72], 7: [32, 58] }, them: { 4: [14.5, 47], 9: [15.5, 67], 11: [30, 53.5], 7: [12.5, 57] },
+          tag: { 'them:4': 'MARK', 'them:9': 'MARK', 'them:11': 'MARK' }, hatch: [{ pts: [[2, 32], [17, 32], [17, 45], [2, 45]], c: 'gold' }],
+          head: 'Kick-in to us in our half', sub: 'They press man to man. Everyone is marked, and the space behind them is empty.', cam: C([16, 54], 1.15), wait: .4 },
+        { t: 1, cam: W_, head: '', hatch: [] }] },
+    after: {
+      lead0: [{ t: 1.1, us: { 9: [10, 28] }, them: { 4: [16, 40] }, tag: { 'us:9': GOOD('IN BEHIND') }, head: 'Over the press',
+        sub: 'They pressed everyone man to man, so you lifted it over the top. Your pivo spun in behind, and their whole press is beaten.', cam: C([12, 34], 1.3), wait: 1.2 }],
+      9: steal('9', '4', [13.5, 48.5], 'Marked', 'Their fixo is tight on your pivo, who has to turn with the ball.'),
+      4: steal('4', '9', [14, 69.5], 'Risky', 'Their pivo jumps on your fixo, right in front of our goal.'),
+      7: steal('7', '11', [31, 55.5], 'Marked', 'Their right ala is on your right ala.'),
+      1: say('Too safe', 'Back to the keeper. Safe, but their press comes again, and the space is behind them.', C([18, 80], 1.25))
+    } },
+
+  'Step back in': {
+    intro: { start: { ball: 'us:7', us: { 4: [38, 31], 11: [16, 21] }, them: { 11: [38, 15], 7: [19, 17] } },
+      cam: C([42, 24], 1.4),
+      steps: [
+        { t: 1.5, pass: 'us:4', pd: .1, us: { 4: [42, 27], 11: [15, 17] }, them: { 11: [40, 21.5], 7: [18, 13] }, tag: { 'them:11': 'CLOSES' },
+          head: 'You play the kick-in short to your fixo', sub: 'Their right ala closes the fixo down. Nobody is watching you.', cam: C([42, 22], 1.4) },
+        { t: 1, cam: W_, head: '' }] },
+    after: {
+      zone0: [{ t: 1, us: { 7: [43, 9] }, them: { 1: [27, 3] }, tag: { 'us:7': GOOD('IN BEHIND') }, head: 'Step back in',
+          sub: "Defenders forget the kick-in taker. You stepped straight back in behind their right ala, and you're in on goal…", cam: C([38, 10], 1.5) },
+        { t: .5, shot: [28, -1], head: 'Step back in', sub: '…one pass, one shot.', wait: 1.1 }],
+      zone1: [{ t: .8, them: { 11: [41, 23.5] }, tag: { 'them:11': 'PRESS' }, head: 'Stayed off', sub: 'You stayed off the court, so your fixo has nobody close to play with.',
+        cam: C([44, 25], 1.5), wait: 1.2 }],
+      zone2: [{ t: .8, them: { 11: [41, 23] }, tag: { 'them:11': 'MARKS BOTH' }, head: 'Too close', sub: 'Right next to your fixo, their right ala closes you both down.',
+        cam: C([43, 27], 1.55), wait: 1.2 }]
+    } },
+
+  /* ---- 8. Free kicks ---- */
+  'Roll it to the side': {
+    intro: { start: { us: { 4: [33, 38], 9: [34, 14], 7: [42, 24] }, them: { 9: [18, 14], 7: [22, 16], 4: [32, 10], 11: [38, 19] } },
+      cam: C([18, 18], 1.35),
+      steps: [
+        { t: 1.6, us: { 4: [31, 33], 9: [33, 10], 7: [41, 20] }, them: { 9: [16.2, 9.9], 7: [20.6, 12.5], 4: [31.5, 6.5], 11: [37.5, 16.5] },
+          tag: { 'them:9': 'WALL', 'them:7': 'WALL' }, head: 'Free kick to us', sub: 'Their wall of two blocks the shot from here. Your fixo waits behind the ball.', cam: C([20, 18], 1.3) },
+        { t: 1, cam: W_, head: '' }] },
+    after: {
+      lead0: [{ t: .6, them: { 1: [27, 3] }, tag: { 'us:4': GOOD('NO WALL') }, head: 'Roll it to the side',
+          sub: "The wall blocked the shot from where the ball was, so you rolled it square. From your fixo, the wall isn't in the way…", cam: C([25, 18], 1.35) },
+        { t: .5, shot: [22.5, -1], head: 'Roll it to the side', sub: '…first-time shot.', wait: 1.1 }],
+      4: say('Good', "Right player, but roll it into the fixo's run, so the shot is first time.", C([28, 30], 1.35)),
+      9: steal('9', '4', [32, 7.6], 'Marked', 'Their fixo is right on your pivo, behind the wall.'),
+      7: steal('7', '11', [39, 18], 'Marked', 'Their right ala is on your right ala.'),
+      shoot: { replace: true, steps: [{ t: .5, pass: 'them:7', tag: { 'them:7': 'BLOCK' }, head: 'Into the wall', sub: 'From here their wall is right in the way.',
+        cam: C([17, 15], 1.5, .45), wait: 1.2 }] }
+    } },
+
+  'Take it quick': {
+    intro: { start: { us: { 7: [44, 52], 11: [12, 54], 9: [25, 30] }, them: { 11: [42, 64], 9: [27, 62], 7: [17, 58], 4: [24, 34] } },
+      cam: C([32, 56], 1.2),
+      steps: [
+        { t: 1.5, us: { 7: [44, 44], 11: [12, 48], 9: [25, 24] }, them: { 11: [38, 57], 9: [23, 55], 7: [15, 52], 4: [24, 29] },
+          tag: { 'them:11': 'NOT BACK', 'them:9': 'NOT BACK', 'us:7': GOOD('FREE') }, head: 'Free kick to us',
+          sub: "They're still jogging back, and your right ala is free up the right.", cam: C([32, 50], 1.15) },
+        { t: 1, cam: W_, head: '' }] },
+    after: {
+      lead0: [{ t: 1.2, us: { 7: [42, 22] }, them: { 4: [30, 27], 11: [38, 48] }, tag: { 'us:7': GOOD('BEFORE THEY SET') }, head: 'Take it quick',
+        sub: "They were still getting back, so you took it quickly into the space ahead of your right ala, who runs at their goal before they're set.", cam: C([38, 32], 1.2), wait: 1.2 }],
+      7: say('Good', 'Right player, but put it ahead of your right ala, who is facing forward with space.', C([40, 46], 1.3)),
+      9: steal('9', '4', [24.5, 26.5], 'Marked', "Their fixo is tight on your pivo, and it's a long way."),
+      1: say('Too safe', 'Back to the keeper gives them time to get back and set up.', C([28, 76], 1.2))
+    } },
+
+  'Across the face': {
+    intro: { start: { us: { 11: [10, 24], 9: [27, 23], 4: [30, 40] }, them: { 7: [8, 20], 9: [33, 10], 11: [36, 8], 4: [27, 19], 1: [26, 3] } },
+      cam: C([28, 12], 1.35),
+      steps: [
+        { t: 1.6, us: { 11: [13, 19], 9: [27, 19], 4: [30, 36] }, them: { 7: [10, 14], 9: [30.7, 7.3], 11: [34.9, 4.3], 4: [27, 15], 1: [27, 2.5] },
+          tag: { 'them:9': 'WALL', 'them:11': 'WALL' }, head: 'Free kick to us on the right',
+          sub: 'Their wall and keeper cover the near post. Your left ala is sneaking in at the far post.', cam: C([26, 12], 1.3) },
+        { t: 1, cam: W_, head: '' }] },
+    after: {
+      lead0: [{ t: .5, tag: { 'us:11': GOOD('FAR POST') }, head: 'Across the face', sub: 'The wall and keeper covered the near post, so you rolled it across the face of the goal…',
+          cam: C([22, 6], 1.6, .45) },
+        { t: .4, shot: [23.5, -1], head: 'Across the face', sub: '…and your left ala slides it in at the far post.', wait: 1.1 }],
+      11: say('Good', 'Right player, but the left ala is running to the far post. Put it in front of the run.', C([18, 14], 1.4)),
+      9: steal('9', '4', [27, 16.5], 'Marked', 'Their fixo is right on your pivo.'),
+      4: say('Too safe', 'Back to the fixo. Safe, but the far post was wide open.', C([32, 26], 1.25)),
+      shoot: { replace: true, steps: [{ t: .5, pass: 'them:9', tag: { 'them:9': 'BLOCK' }, head: 'Blocked', sub: 'Their wall and keeper cover the near post. That shot hits the wall.',
+        cam: C([33, 9], 1.5, .45), wait: 1.2 }] }
+    } },
+
+  'Find the shooting lane': {
+    intro: { start: { us: { 4: [30, 52], 9: [18, 16], 11: [11, 28] }, them: { 11: [35, 14], 9: [30, 16], 4: [19, 12], 7: [14, 24] } },
+      cam: C([30, 24], 1.3),
+      steps: [
+        { t: 1.6, us: { 4: [30, 45], 9: [16, 12], 11: [10, 24] }, them: { 11: [33.2, 11.5], 9: [28.4, 13.7], 4: [17.5, 8.5], 7: [13, 20.5] },
+          tag: { 'them:9': 'WALL', 'them:11': 'WALL' }, head: 'Free kick to us', sub: 'Your right ala will roll it to you. Their wall of two blocks the straight shot.', cam: C([28, 24], 1.25) },
+        { t: 1, cam: W_, head: '' }] },
+    after: {
+      zone0: [{ t: .5, them: { 1: [27, 3] }, tag: { 'us:4': GOOD('CLEAR SHOT') }, head: 'Find the shooting lane',
+          sub: "You stood square of the ball, at the top of the area, where the wall doesn't cover…", cam: C([24, 16], 1.35) },
+        { t: .5, shot: [22.5, -1], head: 'Find the shooting lane', sub: '…and shoot first time.', wait: 1.1 }],
+      zone1: say('Too deep', 'From back there the shot is long, and the wall has time to shift across.', C([28, 36], 1.2)),
+      zone2: say('Same angle', 'Right behind the ball, the wall is still between you and the goal.', C([31, 20], 1.3), { marks: [{ l: [[33, 30], [25, 0]], c: 'bad' }], wait: 1.4 }),
+      zone3: say('Too close to the wall', "Right next to the wall, there's no room to shoot.", C([27, 16], 1.55, .45))
+    } },
+
+  'Spin behind your marker': {
+    intro: { start: { us: { 4: [28, 45], 11: [11, 26] }, them: { 4: [27, 11], 11: [41, 22], 9: [29, 40], 7: [14, 22.5] } },
+      cam: C([32, 20], 1.35),
+      steps: [
+        { t: 1.5, us: { 4: [28, 40], 11: [12, 22] }, them: { 4: [28.5, 14], 11: [40, 16], 9: [29, 35.5], 7: [15, 18.5] }, tag: { 'them:4': 'WATCHING THE BALL' },
+          head: 'Free kick to us on the right', sub: 'Their fixo is behind your pivo, but watching the ball, not you.', cam: C([32, 18], 1.35) },
+        { t: 1, cam: W_, head: '' }] },
+    after: {
+      zone0: [{ t: .5, them: { 1: [25, 3] }, tag: { 'us:9': GOOD('IN BEHIND'), 'them:4': 'BEATEN' }, head: 'Spin behind your marker',
+          sub: 'Their fixo was watching the ball, so you spun in behind…', cam: C([29, 9], 1.6, .45) },
+        { t: .4, shot: [28, -1], head: 'Spin behind your marker', sub: '…and you are through on goal.', wait: 1.1 }],
+      zone1: [{ t: .9, pass: 'them:4', them: { 4: [30, 16] }, tag: { 'them:4': 'STEPS IN' }, head: 'Stayed in front', sub: 'You stayed in front of their fixo, who steps in and wins it.',
+        cam: C([30, 18], 1.5), wait: 1.2 }],
+      zone2: [{ t: .9, them: { 4: [33, 22] }, tag: { 'them:4': 'FOLLOWS' }, head: 'Came short', sub: 'Coming short brings their fixo with you, and the space behind is gone.',
+        cam: C([33, 22], 1.4), wait: 1.2 }]
     } }
+
 };
 window.RIDDLE_LIB.withMotion(RIDDLES, MOTION);
 
