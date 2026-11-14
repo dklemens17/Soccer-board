@@ -95,6 +95,8 @@ html.futsal .ink{filter:drop-shadow(0 0 .6px rgba(40,20,5,.85)) drop-shadow(0 1p
   box-shadow:0 0 0 2px var(--rim),0 3px 6px rgba(0,0,0,.35),0 1px 1px rgba(0,0,0,.3);
   transition:transform .14s ease,box-shadow .14s ease,opacity .35s ease}
 .tok span{font:800 calc(var(--tok) * .54)/1 var(--display);letter-spacing:-.01em;transform:rotate(var(--unrot,0deg)) translateY(.05em);pointer-events:none}
+/* futsal: the role, small enough to fit across the token */
+.tok span.role{font-size:calc(var(--tok) * .4);letter-spacing:.02em;transform:rotate(var(--unrot,0deg)) translateY(.07em)}
 .tok::before{content:"";position:absolute;inset:-9px;border-radius:50%}
 .us{--kit:var(--home-kit);--num:var(--home-num);--rim:var(--home-rim);cursor:pointer}
 .us.gk{--kit:var(--home-gk);--num:var(--home-gk-num);--rim:var(--home-gk-rim)}
@@ -528,11 +530,14 @@ let R = [], CH = [], ME = '6', SET = '6';
 const POSITIONS = window.POSITIONS;
 const SETS = FUTSAL ? (window.FUTSAL_SETS || []) : POSITIONS.concat(window.EXTRA_SETS || []);
 const posInfo = n => SETS.find(p => p.n === n) || (FUTSAL ? SETS[0] : POSITIONS.find(p => p.n === '6'));
-// futsal players by role (numbered like the 9v9 players who do the same job)
+// futsal players go by role, not number (the data still numbers them like the 9v9 players who do the same
+// job). Left and right are as you see the court: their 7 plays on our left, so it's their left ala.
 const ROLE = { '1': 'the keeper', '4': 'the fixo', '11': 'the left ala', '7': 'the right ala', '9': 'the pivot' };
+const ROLE_THEM = { '1': 'keeper', '4': 'fixo', '7': 'left ala', '11': 'right ala', '9': 'pivot' };
+const BADGE = { '1': 'GK', '4': 'FIXO', '7': 'ALA', '11': 'ALA', '9': 'PIVO' };
 const puckText = n => posInfo(n).short || n;
 const setTitle = (n = SET) => posInfo(n).varied ? posInfo(n).title : n === '1' ? 'the keeper' : `the ${n}`;
-const meName = () => ME === '1' ? 'the keeper' : `the ${ME}`;
+const meName = () => FUTSAL ? ROLE[ME] : ME === '1' ? 'the keeper' : `the ${ME}`;
 const today = () => new Date().toLocaleDateString('en-CA');
 const CH_COLORS = ['#1f5fbf', '#23854c', '#b5462f', '#7a4bb3', '#b7791f', '#1d7f8c'];
 const INK = { us: '#ffd23f', them: '#ff7a59', pick: '#ffffff', best: '#7cffb2' };
@@ -690,9 +695,9 @@ function buildTokens() {
     const el = document.createElement('div');
     el.className = `tok ${team}${n === '1' ? ' gk' : ''}`;
     el.dataset.team = team; el.dataset.n = n;
-    el.innerHTML = `<span>${n}</span>`;
+    el.innerHTML = FUTSAL ? `<span class="role">${BADGE[n]}</span>` : `<span>${n}</span>`;
     if (team === 'us') { el.tabIndex = 0; el.setAttribute('role', 'button'); }
-    el.setAttribute('aria-label', `${team === 'us' ? 'Your' : 'Their'} ${n === '1' ? 'keeper' : 'number ' + n}`);
+    el.setAttribute('aria-label', `${team === 'us' ? 'Your' : 'Their'} ${FUTSAL ? nameOf(n, team) : n === '1' ? 'keeper' : 'number ' + n}`);
     tokensEl.appendChild(el); tok[team][n] = el;
   }
   ghostEl = document.createElement('div'); ghostEl.className = 'ghost'; ghostEl.hidden = true; tokensEl.prepend(ghostEl);
@@ -760,14 +765,14 @@ function clonePos(o) { const c = {}; for (const k in o) c[k] = o[k].slice(); ret
 function loadRiddle(i) {
   idx = clamp(i, 0, R.length - 1); r = R[idx];
   ME = r.me || ME;
-  NUMS.forEach(k => tok.us[k].setAttribute('aria-label', `Your ${k === '1' ? 'keeper' : 'number ' + k}`));
+  NUMS.forEach(k => tok.us[k].setAttribute('aria-label', `Your ${FUTSAL ? nameOf(k, 'us') : k === '1' ? 'keeper' : 'number ' + k}`));
   tok.us[ME].setAttribute('aria-label', `You, ${meName()}. Drag to move.`);
   cur().last = idx; saveProg();
   hideSheet(true);
   const ch = r.ch;
   $('#chip').textContent = CH[ch].name; $('#chip').style.setProperty('--ch', CH_COLORS[ch]);
   $('#kind').textContent = (r.kind || (r.type === 'ball' ? 'On the ball' : (r.ball.team === 'us' ? 'Off the ball' : 'Defending')))
-    + (posInfo(SET).varied ? ` \u00b7 you're ${meName()}${FUTSAL && ME !== '1' ? `, ${ROLE[ME]}` : ''}` : '');
+    + (posInfo(SET).varied ? ` \u00b7 you're ${meName()}` : '');
   $('#count').textContent = `${idx + 1} / ${R.length}`;
   $('#title').textContent = r.title; $('#prompt').textContent = r.prompt;
   $('#hintText').textContent = r.hint; $('#hint').hidden = true; hintBtn.setAttribute('aria-pressed', 'false');
@@ -834,9 +839,9 @@ function updateGo() {
     return;
   }
   goBtn.disabled = false;
-  const who = n => n === '1' ? 'the keeper' : `the ${n}`, V = r.restart === 'throw' || r.restart === 'clearance' ? 'Throw' : 'Pass';
+  const who = n => FUTSAL ? ROLE[n] : n === '1' ? 'the keeper' : `the ${n}`, V = r.restart === 'throw' || r.restart === 'clearance' ? 'Throw' : 'Pass';
   goBtn.textContent = sel.kind === 'pass'
-      ? (sel.feet ? (sel.to === '1' ? `${V} to the keeper` : `${V} to the ${sel.to}\u2019s feet`) : outOfPlay(sel.at) ? 'Kick it out of play' : sel.to ? `${V} into space for ${who(sel.to)}` : `${V} into space`)
+      ? (sel.feet ? (sel.to === '1' ? `${V} to the keeper` : `${V} to ${who(sel.to)}\u2019s feet`) : outOfPlay(sel.at) ? 'Kick it out of play' : sel.to ? `${V} into space for ${who(sel.to)}` : `${V} into space`)
     : sel.kind === 'shoot' ? 'Shoot!' : sel.kind === 'carry' ? 'Dribble there' : 'Lock in this spot';
 }
 
@@ -845,7 +850,8 @@ function updateGo() {
 // (futsal units are 0.4 m, not a yard, so futsal teammates reach further in units)
 // LEAD_NEAR / LEAD_FAR (futsal): how far off a planned space a pass is still Good / still the right idea
 const FEET = 2.8, REACH = FUTSAL ? 18 : 12, LEAD_NEAR = 3.5, LEAD_FAR = 8;
-const nameOf = n => n === '1' ? 'keeper' : n;
+// how the text names a player: the number (9v9) or the role (futsal, where their 7 and 11 are on the other side)
+const nameOf = (n, team) => n === '1' ? 'keeper' : !FUTSAL ? n : team === 'us' ? ROLE[n].slice(4) : ROLE_THEM[n];
 function segDist(p, a, b) {
   const dx = b[0] - a[0], dy = b[1] - a[1], L2 = dx * dx + dy * dy;
   const t = L2 ? clamp(((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L2, 0, 1) : 0;
@@ -876,9 +882,9 @@ function readPass(T) {
 function autoFeet(n) {
   // a pass to a teammate the riddle doesn't list: judge it from the picture
   const to = pos.us[n], cut = r.air ? null : laneBlocker(ballPos, to);
-  if (cut) return { g: 0, t: 'Intercepted', w: `Their ${nameOf(cut)} is in the way. That pass gets cut out.`, cut };
+  if (cut) return { g: 0, t: 'Intercepted', w: `Their ${nameOf(cut, 'them')} is in the way. That pass gets cut out.`, cut };
   const [m, dO] = nearest('them', to);
-  if (dO < 4.6) return { g: 1, t: 'Marked', w: (`Their ${nameOf(m)} is right on your ${nameOf(n)}. ` + (r.otherNote || '')).trim() };
+  if (dO < 4.6) return { g: 1, t: 'Marked', w: (`Their ${nameOf(m, 'them')} is right on your ${nameOf(n, 'us')}. ` + (r.otherNote || '')).trim() };
   if (to[1] > pos.us[ME][1] + 5) return { g: 1, t: 'Too safe', w: ('Safe, but there was a better pass. ' + (r.otherNote || '')).trim() };
   return { g: 1, t: 'Not the best', w: r.otherNote || 'That works, but there was a better pass. Look again.' };
 }
@@ -899,11 +905,11 @@ function judgePass(s) {
   for (const q of (r.lead || [])) if (dist(T, [q[0], q[1]]) <= q[2] && (!z || q[3] > z[3])) z = q;
   if (z) return { g: z[3], t: z[4], w: z[5], to: z[6], grab: z[7] || null };
   const cut = r.air ? null : laneBlocker(ballPos, T);
-  if (cut) return { g: 0, t: 'Intercepted', w: `Their ${nameOf(cut)} is in the way. That pass gets cut out.`, cut };
+  if (cut) return { g: 0, t: 'Intercepted', w: `Their ${nameOf(cut, 'them')} is in the way. That pass gets cut out.`, cut };
   const [n, dR] = nearest('us', T, ME), [m, dO] = nearest('them', T);
   const raw = (r.pass || {})[n] || autoFeet(n);
   // a direct pass that would be cut out says nothing about a lead pass whose lane is clear
-  const d = raw.cut ? { g: 1, t: 'Risky', w: `Their ${nameOf(raw.cut)} is close to that lane, so it's a risky pass.` } : raw;
+  const d = raw.cut ? { g: 1, t: 'Risky', w: `Their ${nameOf(raw.cut, 'them')} is close to that lane, so it's a risky pass.` } : raw;
   // right next to a teammate (and theirs no closer): it's a pass to that teammate
   if (dR <= 4.5 && dO + 1 >= dR) return Object.assign({}, d, { to: n, cut: null });
   // futsal: a pass just off a planned space is the right idea. Good if the runner (already moving, so given a
@@ -912,15 +918,15 @@ function judgePass(s) {
     const off = q => dist(T, [q[0], q[1]]) - q[2];
     const near = (r.lead || []).filter(q => q[3] >= 2 && q[6] && pos.us[q[6]] && off(q) <= LEAD_FAR).sort((a, b) => off(a) - off(b))[0];
     if (near && off(near) <= LEAD_NEAR && dist(T, pos.us[near[6]]) <= dO + 3) return { g: 2, t: 'Good', w: 'Right idea, just outside the best spot (the circle). ' + near[5], to: near[6] };
-    if (near && dO >= 4) return { g: 1, t: 'Almost', w: `Right idea, but that's a long way from your ${nameOf(near[6])}'s run. Put it in front of the runner, in the circle.`, to: near[6] };
+    if (near && dO >= 4) return { g: 1, t: 'Almost', w: `Right idea, but that's a long way from your ${nameOf(near[6], 'us')}'s run. Put it in front of the runner, in the circle.`, to: near[6] };
   }
   if (dR > REACH) return { g: 0, t: 'Nobody there', w: 'None of your teammates can get to that spot, so it goes straight to them.', grab: m };
-  if (dO + 1 < dR) return { g: 0, t: 'They get there first', w: `Their ${nameOf(m)} is closer to that spot than your ${nameOf(n)}.`, grab: m };
-  if (d.g >= 3) return { g: 2, t: 'Good', w: `Your ${nameOf(n)} can get it, but was free right there. A pass to feet was simpler.`, to: n };
+  if (dO + 1 < dR) return { g: 0, t: 'They get there first', w: `Their ${nameOf(m, 'them')} is closer to that spot than your ${nameOf(n, 'us')}.`, grab: m };
+  if (d.g >= 3) return { g: 2, t: 'Good', w: `Your ${nameOf(n, 'us')} can get it, but was free right there. A pass to feet was simpler.`, to: n };
   // futsal: open space that your teammate reaches first, through a clear lane, keeps the ball: never a zero
-  if (FUTSAL && d.g < 1) return { g: 1, t: 'Found space', w: (`Your ${nameOf(n)} gets there first, so you keep the ball, but there was a better choice. ` + ((r.elsewhere || {}).w || '')).trim(), to: n };
+  if (FUTSAL && d.g < 1) return { g: 1, t: 'Found space', w: (`Your ${nameOf(n, 'us')} gets there first, so you keep the ball, but there was a better choice. ` + ((r.elsewhere || {}).w || '')).trim(), to: n };
   if (T[1] < pos.us[n][1] - 2) return Object.assign({}, d, { to: n, cut: null });
-  return { g: Math.min(d.g, 1), t: 'Makes your teammate chase', w: (`Your ${nameOf(n)} can get there, but running sideways or back for it doesn't help. ` + (r.leadNote || '')).trim(), to: n };
+  return { g: Math.min(d.g, 1), t: 'Makes your teammate chase', w: (`Your ${nameOf(n, 'us')} can get there, but running sideways or back for it doesn't help. ` + (r.leadNote || '')).trim(), to: n };
 }
 function reticle(group, p, color, rad) {
   const g = document.createElementNS(NS, 'g');
@@ -978,7 +984,7 @@ function lostTheIdea(z, p) {
   if (offsideAt(p) && !offsideAt(c)) return { t: 'Offside', w: "Close, but that step takes you past their last defender, so you'd be offside when the pass comes. The best spot (the circle) keeps you onside." };
   const passToMe = carrier && carrier.team === 'us' && carrier.n !== ME && !r.noPayoff && ((r.payoff && r.payoff.to) || ME) === ME;
   const cut = passToMe && laneBlocker(ballPos, p);
-  if (cut && !laneBlocker(ballPos, c)) return { t: 'Hidden', w: `Close, but from there their ${nameOf(cut)} is in the passing lane. At the best spot (the circle) the pass gets through.` };
+  if (cut && !laneBlocker(ballPos, c)) return { t: 'Hidden', w: `Close, but from there their ${nameOf(cut, 'them')} is in the passing lane. At the best spot (the circle) the pass gets through.` };
   return null;
 }
 function judge(s) {
@@ -991,7 +997,7 @@ function judge(s) {
   const edge = z => dist(s.at, [z[0], z[1]]) - z[2];
   const close = zones.filter(z => z[3] >= 2 && edge(z) <= NEAR).sort((a, b) => edge(a) - edge(b));
   // dribbles: near misses count only in futsal, and not when they end up next to a defender
-  const crowded = p => { const [m, dm] = nearest('them', p); return dm < 4 ? { t: 'Into a defender', w: `Close, but that takes you right next to their ${nameOf(m)}.` } : null; };
+  const crowded = p => { const [m, dm] = nearest('them', p); return dm < 4 ? { t: 'Into a defender', w: `Close, but that takes you right next to their ${nameOf(m, 'them')}.` } : null; };
   const why = s.kind === 'carry' ? (FUTSAL ? close.map(() => crowded(s.at)) : []) : close.map(z => lostTheIdea(z, s.at)), i = why.findIndex(x => !x);
   const near = i >= 0 ? close[i] : null;
   if (near && near[3] === 3) return { g: 2, t: 'Good', w: 'Right idea, just outside the best spot (the circle). ' + near[5].replace(/^Perfect[^.]*\.\s*/, '') };
