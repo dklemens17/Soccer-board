@@ -54,6 +54,11 @@ window.POSITIONS = [
 window.EXTRA_SETS = [
   { n: 'sp', name: 'Set pieces', title: 'set pieces', short: 'SP', file: 'riddles-setpieces.js', varied: true }
 ];
+// Futsal (5v5) has its own tab, the same page in futsal mode (riddles.html?futsal): a 40 x 20 m court and
+// five a side. One mixed set where each riddle says which player you are.
+window.FUTSAL_SETS = [
+  { n: 'fs', name: 'Futsal', title: 'futsal', short: 'FS', file: 'riddles-futsal.js', varied: true }
+];
 
 const SWAP = { '3': '2', '2': '3', '11': '7', '7': '11' };
 const sw = n => (n in SWAP ? SWAP[n] : n);

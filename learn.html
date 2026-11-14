@@ -254,12 +254,17 @@ html.land .stamp{left:calc(50% - var(--side) / 2)}
 @media (max-height:360px){html.land .modes a{padding:6px 9px 5px}}
 @media (max-width:370px){.modes a{padding:8px 8px 7px;font-size:16px}}
 @media (prefers-reduced-motion:reduce){.stamp.play,.panel,.look,.tok.me::after,.mtag,.mfade{animation:none!important}.stamp.play{opacity:1}.mcap{transition:none}}
+/* four tabs: tighter on phones and in landscape */
+@media (max-width:440px){.modes a{padding:8px 5px 7px;font-size:16px}.score .of{display:none}.rail{gap:6px;padding-left:9px;padding-right:9px}}
+@media (max-width:370px){.modes a{padding:8px 4px 7px;font-size:14.5px}.score{padding:8px 7px 7px}}
+@media (max-width:340px){.modes a{padding:8px 3px 7px;font-size:13.5px}.rail{gap:4px}}
+html.land .modes a{padding:7px 7px 6px;font-size:15px}
 </style>
 </head>
 <body>
 
 <header class="rail">
-  <nav class="modes" aria-label="Mode"><a href="./">Board</a><a href="riddles.html">Puzzles</a><a href="learn.html" aria-current="page">Learn</a></nav>
+  <nav class="modes" aria-label="Mode"><a href="./">Board</a><a href="riddles.html">Puzzles</a><a href="learn.html" aria-current="page">Learn</a><a href="riddles.html?futsal">Futsal</a></nav>
   <button class="posbtn" id="posBtn" type="button" aria-label="Change position"><span class="pk us" id="posPk"><span>6</span></span></button>
 </header>
 

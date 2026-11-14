@@ -1,6 +1,6 @@
 # Soccer board
 
-A 9v9 soccer tactics board for phones, with puzzles and a Learn mode for every position. The header switches between the three: **Board**, **Puzzles** and **Learn**.
+A 9v9 soccer tactics board for phones, with puzzles and a Learn mode for every position, plus futsal puzzles. The header switches between the four: **Board**, **Puzzles**, **Learn** and **Futsal**.
 
 Live: https://dklemens17.github.io/Soccer-board/
 
@@ -22,6 +22,17 @@ Live: https://dklemens17.github.io/Soccer-board/
 | 11 and 7 | Stay wide · Take on your defender · Run in behind · Attack the far post · Track back |
 | 9 | Time your run in behind · Hold it up · Attack the near post · Shoot early · Press from the front |
 
+**Futsal** (`riddles.html?futsal`): 30 puzzles for five-a-side futsal, played on a hardwood court like a basketball floor (40 x 20 m, with painted D-shaped penalty areas, the 6 m and 10 m marks, and no offside). Our five are numbered like the 9v9 players who do the same job: 1 the keeper, 4 the fixo (the last player, who starts the attack), 11 and 7 the alas (left and right wingers) and 9 the pivot (the target striker). It's one mixed set, and each puzzle says which player you are. The puzzles are about attacking strategy, not the rules: making space and shots with rotations, switches and combinations. Like the 9v9 puzzles, every one has a moving build-up and plays out what your answer leads to. Kick-ins and the keeper's throw replace throw-ins and goal kicks. Futsal has its own progress and level ring (bronze, silver, gold), separate from the 9v9 positions.
+
+| Chapter | What it teaches |
+| --- | --- |
+| Beat the press | Throw to the free side, fix a defender before passing, the third man, down the line, getting an angle |
+| Rotations | Pass and follow, fill the empty spot, ala inside and fixo wide, swap with the pivot, clear the space for a shot |
+| Switches | Switch it before they shift back, the diagonal into the pivot, shoot after the switch, wait on the far side, the far post run |
+| The pivot | Lay it off, the one-two, turn when your defender stands off, set up the fixo arriving late, show for it |
+| Create the shot | Shoot early, the cut-back, two against one, arrive late at the top of the area, square it past the keeper |
+| Counters and routines | Two against one, three against two, a kick-in for the fixo, the corner to the far post, the power play with the keeper as a fifth attacker |
+
 **Trophies.** Each position earns a level ring in Puzzles: bronze for clearing all 30, silver at 75 stars, gold at all 90. Groups of positions earn badges (The Wall, Engine Room, Front Three, Both Flanks, Both Wings, The Spine, Complete Player), each at the lowest level in its group. The player card rates Passing, Vision, Movement, Defending, Attacking and Keeping from your stars across every position, and can be saved as a picture. Every new level, badge and card upgrade plays a full-screen celebration. Tap the stars button to open the trophy room.
 
 **Sounds.** The crowd is a real recording: *Free Crowd Cheering Sounds* by Gregor Quendel (https://opengameart.org/content/free-crowd-cheering-sounds), licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Changes: `sounds/stadium-cheer.mp3` is a 6.5-second cut of "03 - Strong cheering - I" and `sounds/stadium-crowd.mp3` a 10-second mono cut of "10 - Ambience", both faded, level-matched and re-encoded as MP3. The credit also appears in the trophy room. The whistles and the fanfare are synthesized in the browser with Web Audio, and if the recordings can't load, a synthesized cheer stands in. The o-lé chant was synthesized the same way (32 singing voices, claps, a drum and the crowd recording), then saved as `sounds/ole-chant.mp3`. Playing all of that live was too much work for cheap tablets: on a Fire tablet it stuttered or went quiet. The page keeps the live version (`chantLive`) only to remake the recording.
@@ -42,7 +53,8 @@ Each position's puzzles and Learn plays are plain data in their own files, so th
 | 11, mirrored for the 7 | `riddles-wing.js` | `learn-wing.js` |
 | 9 | `riddles-9.js` | `learn-9.js` |
 | Set pieces (corners, free kicks, throw-ins, goal kicks) | `riddles-setpieces.js` | |
+| Futsal (one mixed set of 30) | `riddles-futsal.js` | |
 
 `riddles-core.js` lists the positions and holds the shared puzzle helpers, including the mirroring; the answer format is described at the top of `riddles-6.js`, and the motion format at the top of `riddles-motion.js`. `learn-core.js` does the same for Learn and describes the play format (steps, passes, freeze frames, questions and field marks).
 
-No build step: the pages are `index.html`, `riddles.html` and `learn.html`, plus the files above, `music.js` and the `sounds` folder.
+No build step: the pages are `index.html`, `riddles.html` (which is also the Futsal tab, as `riddles.html?futsal`) and `learn.html`, plus the files above, `music.js` and the `sounds` folder.

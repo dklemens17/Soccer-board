@@ -25,6 +25,7 @@
   --frame-hi:#eef1f3; --frame:#d0d6db; --frame-lo:#b3bbc2;
   --ink:#1d2a33; --ink-2:#56646f; --hair:#d7dce0; --paper:#f7f8f9;
   --turf-a:#3e8e47; --turf-b:#37823f; --turf-out:#2f7438; --chalk:#f4f7f0;
+  --wood:#d4a068; --paint:#2c6a4b; --runoff:#1f4d39; --court-line:#fbf7ef;
   --gold:#f2b705; --g3:#23854c; --g2:#1f5fbf; --g1:#b7791f; --g0:#c0392b;
   --focus:#1f5fbf;
   --display:'Big Shoulders Display','Avenir Next Condensed','Roboto Condensed','Arial Narrow',system-ui,sans-serif;
@@ -82,6 +83,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,.tok:focus-visible{outl
 .pitch.cam-on{overflow:hidden}
 .field{border-radius:5px}
 .ink{filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
+html.futsal .ink{filter:drop-shadow(0 0 .6px rgba(40,20,5,.85)) drop-shadow(0 1px 1.5px rgba(0,0,0,.45))}
 .tokens{position:absolute;inset:0;pointer-events:none}
 .tok,.ball,.ghost{position:absolute;border-radius:50%}
 .tok{pointer-events:auto;touch-action:none;width:var(--tok);height:var(--tok);margin:calc(var(--tok) / -2) 0 0 calc(var(--tok) / -2);z-index:2;
@@ -372,12 +374,17 @@ html.land .cele-names{margin-top:12px}
 html.land .cele-names>div{font-size:40px}
 html.land .cele-reveal{margin-top:10px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+/* four tabs: tighter on phones and in landscape */
+@media (max-width:440px){.modes a{padding:8px 5px 7px;font-size:16px}.score .of{display:none}.rail{gap:6px;padding-left:9px;padding-right:9px}}
+@media (max-width:370px){.modes a{padding:8px 4px 7px;font-size:14.5px}.score{padding:8px 7px 7px}}
+@media (max-width:340px){.modes a{padding:8px 3px 7px;font-size:13.5px}.rail{gap:4px}}
+html.land .modes a{padding:7px 7px 6px;font-size:15px}
 </style>
 </head>
 <body>
 
 <header class="rail">
-  <nav class="modes" aria-label="Mode"><a href="./">Board</a><a href="riddles.html" aria-current="page">Puzzles</a><a href="learn.html">Learn</a></nav>
+  <nav class="modes" aria-label="Mode"><a href="./">Board</a><a href="riddles.html" aria-current="page" id="puzTab">Puzzles</a><a href="learn.html">Learn</a><a href="riddles.html?futsal" id="futTab">Futsal</a></nav>
   <button class="posbtn" id="posBtn" type="button" aria-label="Change position"><span class="ring" id="posRing"><span class="pk us" id="posPk">6</span></span></button>
   <button class="score" id="scoreBtn" type="button" aria-label="Stars and trophy room"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg><span id="starTotal">0</span><span class="of">/ 90</span></button>
 </header>
@@ -502,21 +509,27 @@ html.land .cele-reveal{margin-top:10px}
 <script>
 (() => {
 'use strict';
-const W = 50, L = 75, M = 4, VW = W + 2 * M, VH = L + 2 * M;
-const PA = { d: 14, w: 36 }, GA = { d: 5, w: 16 }, SPOT = 10, CIRCLE = 8, GOAL = 6.5, GOAL_D = 2;
+// Futsal is the same page in futsal mode (riddles.html?futsal): a 40 x 20 m court, 5 a side, no offside.
+// Its court keeps the 50-wide units (1 unit = 0.4 m), so it is 100 long, and players stay the same size.
+const FUTSAL = /[?&]futsal\b/.test(location.search);
+const W = 50, L = FUTSAL ? 100 : 75, M = 4, VW = W + 2 * M, VH = L + 2 * M;
+const PA = { d: 14, w: 36 }, GA = { d: 5, w: 16 }, SPOT = 10, CIRCLE = 8, GOAL = FUTSAL ? 7.5 : 6.5, GOAL_D = 2;
+const POST0 = (W - GOAL) / 2, POST1 = POST0 + GOAL;
 const NS = 'http://www.w3.org/2000/svg';
 const PROG = 'tactics9v9.riddles.v2', PROG_V1 = 'tactics9v9.riddles.v1', BOARD = 'tactics9v9.board.v1';
 let R = [], CH = [], ME = '6', SET = '6';
 const POSITIONS = window.POSITIONS;
-const SETS = POSITIONS.concat(window.EXTRA_SETS || []);
-const posInfo = n => SETS.find(p => p.n === n) || POSITIONS.find(p => p.n === '6');
+const SETS = FUTSAL ? (window.FUTSAL_SETS || []) : POSITIONS.concat(window.EXTRA_SETS || []);
+const posInfo = n => SETS.find(p => p.n === n) || (FUTSAL ? SETS[0] : POSITIONS.find(p => p.n === '6'));
+// futsal players by role (numbered like the 9v9 players who do the same job)
+const ROLE = { '1': 'the keeper', '4': 'the fixo', '11': 'the left ala', '7': 'the right ala', '9': 'the pivot' };
 const puckText = n => posInfo(n).short || n;
 const setTitle = (n = SET) => posInfo(n).varied ? posInfo(n).title : n === '1' ? 'the keeper' : `the ${n}`;
 const meName = () => ME === '1' ? 'the keeper' : `the ${ME}`;
 const today = () => new Date().toLocaleDateString('en-CA');
 const CH_COLORS = ['#1f5fbf', '#23854c', '#b5462f', '#7a4bb3', '#b7791f', '#1d7f8c'];
 const INK = { us: '#ffd23f', them: '#ff7a59', pick: '#ffffff', best: '#7cffb2' };
-const NUMS = ['1', '3', '4', '2', '6', '10', '11', '9', '7'];
+const NUMS = FUTSAL ? ['1', '4', '11', '9', '7'] : ['1', '3', '4', '2', '6', '10', '11', '9', '7'];
 const STAR = 'M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z';
 const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -564,6 +577,7 @@ const totalStars = (n = SET) => Object.values(cur(n).stars).reduce((s, g) => s +
 
 /* ---------- field ---------- */
 function buildField() {
+  if (FUTSAL) return buildCourt();
   field.setAttribute('viewBox', `${-M} ${-M} ${VW} ${VH}`); field.setAttribute('preserveAspectRatio', 'none');
   const px = (W - PA.w) / 2, gx = (W - GA.w) / 2, g0 = (W - GOAL) / 2, g1 = g0 + GOAL, cx = W / 2;
   const arcDy = PA.d - SPOT, arcDx = Math.sqrt(CIRCLE * CIRCLE - arcDy * arcDy);
@@ -586,6 +600,61 @@ function buildField() {
       <path d="M1 0A1 1 0 0 1 0 1M${W - 1} 0A1 1 0 0 0 ${W} 1M0 ${L - 1}A1 1 0 0 1 1 ${L}M${W - 1} ${L}A1 1 0 0 1 ${W} ${L - 1}"/></g>
     <g fill="var(--chalk)" opacity=".95"><circle cx="${cx}" cy="${L / 2}" r=".34"/><circle cx="${cx}" cy="${SPOT}" r=".3"/><circle cx="${cx}" cy="${L - SPOT}" r=".3"/></g>
     <rect x="${-M}" y="${-M}" width="${VW}" height="${VH}" fill="url(#vig)"/>`;
+  field.innerHTML = s;
+  ink.setAttribute('viewBox', `${-M} ${-M} ${VW} ${VH}`); ink.setAttribute('preserveAspectRatio', 'none');
+  $('#mink').setAttribute('viewBox', `${-M} ${-M} ${VW} ${VH}`); $('#mink').setAttribute('preserveAspectRatio', 'none');
+  $('#inkDefs').innerHTML = Object.entries(INK).map(([k, c]) =>
+    `<marker id="ah-${k}" viewBox="0 0 10 10" refX="4" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto" markerUnits="strokeWidth"><path d="M0 0L10 5L0 10Z" fill="${c}"/></marker>`).join('');
+}
+
+// the futsal court: a hardwood floor like a basketball court. Maple boards run the length of the court, with
+// the penalty areas, the center circle and the run-off painted. D-shaped penalty areas (6 m quarter circles from
+// the posts), penalty marks at 6 m and 10 m, a 3 m center circle, substitution zones and the 5 m marks for corners.
+function woodBoards() {
+  // boards of random length in 40 lanes, each a shade lighter or darker, with dark seams where they meet
+  let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+  const PW = W / 40, tones = ['', '', '', '', ''], seams = [];
+  for (let i = 0; i < 40; i++) {
+    const x = r2(i * PW); let y = -rnd() * 22;
+    if (i) seams.push(`M${x} 0V${L}`);
+    while (y < L) {
+      const len = 9 + rnd() * 17, y0 = Math.max(0, y), y1 = Math.min(L, y + len), k = Math.floor(rnd() * 5);
+      if (y1 > 0) tones[k] += `M${x} ${r2(y0)}h${r2(PW)}V${r2(y1)}h${r2(-PW)}Z`;
+      if (y1 > 0 && y1 < L) seams.push(`M${x} ${r2(y1)}h${r2(PW)}`);
+      y += len;
+    }
+  }
+  const fill = ['rgba(255,236,205,.17)', 'rgba(255,236,205,.08)', 'rgba(0,0,0,0)', 'rgba(110,55,10,.07)', 'rgba(110,55,10,.14)'];
+  return { tones: tones.map((d, k) => d && `<path d="${d}" fill="${fill[k]}"/>`).join(''), seams: seams.join('') };
+}
+function buildCourt() {
+  field.setAttribute('viewBox', `${-M} ${-M} ${VW} ${VH}`); field.setAttribute('preserveAspectRatio', 'none');
+  const m = v => 2.5 * v, cx = W / 2, R6 = m(6), g0 = POST0, g1 = POST1, D = 2, wb = woodBoards();
+  const area = (y0, k) => `M${g0 - R6} ${y0}A${R6} ${R6} 0 0 ${k} ${g0} ${y0 + (k ? -R6 : R6)}H${g1}A${R6} ${R6} 0 0 ${k} ${g1 + R6} ${y0}`;
+  let s = `<defs>
+    <pattern id="net" width=".7" height=".7" patternUnits="userSpaceOnUse"><path d="M0 0L.7 .7M.7 0L0 .7" stroke="rgba(255,255,255,.5)" stroke-width=".07"/></pattern>
+    <filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.5 .045" numOctaves="3" seed="4"/>
+      <feColorMatrix values="0 0 0 0 .36  0 0 0 0 .17  0 0 0 0 .03  1.9 0 0 0 -.72"/></filter>
+    <radialGradient id="gloss" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".08"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".14"/></linearGradient></defs>
+    <rect x="${-M}" y="${-M}" width="${VW}" height="${VH}" fill="var(--runoff)"/>
+    <rect x="0" y="0" width="${W}" height="${L}" fill="var(--wood)"/>
+    ${wb.tones}
+    <rect x="0" y="0" width="${W}" height="${L}" filter="url(#grain)" opacity=".5"/>
+    <g fill="var(--paint)" opacity=".94"><path d="${area(0, 0)}Z"/><path d="${area(L, 1)}Z"/><circle cx="${cx}" cy="${L / 2}" r="${m(3)}"/></g>
+    <path d="${wb.seams}" fill="none" stroke="rgba(70,35,8,.3)" stroke-width=".07"/>
+    <ellipse cx="${cx}" cy="${L * .27}" rx="${W * .42}" ry="${L * .16}" fill="url(#gloss)"/><ellipse cx="${cx}" cy="${L * .73}" rx="${W * .42}" ry="${L * .16}" fill="url(#gloss)"/>
+    <rect x="${g0}" y="${-D}" width="${GOAL}" height="${D}" fill="url(#net)"/><rect x="${g0}" y="${L}" width="${GOAL}" height="${D}" fill="url(#net)"/>
+    <g fill="none" stroke="var(--court-line)" stroke-width=".26" opacity=".9"><path d="M${g0} 0V${-D}H${g1}V0"/><path d="M${g0} ${L}V${L + D}H${g1}V${L}"/></g>
+    <g fill="none" stroke="var(--court-line)" stroke-width=".3">
+      <rect x="0" y="0" width="${W}" height="${L}"/><path d="M0 ${L / 2}H${W}"/><circle cx="${cx}" cy="${L / 2}" r="${m(3)}"/>
+      <path d="${area(0, 0)}"/><path d="${area(L, 1)}"/>
+      <path d="M1 0A1 1 0 0 1 0 1M${W - 1} 0A1 1 0 0 0 ${W} 1M0 ${L - 1}A1 1 0 0 1 1 ${L}M${W - 1} ${L}A1 1 0 0 1 ${W} ${L - 1}"/>
+      <path d="${[L / 2 - m(10), L / 2 - m(5), L / 2 + m(5), L / 2 + m(10)].map(y => `M-1 ${y}H1`).join('')}"/>
+      <path d="${[m(5.25), W - m(5.25)].map(x => `M${x} 0V-.9M${x} ${L}V${L + .9}`).join('')}${[m(5.25), L - m(5.25)].map(y => `M0 ${y}H-.9M${W} ${y}H${W + .9}`).join('')}"/></g>
+    <g fill="var(--court-line)">${[[cx, L / 2, .36], [cx, R6, .32], [cx, L - R6, .32], [cx, m(10), .32], [cx, L - m(10), .32],
+      [cx - m(5), m(10), .2], [cx + m(5), m(10), .2], [cx - m(5), L - m(10), .2], [cx + m(5), L - m(10), .2]].map(([x, y, rr]) => `<circle cx="${x}" cy="${y}" r="${rr}"/>`).join('')}</g>
+    <rect x="${-M}" y="${-M}" width="${VW}" height="${VH}" fill="url(#sheen)"/>`;
   field.innerHTML = s;
   ink.setAttribute('viewBox', `${-M} ${-M} ${VW} ${VH}`); ink.setAttribute('preserveAspectRatio', 'none');
   $('#mink').setAttribute('viewBox', `${-M} ${-M} ${VW} ${VH}`); $('#mink').setAttribute('preserveAspectRatio', 'none');
@@ -691,13 +760,13 @@ function loadRiddle(i) {
   const ch = r.ch;
   $('#chip').textContent = CH[ch].name; $('#chip').style.setProperty('--ch', CH_COLORS[ch]);
   $('#kind').textContent = (r.kind || (r.type === 'ball' ? 'On the ball' : (r.ball.team === 'us' ? 'Off the ball' : 'Defending')))
-    + (posInfo(SET).varied ? ` \u00b7 you're ${meName()}` : '');
+    + (posInfo(SET).varied ? ` \u00b7 you're ${meName()}${FUTSAL && ME !== '1' ? `, ${ROLE[ME]}` : ''}` : '');
   $('#count').textContent = `${idx + 1} / ${R.length}`;
   $('#title').textContent = r.title; $('#prompt').textContent = r.prompt;
   $('#hintText').textContent = r.hint; $('#hint').hidden = true; hintBtn.setAttribute('aria-pressed', 'false');
   shootBtn.hidden = r.type !== 'ball' || r.shoot === null;
   pitch.classList.toggle('onball', r.type === 'ball');
-  document.title = `${idx + 1}. ${r.title} | Puzzles for ${setTitle()}`;
+  document.title = FUTSAL ? `${idx + 1}. ${r.title} | Futsal puzzles` : `${idx + 1}. ${r.title} | Puzzles for ${setTitle()}`;
   resetScene();
   playIntro();
 }
@@ -753,12 +822,12 @@ function updateGo() {
   if (!sel) {
     goBtn.disabled = true;
     goBtn.textContent = r.type !== 'ball' ? `Drag ${meName()} to the best spot`
-      : r.noCarry ? (r.restart === 'throw' ? 'Drag the ball to throw it' : shootBtn.hidden ? 'Drag the ball to play it' : 'Drag the ball to play it, or shoot')
+      : r.noCarry ? (r.restart === 'throw' || r.restart === 'clearance' ? 'Drag the ball to throw it' : r.restart === 'kickin' ? 'Drag the ball to kick it in' : shootBtn.hidden ? 'Drag the ball to play it' : 'Drag the ball to play it, or shoot')
       : shootBtn.hidden ? `Drag the ball to pass, or drag ${meName()} to dribble` : `Drag the ball to pass, drag ${meName()} to dribble, or shoot`;
     return;
   }
   goBtn.disabled = false;
-  const who = n => n === '1' ? 'the keeper' : `the ${n}`, V = r.restart === 'throw' ? 'Throw' : 'Pass';
+  const who = n => n === '1' ? 'the keeper' : `the ${n}`, V = r.restart === 'throw' || r.restart === 'clearance' ? 'Throw' : 'Pass';
   goBtn.textContent = sel.kind === 'pass'
       ? (sel.feet ? (sel.to === '1' ? `${V} to the keeper` : `${V} to the ${sel.to}\u2019s feet`) : outOfPlay(sel.at) ? 'Kick it out of play' : sel.to ? `${V} into space for ${who(sel.to)}` : `${V} into space`)
     : sel.kind === 'shoot' ? 'Shoot!' : sel.kind === 'carry' ? 'Dribble there' : 'Lock in this spot';
@@ -782,16 +851,16 @@ function laneBlocker(a, b) {
   for (const n of NUMS) { const [d, t] = segDist(pos.them[n], a, b); if (d < 2.2 && t > .08 && t < .96 && t < ht) { ht = t; hit = n; } }
   return hit;
 }
-const inGoal = T => T[1] < .9 && T[0] >= 21.5 && T[0] <= 28.5;
+const inGoal = T => T[1] < .9 && T[0] >= POST0 - .25 && T[0] <= POST1 + .25;
 const outOfPlay = T => T[0] < -.3 || T[0] > W + .3 || T[1] < -.3 || T[1] > L + .3;
 function readPass(T) {
   // Released on a teammate = a pass to feet; anywhere else = a pass into space.
   const [n, dR] = nearest('us', T, ME);
   if (dR <= FEET) return { feet: true, to: n, at: pos.us[n].slice() };
-  // a long ball into a planned space names the runner it was meant for
+  // a pass into a planned space names the runner it was meant for (that's who the grading and the play use)
   let z = null;
   for (const q of (r.lead || [])) if (dist(T, [q[0], q[1]]) <= q[2] && (!z || q[3] > z[3])) z = q;
-  if (z && z[6] && pos.us[z[6]] && dR > REACH) return { feet: false, to: z[6], at: T.slice() };
+  if (z && z[6] && pos.us[z[6]]) return { feet: false, to: z[6], at: T.slice() };
   return { feet: false, to: dR <= REACH ? n : null, at: T.slice() };
 }
 function autoFeet(n) {
@@ -805,7 +874,7 @@ function autoFeet(n) {
 }
 function autoShot() {
   const d = dist(pos.us[ME], [25, 0]);
-  if (d > 22) return { g: 0, t: 'Out of range', w: 'Way too far from goal. Keep the ball and build the attack.' };
+  if (d > (FUTSAL ? 30 : 22)) return { g: 0, t: 'Out of range', w: 'Way too far from goal. Keep the ball and build the attack.' };
   return { g: 1, t: 'Not the best', w: 'You could shoot from there, but there was a better choice.' };
 }
 function judgePass(s) {
@@ -877,7 +946,7 @@ function chooseSpot(p, animate) {
 // (offside, hidden, too close...) or the step off the spot loses what made it right.
 const NEAR = 2;
 function offsideAt(p) {
-  if (!carrier || carrier.team !== 'us') return false;
+  if (FUTSAL || !carrier || carrier.team !== 'us') return false;   // there's no offside in futsal
   const line = NUMS.map(n => pos.them[n][1]).sort((a, b) => a - b)[1];
   return p[1] < line && p[1] < ballPos[1] && p[1] < L / 2;
 }
@@ -1099,6 +1168,7 @@ function renderLevels() {
   $('#levelTitle').textContent = `Puzzles for ${setTitle()}`; $('#levelWho').textContent = setTitle();
   $('#switchPosName').textContent = posInfo(SET).varied ? setTitle() : `${setTitle()} (${posInfo(SET).name.toLowerCase()})`;
   $('#tierLine').innerHTML = `${ringHTML(SET)}<p>${posTier(SET).text}</p>`;
+  $('#switchPos').hidden = FUTSAL;
 }
 $('#chapters').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b && !b.disabled) loadRiddle(+b.dataset.i); });
 $('#unlockAll').addEventListener('change', e => { prog.unlockAll = e.target.checked; saveProg(); renderLevels(); });
@@ -1121,7 +1191,7 @@ document.querySelectorAll('.musicOn').forEach(x => x.addEventListener('change', 
 ['touchend', 'pointerup', 'click', 'keydown'].forEach(ev => addEventListener(ev, startMusic, { capture: true, passive: true }));
 $('#resetProg').addEventListener('click', () => {
   if (!confirm(`Clear your stars for ${setTitle()} and lock those puzzles again?`)) return;
-  prog.sets[SET] = { stars: {}, last: 0 }; prog.unlockAll = false; prog.awards = computeAwards(); saveProg(); renderScore(); renderLevels(); loadRiddle(0); showLevels();
+  prog.sets[SET] = { stars: {}, last: 0 }; prog.unlockAll = false; prog[AWARDS] = computeAwards(); saveProg(); renderScore(); renderLevels(); loadRiddle(0); showLevels();
 });
 function showLevels() { renderLevels(); showSheet(levelSheet); }
 $('#bestBtn').addEventListener('click', showBest);
@@ -1150,7 +1220,9 @@ tokensEl.addEventListener('pointerdown', e => {
   }
   const el = onMe && r.type === 'ball' ? tok.us[ME] : e.target.closest('.tok'); if (!el) return;
   if (!(el.dataset.team === 'us' && el.dataset.n === ME)) return;
-  if (r.noCarry && r.type === 'ball') { e.preventDefault(); toast(r.restart === 'throw' ? "It's a throw-in. Drag the ball to throw it: onto a teammate, or into the space ahead of one." : "It's a set piece. Drag the ball to play it."); return; }
+  if (r.noCarry && r.type === 'ball') { e.preventDefault(); toast(r.restart === 'throw' ? "It's a throw-in. Drag the ball to throw it: onto a teammate, or into the space ahead of one."
+    : r.restart === 'clearance' ? "The ball's in your hands. Drag it to throw it: onto a teammate, or into the space ahead of one."
+    : r.restart === 'kickin' ? "It's a kick-in. Drag the ball to kick it: onto a teammate, or into the space ahead of one." : "It's a set piece. Drag the ball to play it."); return; }
   e.preventDefault();
   try { el.setPointerCapture(e.pointerId); } catch {}
   const p = toField(e);
@@ -1227,7 +1299,7 @@ shootBtn.addEventListener('click', () => { if (sel && sel.kind === 'shoot') { cl
 hintBtn.addEventListener('click', () => { const h = $('#hint'); h.hidden = !h.hidden; hintBtn.setAttribute('aria-pressed', String(!h.hidden)); });
 $('#restartBtn').addEventListener('click', () => { hideSheet(true); resetScene(); });
 $('#levelsBtn').addEventListener('click', showLevels);
-$('#scoreBtn').addEventListener('click', () => showTrophies());
+$('#scoreBtn').addEventListener('click', () => (FUTSAL ? showLevels() : showTrophies()));
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && openSheet && cele.hidden) hideSheet(); });
 
 /* ---------- layout (portrait / landscape) ---------- */
@@ -1271,9 +1343,9 @@ async function useSet(n, picked) {
   const set = window.RIDDLE_SETS[n];
   if (!set) { toast(`The puzzles for ${info.title} aren't ready yet.`); return false; }
   R = set.riddles; CH = set.chapters; SET = n; ME = set.me || '6';
-  prog.position = SET; if (!info.varied) prog.lastPos = SET; if (picked) prog.lastPick = today(); saveProg();
+  if (!FUTSAL) { prog.position = SET; if (!info.varied) prog.lastPos = SET; if (picked) prog.lastPick = today(); saveProg(); }
   const pk = $('#posPk'); pk.textContent = puckText(SET); pk.classList.toggle('gk', SET === '1');
-  $('#posBtn').setAttribute('aria-label', `Playing ${setTitle()}. Change position`);
+  $('#posBtn').setAttribute('aria-label', FUTSAL ? 'Futsal level and puzzle list' : `Playing ${setTitle()}. Change position`);
   renderScore();
   const st = cur(); loadRiddle(unlocked(st.last) ? st.last : 0);
   return true;
@@ -1292,7 +1364,7 @@ $('#formation').addEventListener('click', async e => {
   if (n === SET && R.length) { prog.lastPick = today(); saveProg(); hideSheet(); return; }
   if (await useSet(n, true)) toast(`Puzzles for ${setTitle()}. Good luck today!`);
 });
-$('#posBtn').addEventListener('click', openPicker);
+$('#posBtn').addEventListener('click', () => (FUTSAL ? showLevels() : openPicker()));
 $('#switchPos').addEventListener('click', openPicker);
 
 /* ---------- trophies: level rings, badges, player card ---------- */
@@ -1301,8 +1373,11 @@ const TIERS = ['Rookie', 'Bronze', 'Silver', 'Gold'];
 const TIER_COL = ['#9aa7b1', '#d9874a', '#c9d4de', '#ffd23f'];
 const CARD_TIERS = ['Bronze', 'Silver', 'Gold', 'Legend'];
 const CARD_COL = ['#d9874a', '#e9eff4', '#ffd23f', '#b48cff'];
-const ALL_POS = ['1', '3', '4', '2', '6', '10', '11', '9', '7'], ALL_KEYS = ALL_POS.concat((window.EXTRA_SETS || []).filter(x => !x.soon).map(x => x.n));
-const UNITS = [
+const ALL_POS = ['1', '3', '4', '2', '6', '10', '11', '9', '7'];
+const ALL_KEYS = FUTSAL ? SETS.map(x => x.n) : ALL_POS.concat((window.EXTRA_SETS || []).filter(x => !x.soon).map(x => x.n));
+// futsal's level ring is saved apart from the 9v9 awards (badges and the player card are 9v9 only)
+const AWARDS = FUTSAL ? 'awardsFs' : 'awards';
+const UNITS = FUTSAL ? [] : [
   { id: 'wall', name: 'The Wall', members: ['3', '4', '2'], who: 'the 3, the 4 and the 2' },
   { id: 'engine', name: 'Engine Room', members: ['6', '10'], who: 'the 6 and the 10' },
   { id: 'front', name: 'Front Three', members: ['11', '9', '7'], who: 'the 11, the 9 and the 7' },
@@ -1338,16 +1413,16 @@ const cardTier = o => o.total >= MAX_STARS ? 3 : o.ovr >= 80 ? 2 : o.ovr >= 65 ?
 function computeAwards() {
   const pos = {}; ALL_KEYS.forEach(n => { pos[n] = posTier(n).tier; });
   const units = {}; UNITS.forEach(u => { units[u.id] = Math.min(...u.members.map(n => pos[n])); });
-  return { pos, units, card: cardTier(overallNow()) };
+  return { pos, units, card: FUTSAL ? 0 : cardTier(overallNow()) };
 }
 function checkAwards() {
-  const next = computeAwards(), prev = prog.awards || next, ev = [];
+  const next = computeAwards(), prev = prog[AWARDS] || next, ev = [];
   ALL_KEYS.forEach(n => { if (next.pos[n] > (prev.pos[n] || 0)) ev.push({ kind: 'pos', n, from: prev.pos[n] || 0, to: next.pos[n] }); });
   UNITS.slice().sort((a, b) => a.members.length - b.members.length).forEach(u => {
     if (next.units[u.id] > (prev.units[u.id] || 0)) ev.push({ kind: 'unit', id: u.id, from: prev.units[u.id] || 0, to: next.units[u.id] });
   });
   if (next.card > (prev.card || 0)) ev.push({ kind: 'card', from: prev.card || 0, to: next.card });
-  prog.awards = next; saveProg();
+  prog[AWARDS] = next; saveProg();
   return ev;
 }
 function ringHTML(n, extra) {
@@ -1893,12 +1968,14 @@ $('#saveCard').addEventListener('click', async () => {
 });
 
 /* ---------- start ---------- */
-if (!prog.awards) { prog.awards = computeAwards(); saveProg(); }
+if (!prog[AWARDS]) { prog[AWARDS] = computeAwards(); saveProg(); }
+if (FUTSAL) { $('#futTab').setAttribute('aria-current', 'page'); $('#puzTab').removeAttribute('aria-current'); document.documentElement.classList.add('futsal'); }
 buildField(); buildTokens(); applyColors();
 const Motion = window.RiddleMotion({ M, VW, VH, NS, NUMS, tok, ballEl, pitch, cam: $('#cam'), layer: $('#mink'), stage, calm,
   tokYards, land: () => land });
 setOrientation(); fit();
 (async () => {
+  if (FUTSAL) { await useSet(SETS[0].n, false); return; }
   const want = posInfo(prog.position || '6');
   let ok = await useSet(want.soon ? '6' : want.n, false);
   if (!ok && SET !== '6') ok = await useSet('6', false);
