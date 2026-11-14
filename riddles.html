@@ -379,12 +379,19 @@ html.land .cele-reveal{margin-top:10px}
 @media (max-width:370px){.modes a{padding:8px 4px 7px;font-size:14.5px}.score{padding:8px 7px 7px}}
 @media (max-width:340px){.modes a{padding:8px 3px 7px;font-size:13.5px}.rail{gap:4px}}
 html.land .modes a{padding:7px 7px 6px;font-size:15px}
+/* tab icons: beside the name on wide screens, above it on phones and in landscape */
+.modes a{display:flex;align-items:center;gap:6px}
+.modes svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.modes svg .f{fill:currentColor;stroke:none}
+@media (max-width:440px){.modes a{flex-direction:column;gap:3px;padding-top:6px;padding-bottom:5px}.modes svg{width:17px;height:17px}}
+html.land .modes a{flex-direction:column;gap:2px;padding-top:5px;padding-bottom:4px}
+html.land .modes svg{width:16px;height:16px}
 </style>
 </head>
 <body>
 
 <header class="rail">
-  <nav class="modes" aria-label="Mode"><a href="./">Board</a><a href="riddles.html" aria-current="page" id="puzTab">Puzzles</a><a href="learn.html">Learn</a><a href="riddles.html?futsal" id="futTab">Futsal</a></nav>
+  <nav class="modes" aria-label="Mode"><a href="./"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="M12 4.5v15M2.5 9.5h3v5h-3M21.5 9.5h-3v5h3"/><circle cx="12" cy="12" r="2.6"/></svg><span>Board</span></a><a href="riddles.html" aria-current="page" id="puzTab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5h4a2.8 2.8 0 1 1 5.6 0h4v4a2.8 2.8 0 1 1 0 5.6v4h-13.6z"/></svg><span>Puzzles</span></a><a href="learn.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9.5l10-5 10 5-10 5z"/><path d="M6 11.6v4.4c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.4M22 9.5v5.5"/></svg><span>Learn</span></a><a href="riddles.html?futsal" id="futTab"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path class="f" d="M12 8.2l3.6 2.6-1.4 4.2h-4.4l-1.4-4.2z"/><path d="M12 8.2V2.8M15.6 10.8l5.2-1.7M14.2 15l3.2 4.4M9.8 15l-3.2 4.4M8.4 10.8l-5.2-1.7"/></svg><span>Futsal</span></a></nav>
   <button class="posbtn" id="posBtn" type="button" aria-label="Change position"><span class="ring" id="posRing"><span class="pk us" id="posPk">6</span></span></button>
   <button class="score" id="scoreBtn" type="button" aria-label="Stars and trophy room"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/></svg><span id="starTotal">0</span><span class="of">/ 90</span></button>
 </header>
@@ -834,7 +841,10 @@ function updateGo() {
 }
 
 /* ---------- choosing ---------- */
-const FEET = 2.8, REACH = 12;
+// FEET: a release this close to a teammate is a pass to feet. REACH: how far a teammate can run onto a pass
+// (futsal units are 0.4 m, not a yard, so futsal teammates reach further in units)
+// LEAD_NEAR / LEAD_FAR (futsal): how far off a planned space a pass is still Good / still the right idea
+const FEET = 2.8, REACH = FUTSAL ? 18 : 12, LEAD_NEAR = 3.5, LEAD_FAR = 8;
 const nameOf = n => n === '1' ? 'keeper' : n;
 function segDist(p, a, b) {
   const dx = b[0] - a[0], dy = b[1] - a[1], L2 = dx * dx + dy * dy;
@@ -891,13 +901,24 @@ function judgePass(s) {
   const cut = r.air ? null : laneBlocker(ballPos, T);
   if (cut) return { g: 0, t: 'Intercepted', w: `Their ${nameOf(cut)} is in the way. That pass gets cut out.`, cut };
   const [n, dR] = nearest('us', T, ME), [m, dO] = nearest('them', T);
-  if (dR > REACH) return { g: 0, t: 'Nobody there', w: 'None of your teammates can get to that spot, so it goes straight to them.', grab: m };
-  if (dO + 1 < dR) return { g: 0, t: 'They get there first', w: `Their ${nameOf(m)} is closer to that spot than your ${nameOf(n)}.`, grab: m };
-  const raw = r.pass[n] || autoFeet(n);
+  const raw = (r.pass || {})[n] || autoFeet(n);
   // a direct pass that would be cut out says nothing about a lead pass whose lane is clear
   const d = raw.cut ? { g: 1, t: 'Risky', w: `Their ${nameOf(raw.cut)} is close to that lane, so it's a risky pass.` } : raw;
-  if (dR <= 4.5) return Object.assign({}, d, { to: n, cut: null });
+  // right next to a teammate (and theirs no closer): it's a pass to that teammate
+  if (dR <= 4.5 && dO + 1 >= dR) return Object.assign({}, d, { to: n, cut: null });
+  // futsal: a pass just off a planned space is the right idea. Good if the runner (already moving, so given a
+  // head start) still gets there first; a little further off, or a close race, is one star unless theirs is on it
+  if (FUTSAL) {
+    const off = q => dist(T, [q[0], q[1]]) - q[2];
+    const near = (r.lead || []).filter(q => q[3] >= 2 && q[6] && pos.us[q[6]] && off(q) <= LEAD_FAR).sort((a, b) => off(a) - off(b))[0];
+    if (near && off(near) <= LEAD_NEAR && dist(T, pos.us[near[6]]) <= dO + 3) return { g: 2, t: 'Good', w: 'Right idea, just outside the best spot (the circle). ' + near[5], to: near[6] };
+    if (near && dO >= 4) return { g: 1, t: 'Almost', w: `Right idea, but that's a long way from your ${nameOf(near[6])}'s run. Put it in front of the runner, in the circle.`, to: near[6] };
+  }
+  if (dR > REACH) return { g: 0, t: 'Nobody there', w: 'None of your teammates can get to that spot, so it goes straight to them.', grab: m };
+  if (dO + 1 < dR) return { g: 0, t: 'They get there first', w: `Their ${nameOf(m)} is closer to that spot than your ${nameOf(n)}.`, grab: m };
   if (d.g >= 3) return { g: 2, t: 'Good', w: `Your ${nameOf(n)} can get it, but was free right there. A pass to feet was simpler.`, to: n };
+  // futsal: open space that your teammate reaches first, through a clear lane, keeps the ball: never a zero
+  if (FUTSAL && d.g < 1) return { g: 1, t: 'Found space', w: (`Your ${nameOf(n)} gets there first, so you keep the ball, but there was a better choice. ` + ((r.elsewhere || {}).w || '')).trim(), to: n };
   if (T[1] < pos.us[n][1] - 2) return Object.assign({}, d, { to: n, cut: null });
   return { g: Math.min(d.g, 1), t: 'Makes your teammate chase', w: (`Your ${nameOf(n)} can get there, but running sideways or back for it doesn't help. ` + (r.leadNote || '')).trim(), to: n };
 }
@@ -944,7 +965,8 @@ function chooseSpot(p, animate) {
 // How forgiving placing a player is. Pro needs the player inside the circle. A near miss (within NEAR
 // yards of a pro or good spot) still counts as Good, unless the puzzle names that spot as a mistake
 // (offside, hidden, too close...) or the step off the spot loses what made it right.
-const NEAR = 2;
+// futsal circles look smaller on screen (a longer court, same size players), so its near misses reach further
+const NEAR = FUTSAL ? 3 : 2;
 function offsideAt(p) {
   if (FUTSAL || !carrier || carrier.team !== 'us') return false;   // there's no offside in futsal
   const line = NUMS.map(n => pos.them[n][1]).sort((a, b) => a - b)[1];
@@ -968,7 +990,9 @@ function judge(s) {
   if (best) return best;
   const edge = z => dist(s.at, [z[0], z[1]]) - z[2];
   const close = zones.filter(z => z[3] >= 2 && edge(z) <= NEAR).sort((a, b) => edge(a) - edge(b));
-  const why = s.kind === 'carry' ? [] : close.map(z => lostTheIdea(z, s.at)), i = why.findIndex(x => !x);
+  // dribbles: near misses count only in futsal, and not when they end up next to a defender
+  const crowded = p => { const [m, dm] = nearest('them', p); return dm < 4 ? { t: 'Into a defender', w: `Close, but that takes you right next to their ${nameOf(m)}.` } : null; };
+  const why = s.kind === 'carry' ? (FUTSAL ? close.map(() => crowded(s.at)) : []) : close.map(z => lostTheIdea(z, s.at)), i = why.findIndex(x => !x);
   const near = i >= 0 ? close[i] : null;
   if (near && near[3] === 3) return { g: 2, t: 'Good', w: 'Right idea, just outside the best spot (the circle). ' + near[5].replace(/^Perfect[^.]*\.\s*/, '') };
   if (near) return { g: 2, t: near[4], w: near[5] };

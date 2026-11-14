@@ -33,11 +33,11 @@ const RIDDLES = [
   ball: '1',
   pass: {
     7:  P(3, 'Pro choice', 'Their press shifted to our left, so you threw it to the 7 on the free side. Now the 7 faces forward with space to run into.'),
-    4:  P(0, 'Pressed', 'Their 9 is right on your 4. That throw invites the steal right in front of our goal.'),
+    4:  P(1, 'Risky', 'Their 9 is right on your 4. That throw invites the steal right in front of our goal.'),
     11: P(1, 'Marked', 'Their 7 is tight on your 11, on the crowded side.'),
     9:  P(1, 'Risky', 'A long throw to the 9 with their 4 right behind. The 7 was free and closer.')
   },
-  lead: [[44, 61, 4, 3, 'Pro choice', 'Their press shifted to our left, so you threw it into the space ahead of your 7. The 7 runs onto it facing forward.', '7']],
+  lead: [[44, 61, 5.6, 3, 'Pro choice', 'Their press shifted to our left, so you threw it into the space ahead of your 7. The 7 runs onto it facing forward.', '7']],
   shoot: null,
   elsewhere: P(1, 'Not quite', 'Their press is all on the left. Look right.'),
   best: { kind: 'pass', to: '7' } },
@@ -56,7 +56,7 @@ const RIDDLES = [
     1:  TOO_SAFE('Back to the keeper, when nobody was pressing you?')
   },
   carry: [
-    [25, 52, 4, 3, 'Pro choice', 'Nobody pressed you, so you carried it into the gap between their front two. One of them has to step up to you, and the ala behind them is free.'],
+    [25, 52, 5.6, 3, 'Pro choice', 'Nobody pressed you, so you carried it into the gap between their front two. One of them has to step up to you, and the ala behind them is free.'],
     [12, 58, 3.5, 1, 'Wrong way', 'You carried it toward your 11, so their 9 can mark you both.'],
     [38, 58, 3.5, 1, 'Wrong way', 'You carried it toward your 7, so their 11 can mark you both.']
   ],
@@ -94,7 +94,7 @@ const RIDDLES = [
     9:  P(1, 'Behind the run', 'The pivot is running down the line. A pass to where the 9 was is behind the run.'),
     7:  P(0, 'Intercepted', 'A long pass across their whole team. Their 7 or 9 gets there first.', { cut: '7' })
   },
-  lead: [[6, 22, 4, 3, 'Pro choice', 'Their 7 pressed from the inside, so you went down the line, into the space ahead of your pivot. One pass and the press is beaten.', '9']],
+  lead: [[6, 22, 5.6, 3, 'Pro choice', 'Their 7 pressed from the inside, so you went down the line, into the space ahead of your pivot. One pass and the press is beaten.', '9']],
   shoot: null,
   carry: [[6, 42, 3, 0, 'Trapped', 'Their 7 is right there, and the sideline is behind you. That ball is lost.']],
   elsewhere: P(1, 'Not quite', 'Your pivot is running down the line. Find that run.'),
@@ -108,8 +108,8 @@ const RIDDLES = [
   them: { 1:[25,3], 9:[25,77], 7:[10,64], 11:[40,64], 4:[25,42.5] },
   ball: { team: 'us', n: '1' },
   zones: [
-    [15, 80, 3, 3, 'Pro spot', 'You stepped out of their 9’s shadow, to the side. Your keeper has a clear line to you, and their 9 can’t cover you and the keeper at once.'],
-    [35, 80, 3, 3, 'Pro spot', 'You stepped out of their 9’s shadow, to the side. Your keeper has a clear line to you, and their 9 can’t cover you and the keeper at once.'],
+    [15, 80, 4.2, 3, 'Pro spot', 'You stepped out of their 9’s shadow, to the side. Your keeper has a clear line to you, and their 9 can’t cover you and the keeper at once.'],
+    [35, 80, 4.2, 3, 'Pro spot', 'You stepped out of their 9’s shadow, to the side. Your keeper has a clear line to you, and their 9 can’t cover you and the keeper at once.'],
     [25, 69, 3, 1, 'Hidden', 'Their 9 is standing right in the line between you and your keeper.'],
     [25, 86, 2.6, 1, 'Too close', 'Right next to your keeper, their 9 can press you both.']
   ],
@@ -125,7 +125,7 @@ const RIDDLES = [
   them: { 1:[25,3], 9:[26,44], 7:[10,31], 11:[39,30], 4:[24,10] },
   ball: { team: 'us', n: '11' },
   zones: [
-    [4, 24, 3.2, 3, 'Pro spot', 'You followed your pass around the outside. Now their 7 has two of you to stop: go with you, and your 11 cuts inside; stay, and you get the ball down the line.'],
+    [4, 24, 4.5, 3, 'Pro spot', 'You followed your pass around the outside. Now their 7 has two of you to stop: go with you, and your 11 cuts inside; stay, and you get the ball down the line.'],
     [22, 51, 3, 1, 'Stood still', "You passed and watched. Their 7 only has your 11 to worry about."],
     [17, 30, 3, 0, 'Into the crowd', 'Their 7, their 9 and their 4 are all in the middle. That run takes you into traffic.']
   ],
@@ -141,7 +141,7 @@ const RIDDLES = [
   ball: { team: 'us', n: '11' },
   noPayoff: true,
   zones: [
-    [25, 54, 4, 3, 'Pro spot', 'Your 4 left the fixo spot, so you rotated into it. If we lose the ball, you are between their 9 and our goal. That is a rotation.'],
+    [25, 54, 5.6, 3, 'Pro spot', 'Your 4 left the fixo spot, so you rotated into it. If we lose the ball, you are between their 9 and our goal. That is a rotation.'],
     [44, 32, 3, 1, 'Stayed up', 'Four of us are up the field, and their 9 is alone in the middle. One bad pass and they are through.'],
     [34, 18, 3, 0, 'Even higher', 'Now nobody is back at all.']
   ],
@@ -157,7 +157,7 @@ const RIDDLES = [
   ball: { team: 'us', n: '11' },
   arrows: [{ team: 'us', from: [9, 37], to: [14, 35.4] }],
   zones: [
-    [5, 40, 3.5, 3, 'Pro spot', 'Your 11 went inside, so you opened up wide where the 11 had been. The court stays big, and your 11 has an easy pass out to you.'],
+    [5, 40, 4.9, 3, 'Pro spot', 'Your 11 went inside, so you opened up wide where the 11 had been. The court stays big, and your 11 has an easy pass out to you.'],
     [25, 52, 3, 1, 'Stayed in the middle', "Now we have nobody wide on the left, and their team can squeeze the middle."],
     [20, 40, 2.6, 0, 'Too close', 'Right next to your 11, one defender can mark you both.']
   ],
@@ -173,7 +173,7 @@ const RIDDLES = [
   ball: { team: 'us', n: '4' },
   arrows: [{ team: 'us', from: [28, 15], to: [37, 22.5] }, { team: 'them', from: [27, 12], to: [34.5, 18] }],
   zones: [
-    [24, 15, 3.5, 3, 'Pro spot', 'Your pivot pulled their 4 out wide, so you ran into the space the 9 left, right in front of their goal.'],
+    [24, 15, 4.9, 3, 'Pro spot', 'Your pivot pulled their 4 out wide, so you ran into the space the 9 left, right in front of their goal.'],
     [45, 40, 3, 1, 'Stayed wide', 'Now two of us are on the right sideline, and the middle is still empty.'],
     [40, 32, 2.6, 0, 'Into the crowd', 'Your 9, their 4 and their 11 are already there.']
   ],
@@ -190,7 +190,7 @@ const RIDDLES = [
   noPayoff: true,
   follow: [{ n: '4', dy: -4 }],
   zones: [
-    [36, 10, 3.5, 3, 'Pro spot', "You cleared out to the far post, and their 4 went with you. Now your 11 has a clear look at goal, and you're ready for the rebound."],
+    [36, 10, 4.9, 3, 'Pro spot', "You cleared out to the far post, and their 4 went with you. Now your 11 has a clear look at goal, and you're ready for the rebound."],
     [21, 15, 3, 1, 'In the way', "You and their 4 are standing in your 11's shooting lane."],
     [15, 17, 2.6, 0, 'Too close', 'You came toward the ball and brought their 4 with you, right into your 11’s path.']
   ],
@@ -211,7 +211,7 @@ const RIDDLES = [
     9:  P(1, 'Marked', 'Their 4 is tight on your pivot, and their 11 can drop on the 9 too.'),
     1:  TOO_SAFE('Back to the keeper, when your 7 was alone on the right?')
   },
-  lead: [[46, 25, 4, 3, 'Pro choice', 'Their team shifted to our left, so you switched it into the space ahead of your 7.', '7']],
+  lead: [[46, 25, 5.6, 3, 'Pro choice', 'Their team shifted to our left, so you switched it into the space ahead of your 7.', '7']],
   carry: [[28, 44, 3.5, 1, 'Too slow', 'Every touch gives their team time to shift back across.']],
   shoot: null,
   elsewhere: P(1, 'Not quite', 'They are all on the left. Switch it.'),
@@ -260,7 +260,7 @@ const RIDDLES = [
   them: { 1:[25,3], 9:[20,40], 7:[10,29], 11:[33,22], 4:[17,13] },
   ball: { team: 'us', n: '11' },
   zones: [
-    [45, 28, 3.5, 3, 'Pro spot', 'The ball was on the left and their team went with it, so you stayed wide on the right. Now the switch to you is wide open.'],
+    [45, 28, 4.9, 3, 'Pro spot', 'The ball was on the left and their team went with it, so you stayed wide on the right. Now the switch to you is wide open.'],
     [30, 30, 3, 1, 'Too narrow', 'Their 11 can watch you and the middle at the same time.'],
     [20, 30, 2.6, 0, 'Into the crowd', 'Now everyone is on the left, including you.']
   ],
@@ -296,7 +296,7 @@ const RIDDLES = [
     4:  P(2, 'Good', 'Safe, but your 11 was arriving facing the goal.'),
     7:  P(1, 'Marked', 'Their 11 is right on your 7.')
   },
-  lead: [[16, 26, 3, 3, 'Pro choice', 'Their 4 was tight behind you, so you laid it into the path of your 11, who runs onto it facing the goal.', '11']],
+  lead: [[16, 26.5, 4.2, 3, 'Pro choice', 'Their 4 was tight behind you, so you laid it into the path of your 11, who runs onto it facing the goal.', '11']],
   carry: [[25, 16, 3.5, 0, 'Into their 4', 'You turned straight into their 4, who takes it.'], [20, 20, 3, 0, 'Into their 4', 'Their 4 is too close to turn on.'], [30, 20, 3, 0, 'Into their 4', 'Their 4 is too close to turn on.']],
   shoot: P(0, 'Back to goal', "You can't shoot with your back to the goal and their 4 behind you."),
   elsewhere: P(1, 'Not quite', 'Lay it off to someone who can face the goal.'),
@@ -310,7 +310,7 @@ const RIDDLES = [
   them: { 1:[25,3], 9:[29,44], 7:[9.5,36], 11:[38,27], 4:[19,31] },
   ball: { team: 'us', n: '9' },
   zones: [
-    [6, 24, 3.2, 3, 'Pro spot', 'You passed into the pivot and ran past their 7, down the line. The 9 gives it straight back, and you are in behind.'],
+    [6, 24, 4.5, 3, 'Pro spot', 'You passed into the pivot and ran past their 7, down the line. The 9 gives it straight back, and you are in behind.'],
     [6, 42, 3, 1, 'Stood still', 'You passed and watched. Their 7 is still in front of you.'],
     [13, 33, 2.6, 0, 'Into the crowd', 'You ran toward the pivot, right into their 7 and their 4.']
   ],
@@ -330,7 +330,7 @@ const RIDDLES = [
     7:  P(1, 'Marked', 'Their 11 is on your 7.')
   },
   carry: [
-    [17, 21, 3.5, 3, 'Pro choice', 'Their 4 stood off you on the right, so you turned the other way and got your shot away.'],
+    [17, 21, 4.9, 3, 'Pro choice', 'Their 4 stood off you on the right, so you turned the other way and got your shot away.'],
     [29, 22, 3, 0, 'Into their 4', 'You turned right into their 4.']
   ],
   shoot: P(1, 'Back to goal', 'Turn first. You can’t aim with your back to the goal.'),
@@ -350,7 +350,7 @@ const RIDDLES = [
     11: P(1, 'Marked', 'Their 7 is right on your 11.'),
     7:  P(1, 'Marked', 'Their 11 is right on your 7.')
   },
-  lead: [[30, 29, 3, 3, 'Pro choice', 'They all closed in on you and the alas, so you laid it into the path of your 4 for a first-time shot.', '4']],
+  lead: [[30, 29, 4.2, 3, 'Pro choice', 'They all closed in on you and the alas, so you laid it into the path of your 4 for a first-time shot.', '4']],
   carry: [[25, 14, 3.5, 0, 'Into their 4', 'You turned straight into their 4.']],
   shoot: P(0, 'Back to goal', "You can't shoot with your back to goal and their 4 behind you."),
   elsewhere: P(1, 'Not quite', 'Lay it back to the player arriving behind you.'),
@@ -436,12 +436,12 @@ const RIDDLES = [
   them: { 1:[23,3], 9:[27,38], 7:[12.5,14], 11:[36,12], 4:[19,7.5] },
   ball: { team: 'us', n: '11' },
   zones: [
-    [25, 21, 3.2, 3, 'Pro spot', 'Everyone ran at the goal, so you arrived late at the top of the area. The cut-back comes to you with time to shoot.'],
+    [25.7, 20.3, 4.4, 3, 'Pro spot', 'Everyone ran at the goal, so you arrived late at the top of the area. The cut-back comes to you with time to shoot.'],
     [25, 11, 2.6, 0, 'Too early', 'Now you are in the crowd too, and the space behind is empty.'],
     [25, 46, 3, 1, 'Too far', 'The cut-back can’t reach you from there.']
   ],
   elsewhere: P(1, 'Not quite', 'Arrive at the top of the area.'),
-  best: { kind: 'move', at: [25, 21] } },
+  best: { kind: 'move', at: [25.7, 20.3] } },
 
 { ch: 4, type: 'ball', me: '7', title: 'Square it',
   prompt: 'You are through on goal. Their keeper is rushing out at you, and your pivot is running alongside you.',
@@ -455,7 +455,7 @@ const RIDDLES = [
     9:  P(3, 'Pro choice', 'Their keeper came out at you, so you squared it to your pivot. Open goal.'),
     4:  TOO_SAFE('Back, when you were through on goal?')
   },
-  lead: [[19, 9, 3, 3, 'Pro choice', "Their keeper came out at you, so you rolled it across in front of your pivot. Open goal.", '9']],
+  lead: [[18.6, 9.4, 4.2, 3, 'Pro choice', "Their keeper came out at you, so you rolled it across in front of your pivot. Open goal.", '9']],
   carry: [[30, 10, 3, 1, 'Into the keeper', 'Their keeper smothers it.']],
   shoot: P(1, 'Risky', 'The keeper is rushing out and covers most of the goal. Your 9 had an open net.'),
   elsewhere: P(1, 'Not quite', 'Your pivot is free. Use it.'),
@@ -489,12 +489,12 @@ const RIDDLES = [
   them: { 1:[25,3], 9:[22,62], 7:[12,66], 11:[33,32], 4:[21,28] },
   ball: { team: 'us', n: '11' },
   zones: [
-    [44, 30, 3.5, 3, 'Pro spot', 'You ran wide and forward. Now their two defenders have three of you to cover, and one of us is free.'],
+    [44.7, 30.7, 4.7, 3, 'Pro spot', 'You ran wide and forward. Now their two defenders have three of you to cover, and one of us is free.'],
     [30, 40, 2.6, 1, 'Too close', 'Right next to your 11, one defender can cover you both.'],
     [33, 48, 3, 1, 'Too deep', 'Behind the ball you are no help to the counter.']
   ],
   elsewhere: P(1, 'Not quite', 'Stay wide, and get forward.'),
-  best: { kind: 'move', at: [44, 30] } },
+  best: { kind: 'move', at: [44.7, 30.7] } },
 
 { ch: 5, type: 'ball', me: '7', title: 'Kick-in for the fixo', noCarry: true, restart: 'kickin',
   prompt: 'Kick-in to us on the right, near their area. Their players mark your 9 and 11. Your 4 is running up from behind.',

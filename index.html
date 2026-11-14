@@ -195,6 +195,16 @@ html.land .forms{grid-template-columns:repeat(6,minmax(0,1fr))}
 @media (max-width:370px){.modes a{padding:8px 4px 7px;font-size:14.5px}.score{padding:8px 7px 7px}}
 @media (max-width:340px){.modes a{padding:8px 3px 7px;font-size:13.5px}.rail{gap:4px}}
 html.land .modes a{padding:7px 7px 6px;font-size:15px}
+/* tab icons: beside the name on wide screens, above it on phones and in landscape */
+.modes a{display:flex;align-items:center;gap:6px}
+.modes svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.modes svg .f{fill:currentColor;stroke:none}
+@media (max-width:440px){.modes a{flex-direction:column;gap:3px;padding-top:6px;padding-bottom:5px}.modes svg{width:17px;height:17px}}
+html.land .modes a{flex-direction:column;gap:2px;padding-top:5px;padding-bottom:4px}
+html.land .modes svg{width:16px;height:16px}
+/* the Board's landscape side column is narrow: the four tabs sit two by two */
+html.land .modes{display:grid;grid-template-columns:1fr 1fr;gap:2px;align-self:stretch}
+html.land .modes a{justify-content:center}
 </style>
 </head>
 <body>
@@ -202,7 +212,7 @@ html.land .modes a{padding:7px 7px 6px;font-size:15px}
 <header class="rail">
   <div class="rail-main" id="railMain">
     <h1 class="sr">Tactics board</h1>
-    <nav class="modes" aria-label="Mode"><a href="./" aria-current="page">Board</a><a href="riddles.html">Puzzles</a><a href="learn.html">Learn</a><a href="riddles.html?futsal">Futsal</a></nav>
+    <nav class="modes" aria-label="Mode"><a href="./" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="M12 4.5v15M2.5 9.5h3v5h-3M21.5 9.5h-3v5h3"/><circle cx="12" cy="12" r="2.6"/></svg><span>Board</span></a><a href="riddles.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5h4a2.8 2.8 0 1 1 5.6 0h4v4a2.8 2.8 0 1 1 0 5.6v4h-13.6z"/></svg><span>Puzzles</span></a><a href="learn.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9.5l10-5 10 5-10 5z"/><path d="M6 11.6v4.4c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.4M22 9.5v5.5"/></svg><span>Learn</span></a><a href="riddles.html?futsal"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path class="f" d="M12 8.2l3.6 2.6-1.4 4.2h-4.4l-1.4-4.2z"/><path d="M12 8.2V2.8M15.6 10.8l5.2-1.7M14.2 15l3.2 4.4M9.8 15l-3.2 4.4M8.4 10.8l-5.2-1.7"/></svg><span>Futsal</span></a></nav>
     <button class="readout" id="readout" type="button" aria-label="Change lineups"></button>
   </div>
   <div class="rail-draw" id="railDraw" hidden>
