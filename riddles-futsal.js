@@ -4,11 +4,11 @@
    y 0-100 (their goal line at the top to ours at the bottom). Their posts are at x 21.25 and 28.75,
    their penalty area reaches 15 units (6 m) out, the 10 m mark is 25 units out. No offside.
    In the data, players are numbered like the 9v9 players who do the same job: 1 keeper, 4 the fixo
-   (the last player, who starts the attack), 11 and 7 the alas (left and right wingers), 9 the pivot
+   (the last player, who starts the attack), 11 and 7 the alas (left and right wingers), 9 the pivo
    (the target striker). Their players use the same numbers; their 7 plays on our left side, their 11
    on our right. On the court they're labeled GK, FIXO, ALA and PIVO, and the text names them by role. Left and
    right are as you see the court: our 11 and their 7 are the left alas, our 7 and their 11 the
-   right alas. We attack in a 3-1 (the fixo, two alas, the pivot) against their 1-2-1 or 2-2.
+   right alas. We attack in a 3-1 (the fixo, two alas, the pivo) against their 1-2-1 or 2-2.
 
    Answer format: see the top of riddles-6.js. Plays (motion) are at the bottom, matched by title. */
 (function () {
@@ -19,7 +19,7 @@ const CHAPTERS = [
   { name: 'Beat the press', blurb: 'Angles, the far side and the third man get the ball out.' },
   { name: 'Rotations', blurb: 'Keep moving so their defenders have to choose.' },
   { name: 'Switches', blurb: 'Move the ball faster than they can shift.' },
-  { name: 'The pivot', blurb: 'Play into the pivot and combine around it.' },
+  { name: 'The pivo', blurb: 'Play into the pivo and combine around it.' },
   { name: 'Create the shot', blurb: 'Make the space, then hit it early.' },
   { name: 'Counters and routines', blurb: 'Outnumber them, and plays that are planned.' }
 ];
@@ -35,9 +35,9 @@ const RIDDLES = [
   ball: '1',
   pass: {
     7:  P(3, 'Pro choice', 'Their press shifted to our left, so you threw it to the right ala on the free side. Now the right ala faces forward with space to run into.'),
-    4:  P(1, 'Risky', 'Their pivot is right on your fixo. That throw invites the steal right in front of our goal.'),
+    4:  P(1, 'Risky', 'Their pivo is right on your fixo. That throw invites the steal right in front of our goal.'),
     11: P(1, 'Marked', 'Their left ala is tight on your left ala, on the crowded side.'),
-    9:  P(1, 'Risky', 'A long throw to the pivot with their fixo right behind. The right ala was free and closer.')
+    9:  P(1, 'Risky', 'A long throw to the pivo with their fixo right behind. The right ala was free and closer.')
   },
   lead: [[44, 61, 5.6, 3, 'Pro choice', 'Their press shifted to our left, so you threw it into the space ahead of your right ala. The right ala runs onto it facing forward.', '7']],
   shoot: null,
@@ -52,14 +52,14 @@ const RIDDLES = [
   them: { 1:[25,3], 9:[17,46], 11:[33,46], 7:[14,30], 4:[25,23] },
   ball: '4',
   pass: {
-    11: P(1, 'They slide across', 'Their pivot is right there to slide over while the ball travels. Pull their pivot in first.'),
+    11: P(1, 'They slide across', 'Their pivo is right there to slide over while the ball travels. Pull their pivo in first.'),
     7:  P(1, 'They slide across', 'Their right ala is right there to slide over while the ball travels. Pull their right ala in first.'),
-    9:  P(1, 'Marked', 'Their fixo is tight behind your pivot, and both of their front two can drop onto the pivot.'),
+    9:  P(1, 'Marked', 'Their fixo is tight behind your pivo, and both of their front two can drop onto the pivo.'),
     1:  TOO_SAFE('Back to the keeper, when nobody was pressing you?')
   },
   carry: [
     [25, 52, 5.6, 3, 'Pro choice', 'Nobody pressed you, so you carried it into the gap between their front two. One of them has to step up to you, and the ala behind them is free.'],
-    [12, 58, 3.5, 1, 'Wrong way', 'You carried it toward your left ala, so their pivot can mark you both.'],
+    [12, 58, 3.5, 1, 'Wrong way', 'You carried it toward your left ala, so their pivo can mark you both.'],
     [38, 58, 3.5, 1, 'Wrong way', 'You carried it toward your right ala, so their right ala can mark you both.']
   ],
   shoot: null,
@@ -67,24 +67,24 @@ const RIDDLES = [
   best: { kind: 'carry', at: [25, 52] } },
 
 { ch: 0, type: 'ball', me: '4', title: 'The third man',
-  prompt: 'Their right ala blocks the pass to your right ala, and your left ala is marked. Your pivot has dropped short.',
+  prompt: 'Their right ala blocks the pass to your right ala, and your left ala is marked. Your pivo has dropped short.',
   hint: "If you can't reach the right ala, who can?",
   lesson: "Can't reach the free player? Play to the one who can. The third man arrives facing forward.",
   us:   { 1:[25,93], 4:[22,62], 11:[6,48], 9:[23,41], 7:[45,46] },
   them: { 1:[25,3], 9:[26,57], 7:[9,43], 11:[35,53], 4:[23,35] },
   ball: '4',
   pass: {
-    9:  P(3, 'Pro choice', "Their right ala blocked the pass to your right ala, so you played it into the pivot. The pivot lays it out to the right ala on the first touch: the third man."),
+    9:  P(3, 'Pro choice', "Their right ala blocked the pass to your right ala, so you played it into the pivo. The pivo lays it out to the right ala on the first touch: the third man."),
     7:  P(0, 'Intercepted', 'Their right ala is standing right in that lane.', { cut: '11' }),
     11: P(1, 'Marked', 'Their left ala is tight on your left ala.'),
-    1:  TOO_SAFE('Back to the keeper, when the pivot had come short for it.')
+    1:  TOO_SAFE('Back to the keeper, when the pivo had come short for it.')
   },
   shoot: null,
-  elsewhere: P(1, 'Not quite', 'The pivot dropped short for a reason. Use it.'),
+  elsewhere: P(1, 'Not quite', 'The pivo dropped short for a reason. Use it.'),
   best: { kind: 'pass', to: '9' } },
 
 { ch: 0, type: 'ball', me: '11', title: 'Down the line',
-  prompt: 'Their left ala presses you from the inside, and their pivot sits in the pass back to your fixo. Your pivot is sprinting down the line.',
+  prompt: 'Their left ala presses you from the inside, and their pivo sits in the pass back to your fixo. Your pivo is sprinting down the line.',
   hint: 'Their left ala came from the inside. Which way is open?',
   lesson: 'Pressed from the inside? Go down the line. A pass parallel to the sideline, into the run, beats the press.',
   us:   { 1:[25,93], 4:[25,62], 11:[5,50], 9:[13,30], 7:[44,40] },
@@ -92,35 +92,35 @@ const RIDDLES = [
   ball: '11',
   arrows: [{ team: 'us', from: [12, 28.5], to: [7, 22] }],
   pass: {
-    4:  P(0, 'Intercepted', 'Their pivot is sitting right in that lane.', { cut: '9' }),
-    9:  P(1, 'Behind the run', 'The pivot is running down the line. A pass to where the pivot was is behind the run.'),
-    7:  P(0, 'Intercepted', 'A long pass across their whole team. Their left ala or pivot gets there first.', { cut: '7' })
+    4:  P(0, 'Intercepted', 'Their pivo is sitting right in that lane.', { cut: '9' }),
+    9:  P(1, 'Behind the run', 'The pivo is running down the line. A pass to where the pivo was is behind the run.'),
+    7:  P(0, 'Intercepted', 'A long pass across their whole team. Their left ala or pivo gets there first.', { cut: '7' })
   },
-  lead: [[6, 22, 5.6, 3, 'Pro choice', 'Their left ala pressed from the inside, so you went down the line, into the space ahead of your pivot. One pass and the press is beaten.', '9']],
+  lead: [[6, 22, 5.6, 3, 'Pro choice', 'Their left ala pressed from the inside, so you went down the line, into the space ahead of your pivo. One pass and the press is beaten.', '9']],
   shoot: null,
   carry: [[6, 42, 3, 0, 'Trapped', 'Their left ala is right there, and the sideline is behind you. That ball is lost.']],
-  elsewhere: P(1, 'Not quite', 'Your pivot is running down the line. Find that run.'),
+  elsewhere: P(1, 'Not quite', 'Your pivo is running down the line. Find that run.'),
   best: { kind: 'pass', to: '9', at: [6, 22] } },
 
 { ch: 0, type: 'move', me: '4', title: 'Get an angle',
-  prompt: 'Your keeper has the ball. Their pivot is standing right between you and the keeper. Drag the fixo.',
+  prompt: 'Your keeper has the ball. Their pivo is standing right between you and the keeper. Drag the fixo.',
   hint: 'Can your keeper see you?',
   lesson: "If a defender is between you and the ball, you're hidden. Step sideways until there's a clear line.",
   us:   { 1:[25,93], 4:[25,69], 11:[6,70], 9:[25,48], 7:[44,70] },
   them: { 1:[25,3], 9:[25,77], 7:[10,64], 11:[40,64], 4:[25,42.5] },
   ball: { team: 'us', n: '1' },
   zones: [
-    [15, 80, 4.2, 3, 'Pro spot', 'You stepped out of their pivot’s shadow, to the side. Your keeper has a clear line to you, and their pivot can’t cover you and the keeper at once.'],
-    [35, 80, 4.2, 3, 'Pro spot', 'You stepped out of their pivot’s shadow, to the side. Your keeper has a clear line to you, and their pivot can’t cover you and the keeper at once.'],
-    [25, 69, 3, 1, 'Hidden', 'Their pivot is standing right in the line between you and your keeper.'],
-    [25, 86, 2.6, 1, 'Too close', 'Right next to your keeper, their pivot can press you both.']
+    [15, 80, 4.2, 3, 'Pro spot', 'You stepped out of their pivo’s shadow, to the side. Your keeper has a clear line to you, and their pivo can’t cover you and the keeper at once.'],
+    [35, 80, 4.2, 3, 'Pro spot', 'You stepped out of their pivo’s shadow, to the side. Your keeper has a clear line to you, and their pivo can’t cover you and the keeper at once.'],
+    [25, 69, 3, 1, 'Hidden', 'Their pivo is standing right in the line between you and your keeper.'],
+    [25, 86, 2.6, 1, 'Too close', 'Right next to your keeper, their pivo can press you both.']
   ],
-  elsewhere: P(1, 'Not quite', 'Step sideways, out from behind their pivot.'),
+  elsewhere: P(1, 'Not quite', 'Step sideways, out from behind their pivo.'),
   best: { kind: 'move', at: [15, 80] } },
 
 /* ---------------- 2. Rotations ---------------- */
 { ch: 1, type: 'move', me: '4', title: 'Pass and follow',
-  prompt: 'You just passed to your left ala. Their left ala is on your left ala, and their pivot is still close to you. Drag the fixo.',
+  prompt: 'You just passed to your left ala. Their left ala is on your left ala, and their pivo is still close to you. Drag the fixo.',
   hint: 'Two of you against one of them. Where?',
   lesson: "Passed it? Don't stand and watch. Follow your pass around the outside and make it two against one.",
   us:   { 1:[25,93], 4:[22,51], 11:[6,37], 9:[24,15], 7:[44,36] },
@@ -129,13 +129,13 @@ const RIDDLES = [
   zones: [
     [4, 24, 4.5, 3, 'Pro spot', 'You followed your pass around the outside. Now their left ala has two of you to stop: go with you, and your left ala cuts inside; stay, and you get the ball down the line.'],
     [22, 51, 3, 1, 'Stood still', "You passed and watched. Their left ala only has your left ala to worry about."],
-    [17, 30, 3, 0, 'Into the crowd', 'Their left ala, their pivot and their fixo are all in the middle. That run takes you into traffic.']
+    [17, 30, 3, 0, 'Into the crowd', 'Their left ala, their pivo and their fixo are all in the middle. That run takes you into traffic.']
   ],
   elsewhere: P(1, 'Not quite', 'Follow your pass, around the outside of your left ala.'),
   best: { kind: 'move', at: [4, 24] } },
 
 { ch: 1, type: 'move', me: '7', title: 'Fill the spot',
-  prompt: 'Your fixo just overlapped down the left. Nobody is in the fixo spot now, and their pivot is waiting for a counter. Drag the right ala.',
+  prompt: 'Your fixo just overlapped down the left. Nobody is in the fixo spot now, and their pivo is waiting for a counter. Drag the right ala.',
   hint: 'Who is guarding our goal if we lose it?',
   lesson: 'When a teammate leaves a spot, fill it. Someone always stays back to stop the counter.',
   us:   { 1:[25,93], 4:[4,25], 11:[9,36], 9:[24,14], 7:[44,32] },
@@ -143,8 +143,8 @@ const RIDDLES = [
   ball: { team: 'us', n: '11' },
   noPayoff: true,
   zones: [
-    [25, 54, 5.6, 3, 'Pro spot', 'Your fixo left the fixo spot, so you rotated into it. If we lose the ball, you are between their pivot and our goal. That is a rotation.'],
-    [44, 32, 3, 1, 'Stayed up', 'Four of us are up the field, and their pivot is alone in the middle. One bad pass and they are through.'],
+    [25, 54, 5.6, 3, 'Pro spot', 'Your fixo left the fixo spot, so you rotated into it. If we lose the ball, you are between their pivo and our goal. That is a rotation.'],
+    [44, 32, 3, 1, 'Stayed up', 'Four of us are up the field, and their pivo is alone in the middle. One bad pass and they are through.'],
     [34, 18, 3, 0, 'Even higher', 'Now nobody is back at all.']
   ],
   elsewhere: P(1, 'Not quite', 'Rotate back into the empty fixo spot.'),
@@ -166,24 +166,24 @@ const RIDDLES = [
   elsewhere: P(1, 'Not quite', 'Open up wide on the left, where your left ala was.'),
   best: { kind: 'move', at: [5, 40] } },
 
-{ ch: 1, type: 'move', me: '7', title: 'Swap with the pivot',
-  prompt: 'Your pivot dropped out wide on the right to get the ball, and their fixo went with the pivot. The middle in front of their goal is empty. Drag the right ala.',
-  hint: 'Your pivot left a space. Who fills it?',
-  lesson: 'When your pivot drops out, attack the space the pivot left. Swapping spots drags defenders where they don’t want to go.',
+{ ch: 1, type: 'move', me: '7', title: 'Swap with the pivo',
+  prompt: 'Your pivo dropped out wide on the right to get the ball, and their fixo went with the pivo. The middle in front of their goal is empty. Drag the right ala.',
+  hint: 'Your pivo left a space. Who fills it?',
+  lesson: 'When your pivo drops out, attack the space the pivo left. Swapping spots drags defenders where they don’t want to go.',
   us:   { 1:[25,93], 4:[28,52], 11:[6,36], 9:[39,24], 7:[45,40] },
   them: { 1:[25,3], 9:[20,43], 7:[10,31], 11:[40,34], 4:[36,19] },
   ball: { team: 'us', n: '4' },
   arrows: [{ team: 'us', from: [28, 15], to: [37, 22.5] }, { team: 'them', from: [27, 12], to: [34.5, 18] }],
   zones: [
-    [24, 15, 4.9, 3, 'Pro spot', 'Your pivot pulled their fixo out wide, so you ran into the space the pivot left, right in front of their goal.'],
+    [24, 15, 4.9, 3, 'Pro spot', 'Your pivo pulled their fixo out wide, so you ran into the space the pivo left, right in front of their goal.'],
     [45, 40, 3, 1, 'Stayed wide', 'Now two of us are on the right sideline, and the middle is still empty.'],
-    [40, 32, 2.6, 0, 'Into the crowd', 'Your pivot, their fixo and their right ala are already there.']
+    [40, 32, 2.6, 0, 'Into the crowd', 'Your pivo, their fixo and their right ala are already there.']
   ],
-  elsewhere: P(1, 'Not quite', 'Run into the space your pivot left.'),
+  elsewhere: P(1, 'Not quite', 'Run into the space your pivo left.'),
   best: { kind: 'move', at: [24, 15] } },
 
 { ch: 1, type: 'move', me: '9', title: 'Clear the space',
-  prompt: 'Your left ala is dribbling in from the left to shoot. You are standing in front of the left ala, and their fixo is right next to you. Drag the pivot.',
+  prompt: 'Your left ala is dribbling in from the left to shoot. You are standing in front of the left ala, and their fixo is right next to you. Drag the pivo.',
   hint: 'Who is blocking your left ala’s shot?',
   lesson: 'Sometimes the best run takes you away from the ball. Clear out, and your defender goes with you.',
   us:   { 1:[25,93], 4:[25,48], 11:[16,24], 9:[21,15], 7:[44,30] },
@@ -209,8 +209,8 @@ const RIDDLES = [
   ball: '4',
   pass: {
     7:  P(3, 'Pro choice', 'Their team shifted to our left, so you switched it straight to your right ala. The right ala has the whole right side to attack.'),
-    11: P(1, 'Back into the crowd', 'Their left ala and pivot are right there.'),
-    9:  P(1, 'Marked', 'Their fixo is tight on your pivot, and their right ala can drop on the pivot too.'),
+    11: P(1, 'Back into the crowd', 'Their left ala and pivo are right there.'),
+    9:  P(1, 'Marked', 'Their fixo is tight on your pivo, and their right ala can drop on the pivo too.'),
     1:  TOO_SAFE('Back to the keeper, when your right ala was alone on the right?')
   },
   lead: [[46, 25, 5.6, 3, 'Pro choice', 'Their team shifted to our left, so you switched it into the space ahead of your right ala.', '7']],
@@ -219,21 +219,21 @@ const RIDDLES = [
   elsewhere: P(1, 'Not quite', 'They are all on the left. Switch it.'),
   best: { kind: 'pass', to: '7' } },
 
-{ ch: 2, type: 'ball', me: '11', title: 'Into the pivot',
-  prompt: 'You have the ball on the left. Your pivot has got in front of their fixo, on your side. Your fixo is behind you.',
+{ ch: 2, type: 'ball', me: '11', title: 'Into the pivo',
+  prompt: 'You have the ball on the left. Your pivo has got in front of their fixo, on your side. Your fixo is behind you.',
   hint: 'Which pass skips the most defenders?',
-  lesson: 'The diagonal into the pivot skips their whole midfield. Play it when the pivot is on your side of the defender.',
+  lesson: 'The diagonal into the pivo skips their whole midfield. Play it when the pivo is on your side of the defender.',
   us:   { 1:[25,93], 4:[24,49], 11:[6,33], 9:[19,16], 7:[45,28] },
   them: { 1:[25,3], 9:[25,40], 7:[10.5,37], 11:[39,24], 4:[22.5,11.5] },
   ball: '11',
   pass: {
-    9:  P(3, 'Pro choice', 'Your pivot was on your side of their fixo, so you played the diagonal into the pivot. One pass skipped their left ala and their pivot, and now the pivot can lay it off or turn.'),
-    4:  TOO_SAFE('Safe, but the diagonal into the pivot was on.'),
+    9:  P(3, 'Pro choice', 'Your pivo was on your side of their fixo, so you played the diagonal into the pivo. One pass skipped their left ala and their pivo, and now the pivo can lay it off or turn.'),
+    4:  TOO_SAFE('Safe, but the diagonal into the pivo was on.'),
     7:  P(0, 'Intercepted', 'A long ball across the whole court. Their fixo or their right ala cuts it out.', { cut: '4' })
   },
-  carry: [[7, 22, 3, 1, 'Into the corner', 'Down the line toward the corner, their fixo can slide across, and the pass to the pivot is gone.']],
+  carry: [[7, 22, 3, 1, 'Into the corner', 'Down the line toward the corner, their fixo can slide across, and the pass to the pivo is gone.']],
   shoot: P(0, 'No angle', 'From out wide, their keeper covers that easily.'),
-  elsewhere: P(1, 'Not quite', 'Look inside for your pivot.'),
+  elsewhere: P(1, 'Not quite', 'Look inside for your pivo.'),
   best: { kind: 'pass', to: '9' } },
 
 { ch: 2, type: 'ball', me: '7', title: 'Switch and shoot',
@@ -245,7 +245,7 @@ const RIDDLES = [
   ball: '7',
   arrows: [{ team: 'them', from: [26, 29], to: [30.5, 27] }],
   pass: {
-    9:  P(1, 'Marked', 'Their fixo is right on your pivot. You had the shot.'),
+    9:  P(1, 'Marked', 'Their fixo is right on your pivo. You had the shot.'),
     4:  TOO_SAFE('Back to the fixo, after the switch had opened the shot?'),
     11: P(0, 'Intercepted', 'Back across their whole team.', { cut: '9' })
   },
@@ -255,7 +255,7 @@ const RIDDLES = [
   best: { kind: 'shoot' } },
 
 { ch: 2, type: 'move', me: '7', title: 'Wait on the far side',
-  prompt: 'Your left ala, fixo and pivot are combining on the left, and their whole team went with them. You drifted inside. Drag the right ala.',
+  prompt: 'Your left ala, fixo and pivo are combining on the left, and their whole team went with them. You drifted inside. Drag the right ala.',
   hint: 'Where will the switch go?',
   lesson: "Ball on the other side? Stay wide and wait. If you come over, there's nobody to switch to.",
   us:   { 1:[25,93], 4:[18,48], 11:[6,34], 9:[16,18], 7:[30,30] },
@@ -270,7 +270,7 @@ const RIDDLES = [
   best: { kind: 'move', at: [45, 28] } },
 
 { ch: 2, type: 'move', me: '7', title: 'Far post run',
-  prompt: 'Your left ala is at the end line on the left. Your pivot is at the near post with their fixo. Drag the right ala.',
+  prompt: 'Your left ala is at the end line on the left. Your pivo is at the near post with their fixo. Drag the right ala.',
   hint: 'Where does a low ball across the goal end up?',
   lesson: 'Ball on the far wing? Attack the far post. In futsal, the far post run scores more than any other.',
   us:   { 1:[25,93], 4:[25,42], 11:[9,7], 9:[22.5,12.5], 7:[42,24] },
@@ -279,12 +279,12 @@ const RIDDLES = [
   zones: [
     [31, 6, 3, 3, 'Pro spot', 'The ball was on the far wing, so you attacked the far post. The low ball across the goal goes past everyone and finds you.'],
     [42, 24, 3, 1, 'Watching', 'From out there you can’t reach anything across the goal.'],
-    [23, 13, 2.6, 0, 'Too crowded', 'Your pivot, their fixo and their keeper are all there.']
+    [23, 13, 2.6, 0, 'Too crowded', 'Your pivo, their fixo and their keeper are all there.']
   ],
   elsewhere: P(1, 'Not quite', 'Get to the far post.'),
   best: { kind: 'move', at: [31, 6] } },
 
-/* ---------------- 4. The pivot ---------------- */
+/* ---------------- 4. The pivo ---------------- */
 { ch: 3, type: 'ball', me: '9', title: 'Lay it off', facing: 'back',
   prompt: 'You got the ball with your back to goal. Their fixo is right behind you, and your left ala is running in from the left.',
   hint: 'Who can face the goal?',
@@ -305,16 +305,16 @@ const RIDDLES = [
   best: { kind: 'pass', to: '11' } },
 
 { ch: 3, type: 'move', me: '11', title: 'The one-two',
-  prompt: 'You just played it into your pivot, who came short. Their left ala is still between you and their goal. Drag the left ala.',
-  hint: 'Your pivot can give it straight back. Where?',
-  lesson: 'Pass into the pivot and go. The one-two gets you behind your defender in two touches.',
+  prompt: 'You just played it into your pivo, who came short. Their left ala is still between you and their goal. Drag the left ala.',
+  hint: 'Your pivo can give it straight back. Where?',
+  lesson: 'Pass into the pivo and go. The one-two gets you behind your defender in two touches.',
   us:   { 1:[25,93], 4:[26,52], 11:[6,42], 9:[18,37], 7:[44,32] },
   them: { 1:[25,3], 9:[29,44], 7:[9.5,36], 11:[38,27], 4:[19,31] },
   ball: { team: 'us', n: '9' },
   zones: [
-    [6, 24, 4.5, 3, 'Pro spot', 'You passed into the pivot and ran past their left ala, down the line. The pivot gives it straight back, and you are in behind.'],
+    [6, 24, 4.5, 3, 'Pro spot', 'You passed into the pivo and ran past their left ala, down the line. The pivo gives it straight back, and you are in behind.'],
     [6, 42, 3, 1, 'Stood still', 'You passed and watched. Their left ala is still in front of you.'],
-    [13, 33, 2.6, 0, 'Into the crowd', 'You ran toward the pivot, right into their left ala and their fixo.']
+    [13, 33, 2.6, 0, 'Into the crowd', 'You ran toward the pivo, right into their left ala and their fixo.']
   ],
   elsewhere: P(1, 'Not quite', 'Go past their left ala, into the space behind.'),
   best: { kind: 'move', at: [6, 24] } },
@@ -342,7 +342,7 @@ const RIDDLES = [
 { ch: 3, type: 'ball', me: '9', title: 'Set up the fixo', facing: 'back',
   prompt: 'You have it with your back to goal. Their defenders all closed in on you and the alas. Your fixo is running up behind you, unmarked.',
   hint: 'Who is free, and facing the goal?',
-  lesson: 'When they collapse on the pivot, the fixo arriving from behind is free. Lay it back for the first-time shot.',
+  lesson: 'When they collapse on the pivo, the fixo arriving from behind is free. Lay it back for the first-time shot.',
   us:   { 1:[25,93], 4:[31,35], 11:[7,24], 9:[25,18], 7:[43,24] },
   them: { 1:[25,3], 9:[25,45], 7:[11,21], 11:[39,21], 4:[25,13.5] },
   ball: '9',
@@ -359,19 +359,19 @@ const RIDDLES = [
   best: { kind: 'pass', to: '4' } },
 
 { ch: 3, type: 'move', me: '9', title: 'Show for it',
-  prompt: 'Your fixo has the ball and wants to play it into you. Their pivot is standing right between you and your fixo. Drag the pivot.',
+  prompt: 'Your fixo has the ball and wants to play it into you. Their pivo is standing right between you and your fixo. Drag the pivo.',
   hint: 'Can your fixo see you?',
-  lesson: "A pivot nobody can pass to is no use. Get out from behind their midfielder so there's a clear line.",
+  lesson: "A pivo nobody can pass to is no use. Get out from behind their midfielder so there's a clear line.",
   us:   { 1:[25,93], 4:[25,57], 11:[6,40], 9:[25,27], 7:[44,40] },
   them: { 1:[25,3], 9:[25,43], 7:[12,33], 11:[38,33], 4:[25,21] },
   ball: { team: 'us', n: '4' },
   zones: [
-    [17.5, 26, 3, 3, 'Pro spot', 'You slid out from behind their pivot. Your fixo has a clear line into you, and their fixo has to decide whether to follow.'],
-    [32.5, 26, 3, 3, 'Pro spot', 'You slid out from behind their pivot. Your fixo has a clear line into you, and their fixo has to decide whether to follow.'],
-    [25, 27, 3, 1, 'Hidden', 'Their pivot is right in the line between you and your fixo.'],
-    [25, 49, 2.6, 0, 'Too deep', 'You came all the way back, right next to their pivot. Now nobody is up front.']
+    [17.5, 26, 3, 3, 'Pro spot', 'You slid out from behind their pivo. Your fixo has a clear line into you, and their fixo has to decide whether to follow.'],
+    [32.5, 26, 3, 3, 'Pro spot', 'You slid out from behind their pivo. Your fixo has a clear line into you, and their fixo has to decide whether to follow.'],
+    [25, 27, 3, 1, 'Hidden', 'Their pivo is right in the line between you and your fixo.'],
+    [25, 49, 2.6, 0, 'Too deep', 'You came all the way back, right next to their pivo. Now nobody is up front.']
   ],
-  elsewhere: P(1, 'Not quite', 'Step sideways, out from behind their pivot.'),
+  elsewhere: P(1, 'Not quite', 'Step sideways, out from behind their pivo.'),
   best: { kind: 'move', at: [17.5, 26] } },
 
 /* ---------------- 5. Create the shot ---------------- */
@@ -402,7 +402,7 @@ const RIDDLES = [
   ball: '11',
   arrows: [{ team: 'us', from: [27, 32], to: [26, 26] }],
   pass: {
-    9:  P(1, 'Marked', 'Their fixo is right on your pivot at the near post.'),
+    9:  P(1, 'Marked', 'Their fixo is right on your pivo at the near post.'),
     7:  P(0, 'Intercepted', 'Across the goal, right past their keeper and their fixo.', { cut: '4' }),
     4:  P(2, 'Good', "Right player, but your fixo is running in. Put it into the space the fixo is running into.")
   },
@@ -421,7 +421,7 @@ const RIDDLES = [
   arrows: [{ team: 'us', from: [6, 42], to: [4.5, 37] }, { team: 'them', from: [14, 22], to: [13.3, 24.8] }],
   pass: {
     4:  P(2, 'Good', 'Right idea, but your fixo is running. Put it in front of the fixo, down the line.'),
-    9:  P(1, 'Marked', 'Their fixo is right on your pivot.'),
+    9:  P(1, 'Marked', 'Their fixo is right on your pivo.'),
     7:  P(0, 'Intercepted', 'A long ball across the whole court.', { cut: '9' })
   },
   lead: [[5, 20, 4, 3, 'Pro choice', 'Their left ala stepped to you, so you slipped it down the line for your fixo. Two against one, and the fixo is in behind.', '4']],
@@ -431,7 +431,7 @@ const RIDDLES = [
   best: { kind: 'pass', to: '4', at: [5, 20] } },
 
 { ch: 4, type: 'move', me: '4', title: 'Arrive late',
-  prompt: 'Your left ala is at the end line on the left. Your pivot is at the near post and your right ala at the far post. Drag the fixo.',
+  prompt: 'Your left ala is at the end line on the left. Your pivo is at the near post and your right ala at the far post. Drag the fixo.',
   hint: 'Where is the space nobody is in?',
   lesson: 'When everyone runs at the goal, arrive late at the top of the area. The cut-back finds you with time to shoot.',
   us:   { 1:[25,93], 4:[25,46], 11:[9,6], 9:[22.5,10], 7:[33,7] },
@@ -446,7 +446,7 @@ const RIDDLES = [
   best: { kind: 'move', at: [25.7, 20.3] } },
 
 { ch: 4, type: 'ball', me: '7', title: 'Square it',
-  prompt: 'You are through on goal. Their keeper is rushing out at you, and your pivot is running alongside you.',
+  prompt: 'You are through on goal. Their keeper is rushing out at you, and your pivo is running alongside you.',
   hint: 'Who has the easier finish?',
   lesson: 'Two against the keeper: make the keeper commit, then square it for the tap-in.',
   us:   { 1:[25,93], 4:[25,55], 11:[8,40], 9:[18,15], 7:[31,15] },
@@ -454,18 +454,18 @@ const RIDDLES = [
   ball: '7',
   arrows: [{ team: 'them', from: [26, 4], to: [27.5, 7] }],
   pass: {
-    9:  P(3, 'Pro choice', 'Their keeper came out at you, so you squared it to your pivot. Open goal.'),
+    9:  P(3, 'Pro choice', 'Their keeper came out at you, so you squared it to your pivo. Open goal.'),
     4:  TOO_SAFE('Back, when you were through on goal?')
   },
-  lead: [[18.6, 9.4, 4.2, 3, 'Pro choice', "Their keeper came out at you, so you rolled it across in front of your pivot. Open goal.", '9']],
+  lead: [[18.6, 9.4, 4.2, 3, 'Pro choice', "Their keeper came out at you, so you rolled it across in front of your pivo. Open goal.", '9']],
   carry: [[30, 10, 3, 1, 'Into the keeper', 'Their keeper smothers it.']],
-  shoot: P(1, 'Risky', 'The keeper is rushing out and covers most of the goal. Your pivot had an open net.'),
-  elsewhere: P(1, 'Not quite', 'Your pivot is free. Use it.'),
+  shoot: P(1, 'Risky', 'The keeper is rushing out and covers most of the goal. Your pivo had an open net.'),
+  elsewhere: P(1, 'Not quite', 'Your pivo is free. Use it.'),
   best: { kind: 'pass', to: '9' } },
 
 /* ---------------- 6. Counters and routines ---------------- */
 { ch: 5, type: 'ball', me: '11', title: 'Two against one',
-  prompt: 'Counterattack! Only their fixo is back, and your pivot is with you. Their fixo just stepped toward you.',
+  prompt: 'Counterattack! Only their fixo is back, and your pivo is with you. Their fixo just stepped toward you.',
   hint: 'Their fixo chose you.',
   lesson: 'On a two-against-one, draw the defender, then pass. The defender can only stop one of you.',
   us:   { 1:[25,93], 4:[24,64], 11:[16,40], 9:[33,38], 7:[42,58] },
@@ -473,18 +473,18 @@ const RIDDLES = [
   ball: '11',
   arrows: [{ team: 'them', from: [23, 26], to: [21.5, 30.5] }],
   pass: {
-    9:  P(2, 'Good', 'Right player, but the pivot is running. Put it in front of the pivot.'),
-    4:  P(0, 'Intercepted', 'Back toward your fixo, right into their pivot chasing back.', { cut: '9' }),
+    9:  P(2, 'Good', 'Right player, but the pivo is running. Put it in front of the pivo.'),
+    4:  P(0, 'Intercepted', 'Back toward your fixo, right into their pivo chasing back.', { cut: '9' }),
     7:  TOO_SAFE('Back to the right ala, with two of you against one?')
   },
-  lead: [[33, 26, 4, 3, 'Pro choice', 'Their fixo stepped to you, so you slipped it into the space ahead of your pivot. The pivot is through.', '9']],
+  lead: [[33, 26, 4, 3, 'Pro choice', 'Their fixo stepped to you, so you slipped it into the space ahead of your pivo. The pivo is through.', '9']],
   carry: [[20, 31, 3, 0, 'Into their fixo', 'You ran straight into the only defender.'], [10, 28, 3, 1, 'Too wide', 'Their fixo shows you wide, away from goal.']],
   shoot: P(0, 'Too far', 'Way too far, with two of you against one.'),
-  elsewhere: P(1, 'Not quite', 'Their fixo came to you. Find your pivot.'),
+  elsewhere: P(1, 'Not quite', 'Their fixo came to you. Find your pivo.'),
   best: { kind: 'pass', to: '9', at: [33, 26] } },
 
 { ch: 5, type: 'move', me: '7', title: 'Three against two',
-  prompt: 'Counterattack! Your left ala is dribbling up the middle, your pivot is on the left, and two of theirs are back. Drag the right ala.',
+  prompt: 'Counterattack! Your left ala is dribbling up the middle, your pivo is on the left, and two of theirs are back. Drag the right ala.',
   hint: 'How do three beat two?',
   lesson: 'On a three-against-two, stay wide. Stretch their last two defenders until one of us is free.',
   us:   { 1:[25,93], 4:[25,70], 11:[25,42], 9:[10,36], 7:[33,48] },
@@ -499,7 +499,7 @@ const RIDDLES = [
   best: { kind: 'move', at: [44.7, 30.7] } },
 
 { ch: 5, type: 'ball', me: '7', title: 'Kick-in for the fixo', noCarry: true, restart: 'kickin',
-  prompt: 'Kick-in to us on the right, near their area. Their players mark your pivot and left ala. Your fixo is running up from behind.',
+  prompt: 'Kick-in to us on the right, near their area. Their players mark your pivo and left ala. Your fixo is running up from behind.',
   hint: 'Who is free, and arriving facing the goal?',
   lesson: 'On a kick-in, the late runner from behind is usually free. Play it into the run for a first-time shot.',
   us:   { 1:[25,93], 4:[34,40], 11:[8,18], 9:[26,13], 7:[51.8,24.5] },
@@ -507,11 +507,11 @@ const RIDDLES = [
   ball: '7', ballAt: [50, 22],
   arrows: [{ team: 'us', from: [34, 42], to: [32.5, 36] }],
   pass: {
-    9:  P(1, 'Marked', 'Their fixo is right on your pivot.'),
+    9:  P(1, 'Marked', 'Their fixo is right on your pivo.'),
     11: P(0, 'Intercepted', 'A kick-in across the whole area. Their fixo or keeper gets it.', { cut: '4' }),
     4:  P(2, 'Good', 'Right player, but your fixo is running in. Put it into the run.')
   },
-  lead: [[30, 28, 3.5, 3, 'Pro choice', 'Their players marked the pivot and the left ala, so you played it into your fixo, arriving from behind for a first-time shot.', '4']],
+  lead: [[30, 28, 3.5, 3, 'Pro choice', 'Their players marked the pivo and the left ala, so you played it into your fixo, arriving from behind for a first-time shot.', '4']],
   shoot: null,
   elsewhere: P(1, 'Not quite', 'Find the runner arriving from behind.'),
   best: { kind: 'pass', to: '4', at: [30, 28] } },
@@ -525,8 +525,8 @@ const RIDDLES = [
   ball: '11', ballAt: CORNER_L,
   arrows: [{ team: 'us', from: [39, 15], to: [35, 8] }],
   pass: {
-    9:  P(1, 'Marked', 'Their fixo and keeper are right on your pivot at the near post.'),
-    4:  P(1, 'Marked', 'Their pivot is right on your fixo at the top of the area.'),
+    9:  P(1, 'Marked', 'Their fixo and keeper are right on your pivo at the near post.'),
+    4:  P(1, 'Marked', 'Their pivo is right on your fixo at the top of the area.'),
     7:  P(2, 'Good', 'Right player, but the right ala is moving. Put it at the far post, in front of the run.')
   },
   lead: [[31, 5, 3, 3, 'Pro choice', 'Their defenders crowded the near post, so you whipped it across to the far post, right into your right ala’s run.', '7']],
@@ -535,19 +535,19 @@ const RIDDLES = [
   best: { kind: 'pass', to: '7', at: [31, 5] } },
 
 { ch: 5, type: 'ball', me: '4', title: 'Power play',
-  prompt: 'Your keeper came up to be the fifth attacker: five of us against four. Their pivot and their left ala are on you and your left ala.',
+  prompt: 'Your keeper came up to be the fifth attacker: five of us against four. Their pivo and their left ala are on you and your left ala.',
   hint: 'Five against four means one of us is always free.',
   lesson: 'In a power play, move the ball fast across the top. The free player is always on the far side.',
   us:   { 1:[33,38], 4:[14,36], 11:[5,20], 9:[25,13], 7:[45,20] },
   them: { 1:[25,3], 9:[20,32], 7:[11,24], 11:[37,25], 4:[25,8.5] },
   ball: '4',
   pass: {
-    1:  P(3, 'Pro choice', 'Their pivot and left ala were on you and your left ala, so you moved it across to your keeper at the top. Now their right ala has to choose between the keeper and your right ala.'),
+    1:  P(3, 'Pro choice', 'Their pivo and left ala were on you and your left ala, so you moved it across to your keeper at the top. Now their right ala has to choose between the keeper and your right ala.'),
     11: P(1, 'Marked', 'Their left ala is right on your left ala.'),
     9:  P(0, 'Intercepted', 'Through the middle of their diamond.', { cut: '9' }),
-    7:  P(0, 'Intercepted', 'A long ball right across their pivot.', { cut: '9' })
+    7:  P(0, 'Intercepted', 'A long ball right across their pivo.', { cut: '9' })
   },
-  carry: [[18, 30, 3, 0, 'Into their pivot', 'Their pivot is right there.']],
+  carry: [[18, 30, 3, 0, 'Into their pivo', 'Their pivo is right there.']],
   shoot: P(0, 'Blocked', 'Through their whole diamond? It hits a defender.'),
   elsewhere: P(1, 'Not quite', 'Move it across the top, to the free player.'),
   best: { kind: 'pass', to: '1' } }
@@ -570,9 +570,9 @@ const MOTION = {
         sub: 'Their press was all on our left, so you threw it into the space ahead of your right ala, who runs at them with the whole right side open.', cam: C([38, 56], 1.3), wait: 1.2 }],
       7: [{ t: 1.1, us: { 7: [43, 59] }, face: { 'us:7': 'up' }, tag: { 'us:7': GOOD('FACING FORWARD') }, head: 'Throw to the free side',
         sub: 'Their press was all on our left, so you threw it to the right ala on the free side. The right ala turns and runs.', cam: C([40, 62], 1.35), wait: 1.2 }],
-      4: steal('4', '9', [21.5, 78.5], 'Pressed', 'Their pivot jumps on your fixo, right in front of our goal.'),
+      4: steal('4', '9', [21.5, 78.5], 'Pressed', 'Their pivo jumps on your fixo, right in front of our goal.'),
       11: steal('11', '7', [7, 69.5], 'Marked', 'Their left ala is tight on your left ala, on the crowded side.'),
-      9: steal('9', '4', [26, 47.5], 'Risky', 'A long throw to the pivot with their fixo right behind. The right ala was free and closer.')
+      9: steal('9', '4', [26, 47.5], 'Risky', 'A long throw to the pivo with their fixo right behind. The right ala was free and closer.')
     } },
 
   'Fix the defender': {
@@ -586,11 +586,11 @@ const MOTION = {
       carry0: [{ t: .9, them: { 9: [21.5, 49] }, tag: { 'them:9': 'STEPS IN' }, head: 'Fix the defender', sub: 'You carried it at the gap, so one of them has to step up to you…',
           cam: C([20, 50], 1.4) },
         { t: 1, pass: 'us:11', us: { 11: [6, 47] }, tag: { 'us:11': GOOD('FREE') }, head: 'Fix the defender', sub: '…and the ala they left is free.', wait: 1.2 }],
-      carry1: [{ t: .9, them: { 9: [12.5, 53] }, tag: { 'them:9': 'MARKS BOTH' }, head: 'Wrong way', sub: 'You carried it toward your left ala, so their pivot can mark you both.', cam: C([11, 54], 1.55), wait: 1.2 }],
+      carry1: [{ t: .9, them: { 9: [12.5, 53] }, tag: { 'them:9': 'MARKS BOTH' }, head: 'Wrong way', sub: 'You carried it toward your left ala, so their pivo can mark you both.', cam: C([11, 54], 1.55), wait: 1.2 }],
       carry2: [{ t: .9, them: { 11: [37.5, 53] }, tag: { 'them:11': 'MARKS BOTH' }, head: 'Wrong way', sub: 'You carried it toward your right ala, so their right ala can mark you both.', cam: C([39, 54], 1.55), wait: 1.2 }],
-      11: [{ t: .9, them: { 9: [9.5, 49] }, tag: { 'them:9': 'PRESS' }, head: 'They slide across', sub: 'Their pivot slid over while the ball travelled. Pull their pivot in first.', cam: C([9, 50], 1.55), wait: 1.2 }],
+      11: [{ t: .9, them: { 9: [9.5, 49] }, tag: { 'them:9': 'PRESS' }, head: 'They slide across', sub: 'Their pivo slid over while the ball travelled. Pull their pivo in first.', cam: C([9, 50], 1.55), wait: 1.2 }],
       7: [{ t: .9, them: { 11: [40.5, 49] }, tag: { 'them:11': 'PRESS' }, head: 'They slide across', sub: 'Their right ala slid over while the ball travelled. Pull their right ala in first.', cam: C([41, 50], 1.55), wait: 1.2 }],
-      9: steal('9', '4', [25, 25.5], 'Marked', 'Their fixo is tight behind your pivot.'),
+      9: steal('9', '4', [25, 25.5], 'Marked', 'Their fixo is tight behind your pivo.'),
       1: say('Too safe', 'Back to the keeper, when nobody was pressing you?', C([25, 80], 1.35))
     } },
 
@@ -599,13 +599,13 @@ const MOTION = {
       cam: C([24, 66], 1.4),
       steps: [
         { t: 1.6, pass: 'us:4', pd: .1, us: { 4: [22, 62], 9: [23, 41], 11: [6, 48], 7: [45, 46] }, them: { 4: [23, 35], 11: [35, 53], 9: [26, 57], 7: [9, 43] },
-          tag: { 'them:11': 'IN THE LANE' }, head: 'Your pivot drops short', sub: 'Their right ala blocks the pass to your right ala, and your left ala is marked.', cam: C([28, 52], 1.3) },
+          tag: { 'them:11': 'IN THE LANE' }, head: 'Your pivo drops short', sub: 'Their right ala blocks the pass to your right ala, and your left ala is marked.', cam: C([28, 52], 1.3) },
         { t: 1, cam: W_, head: '' }] },
     after: {
       9: [{ t: 1.1, pass: 'us:7', pd: .15, us: { 7: [44, 39] }, face: { 'us:7': 'up' }, tag: { 'us:7': GOOD('THE THIRD MAN'), 'them:11': 'BYPASSED' }, head: 'The third man',
-        sub: 'Their right ala blocked the pass to your right ala, so you played it into the pivot, who laid it out first time. The right ala arrives facing forward.', cam: C([38, 44], 1.35), wait: 1.2 }],
+        sub: 'Their right ala blocked the pass to your right ala, so you played it into the pivo, who laid it out first time. The right ala arrives facing forward.', cam: C([38, 44], 1.35), wait: 1.2 }],
       11: steal('11', '7', [8, 45.5], 'Marked', 'Their left ala is tight on your left ala.'),
-      1: say('Too safe', 'Back to the keeper, when the pivot had come short for it.', C([25, 80], 1.35))
+      1: say('Too safe', 'Back to the keeper, when the pivo had come short for it.', C([25, 80], 1.35))
     } },
 
   'Down the line': {
@@ -613,13 +613,13 @@ const MOTION = {
       cam: C([12, 48], 1.45),
       steps: [
         { t: 1.5, us: { 11: [5, 50], 9: [13, 30] }, them: { 7: [10.5, 46], 9: [15, 56], 4: [21, 24] }, tag: { 'them:7': 'PRESS' },
-          head: 'Their left ala presses you from the inside', sub: 'Their pivot sits in the pass back to your fixo, and your pivot is running down the line.', cam: C([12, 44], 1.4) },
+          head: 'Their left ala presses you from the inside', sub: 'Their pivo sits in the pass back to your fixo, and your pivo is running down the line.', cam: C([12, 44], 1.4) },
         { t: 1, cam: W_, head: '' }] },
     after: {
       lead0: [{ t: 1.1, us: { 9: [12, 13] }, them: { 4: [17, 17] }, tag: { 'us:9': GOOD('IN BEHIND') }, head: 'Down the line',
           sub: 'Their left ala pressed from the inside, so you went down the line. One pass, and the press is beaten…', cam: C([13, 20], 1.45) },
-        { t: .5, shot: [27.5, -1], head: 'Down the line', sub: '…and your pivot is in on goal.', wait: 1.1 }],
-      9: steal('9', '4', [15.5, 27.5], 'Behind the run', 'The pivot had to stop for it, and their fixo got there. Put it into the space ahead of the run.'),
+        { t: .5, shot: [27.5, -1], head: 'Down the line', sub: '…and your pivo is in on goal.', wait: 1.1 }],
+      9: steal('9', '4', [15.5, 27.5], 'Behind the run', 'The pivo had to stop for it, and their fixo got there. Put it into the space ahead of the run.'),
       carry0: steal('11', '7', [8.5, 44.5], 'Trapped', 'Their left ala is right there, and the sideline is behind you.')
     } },
 
@@ -628,15 +628,15 @@ const MOTION = {
       cam: C([25, 76], 1.5),
       steps: [
         { t: 1.5, us: { 4: [25, 69], 11: [6, 70], 7: [44, 70] }, them: { 9: [25, 77], 7: [10, 64], 11: [40, 64] }, marks: [{ s: ['them:9', 'us:1'], len: 12 }],
-          head: 'Your keeper has the ball', sub: 'Their pivot steps right into the line between you and the keeper.', cam: C([25, 78], 1.45), wait: .4 },
+          head: 'Your keeper has the ball', sub: 'Their pivo steps right into the line between you and the keeper.', cam: C([25, 78], 1.45), wait: .4 },
         { t: 1, cam: W_, head: '', marks: [] }] },
     after: {
-      zone0: [{ t: 1, us: { 4: [15, 73] }, tag: { 'us:4': GOOD('OPEN') }, head: 'Get an angle', sub: "You stepped out of their pivot's shadow, so your keeper found you. Now you face forward with the ball.",
+      zone0: [{ t: 1, us: { 4: [15, 73] }, tag: { 'us:4': GOOD('OPEN') }, head: 'Get an angle', sub: "You stepped out of their pivo's shadow, so your keeper found you. Now you face forward with the ball.",
         cam: C([18, 76], 1.45), wait: 1.2 }],
-      zone1: [{ t: 1, us: { 4: [35, 73] }, tag: { 'us:4': GOOD('OPEN') }, head: 'Get an angle', sub: "You stepped out of their pivot's shadow, so your keeper found you. Now you face forward with the ball.",
+      zone1: [{ t: 1, us: { 4: [35, 73] }, tag: { 'us:4': GOOD('OPEN') }, head: 'Get an angle', sub: "You stepped out of their pivo's shadow, so your keeper found you. Now you face forward with the ball.",
         cam: C([32, 76], 1.45), wait: 1.2 }],
-      zone2: say('Hidden', 'Their pivot is standing right in the line between you and your keeper.', C([25, 80], 1.5), { marks: [{ s: ['them:9', 'us:1'], len: 12 }], wait: 1.4 }),
-      zone3: [{ t: .8, them: { 9: [25, 81.5] }, tag: { 'them:9': 'PRESS' }, head: 'Too close', sub: 'Right next to your keeper, their pivot can press you both.', cam: C([25, 87], 1.6, .45), wait: 1.2 }]
+      zone2: say('Hidden', 'Their pivo is standing right in the line between you and your keeper.', C([25, 80], 1.5), { marks: [{ s: ['them:9', 'us:1'], len: 12 }], wait: 1.4 }),
+      zone3: [{ t: .8, them: { 9: [25, 81.5] }, tag: { 'them:9': 'PRESS' }, head: 'Too close', sub: 'Right next to your keeper, their pivo can press you both.', cam: C([25, 87], 1.6, .45), wait: 1.2 }]
     } },
 
   /* ---- 2. Rotations ---- */
@@ -645,16 +645,16 @@ const MOTION = {
       cam: C([16, 44], 1.45),
       steps: [
         { t: 1.4, pass: 'us:11', pd: .1, us: { 4: [22, 51], 11: [6, 37] }, them: { 7: [10, 31], 9: [26, 44] }, tag: { 'them:7': 'STEPS UP' },
-          head: 'You pass to your left ala', sub: 'Their left ala steps up to your left ala. Their pivot is still close to you.', cam: C([14, 40], 1.45) },
+          head: 'You pass to your left ala', sub: 'Their left ala steps up to your left ala. Their pivo is still close to you.', cam: C([14, 40], 1.45) },
         { t: 1, cam: W_, head: '' }] },
     after: {
       zone0: [{ t: 1.1, us: { 4: [8, 15] }, them: { 4: [19, 10], 1: [23, 3.5] }, tag: { 'us:4': GOOD('IN BEHIND'), 'them:7': 'BEATEN' }, head: 'Pass and follow',
           sub: 'Their left ala stayed with your left ala, so the ball came down the line to you. Two against one, and you are in behind…', cam: C([13, 20], 1.45) },
-        { t: .8, pass: 'us:9', head: 'Pass and follow', sub: '…so you square it for your pivot.', cam: C([20, 12], 1.5) },
+        { t: .8, pass: 'us:9', head: 'Pass and follow', sub: '…so you square it for your pivo.', cam: C([20, 12], 1.5) },
         { t: .5, shot: [27.5, -1], wait: 1.1 }],
       zone1: steal('11', '7', [8.5, 34], 'Stood still', 'You passed and watched. Their left ala only has your left ala to worry about.'),
       zone2: [{ t: .8, them: { 9: [21, 37] }, tag: { 'them:7': 'CROWD', 'them:9': 'CROWD', 'them:4': 'CROWD' }, head: 'Into the crowd',
-        sub: 'Their left ala, their pivot and their fixo are all in the middle. That run takes you into traffic.', cam: C([18, 28], 1.4), wait: 1.2 }]
+        sub: 'Their left ala, their pivo and their fixo are all in the middle. That run takes you into traffic.', cam: C([18, 28], 1.4), wait: 1.2 }]
     } },
 
   'Fill the spot': {
@@ -662,17 +662,17 @@ const MOTION = {
       cam: C([16, 40], 1.35),
       steps: [
         { t: 1.6, us: { 4: [4, 25], 11: [9, 36], 7: [44, 32] }, them: { 7: [12, 30], 9: [30, 46] }, marks: [{ ring: [25, 54], c: 'gold' }],
-          head: 'Your fixo overlaps down the left', sub: 'Nobody is in the fixo spot now, and their pivot is waiting for a counter.', cam: C([22, 42], 1.2), wait: .4 },
+          head: 'Your fixo overlaps down the left', sub: 'Nobody is in the fixo spot now, and their pivo is waiting for a counter.', cam: C([22, 42], 1.2), wait: .4 },
         { t: 1, cam: W_, head: '', marks: [] }] },
     after: {
       zone0: [{ t: .6, pass: 'them:7', them: { 7: [11, 32.5] }, tag: { 'them:7': 'TACKLE' }, head: 'Fill the spot', sub: 'If we lose the ball…', cam: C([18, 42], 1.25) },
         { t: 1, pass: 'us:7', pd: .15, us: { 7: [26, 51] }, them: { 9: [31, 47] }, tag: { 'us:7': GOOD('CUT OUT') }, head: 'Fill the spot',
-          sub: "…you're between their pivot and our goal, and you cut out the counter. That is a rotation.", wait: 1.2 }],
+          sub: "…you're between their pivo and our goal, and you cut out the counter. That is a rotation.", wait: 1.2 }],
       zone1: [{ t: .6, pass: 'them:7', them: { 7: [11, 32.5] }, tag: { 'them:7': 'TACKLE' }, head: 'Stayed up', sub: 'We lose the ball…', cam: C([18, 42], 1.25) },
-        { t: 1.1, pass: 'them:9', pd: .1, them: { 9: [28, 62] }, tag: { 'them:9': 'THROUGH' }, head: 'Stayed up', sub: '…and four of us were up the field, so their pivot is through on our goal.',
+        { t: 1.1, pass: 'them:9', pd: .1, them: { 9: [28, 62] }, tag: { 'them:9': 'THROUGH' }, head: 'Stayed up', sub: '…and four of us were up the field, so their pivo is through on our goal.',
           cam: C([27, 64], 1.3), wait: 1.2 }],
       zone2: [{ t: .6, pass: 'them:7', them: { 7: [11, 32.5] }, tag: { 'them:7': 'TACKLE' }, head: 'Even higher', sub: 'We lose the ball…', cam: C([18, 42], 1.25) },
-        { t: 1.1, pass: 'them:9', pd: .1, them: { 9: [28, 62] }, tag: { 'them:9': 'THROUGH' }, head: 'Even higher', sub: '…and nobody was back at all. Their pivot is through on our goal.',
+        { t: 1.1, pass: 'them:9', pd: .1, them: { 9: [28, 62] }, tag: { 'them:9': 'THROUGH' }, head: 'Even higher', sub: '…and nobody was back at all. Their pivo is through on our goal.',
           cam: C([27, 64], 1.3), wait: 1.2 }]
     } },
 
@@ -686,26 +686,26 @@ const MOTION = {
     after: {
       zone0: [{ t: 1.1, us: { 4: [6, 28] }, tag: { 'us:4': GOOD('WIDE OPEN') }, head: 'Ala inside, fixo wide',
         sub: 'Your left ala went inside, so you opened up wide where the left ala had been. The court stays big, and the pass out to you is easy.', cam: C([10, 32], 1.4), wait: 1.2 }],
-      zone1: [{ t: .9, them: { 9: [19, 39] }, tag: { 'them:9': 'PRESS' }, head: 'Stayed in the middle', sub: 'Nobody is wide on the left, so their pivot can squeeze in on your left ala too.',
+      zone1: [{ t: .9, them: { 9: [19, 39] }, tag: { 'them:9': 'PRESS' }, head: 'Stayed in the middle', sub: 'Nobody is wide on the left, so their pivo can squeeze in on your left ala too.',
         cam: C([18, 40], 1.4), wait: 1.2 }],
       zone2: [{ t: .8, them: { 7: [17.5, 35.5] }, tag: { 'them:7': 'MARKS BOTH' }, head: 'Too close', sub: 'Right next to your left ala, one defender can mark you both.', cam: C([18, 37], 1.6), wait: 1.2 }]
     } },
 
-  'Swap with the pivot': {
+  'Swap with the pivo': {
     intro: { start: { ball: 'us:4', us: { 9: [28, 13], 4: [27, 57], 7: [45, 44] }, them: { 4: [26, 9], 9: [21, 47], 11: [40, 38] } },
       cam: C([30, 22], 1.45),
       steps: [
         { t: 1.6, us: { 9: [39, 24], 4: [28, 52], 7: [45, 40] }, them: { 4: [36, 19], 9: [20, 43], 11: [40, 34] }, tag: { 'them:4': 'FOLLOWS' },
-          hatch: [{ pts: [[19, 8], [31, 8], [31, 20], [19, 20]], c: 'gold' }], head: 'Your pivot drops out wide',
-          sub: 'Their fixo goes with the pivot. The middle in front of their goal is empty.', cam: C([32, 22], 1.35), wait: .4 },
+          hatch: [{ pts: [[19, 8], [31, 8], [31, 20], [19, 20]], c: 'gold' }], head: 'Your pivo drops out wide',
+          sub: 'Their fixo goes with the pivo. The middle in front of their goal is empty.', cam: C([32, 22], 1.35), wait: .4 },
         { t: 1, cam: W_, head: '', hatch: [] }] },
     after: {
-      zone0: [{ t: .6, them: { 1: [26.5, 3.5] }, tag: { 'us:7': GOOD('FREE') }, head: 'Swap with the pivot',
-          sub: 'Your pivot pulled their fixo out wide, so you ran into the space the pivot left, right in front of their goal…', cam: C([25, 12], 1.55, .45) },
-        { t: .5, shot: [22.3, -1], head: 'Swap with the pivot', sub: '…and finish.', wait: 1.1 }],
+      zone0: [{ t: .6, them: { 1: [26.5, 3.5] }, tag: { 'us:7': GOOD('FREE') }, head: 'Swap with the pivo',
+          sub: 'Your pivo pulled their fixo out wide, so you ran into the space the pivo left, right in front of their goal…', cam: C([25, 12], 1.55, .45) },
+        { t: .5, shot: [22.3, -1], head: 'Swap with the pivo', sub: '…and finish.', wait: 1.1 }],
       zone1: say('Stayed wide', 'Now two of us are on the right sideline, and the middle is still empty.', C([33, 26], 1.3),
         { hatch: [{ pts: [[19, 8], [31, 8], [31, 20], [19, 20]], c: 'gold' }], wait: 1.4 }),
-      zone2: say('Into the crowd', 'Your pivot, their fixo and their right ala are already there.', C([38, 27], 1.5), { tag: { 'them:4': 'CROWD', 'them:11': 'CROWD' } })
+      zone2: say('Into the crowd', 'Your pivo, their fixo and their right ala are already there.', C([38, 27], 1.5), { tag: { 'them:4': 'CROWD', 'them:11': 'CROWD' } })
     } },
 
   'Clear the space': {
@@ -743,24 +743,24 @@ const MOTION = {
         { t: .5, shot: [22.3, -1], head: 'Switch it', sub: '…and the right ala gets the shot away before they get back.', wait: 1.1 }],
       carry0: [{ t: 1, them: { 11: [39, 30], 9: [23, 41] }, tag: { 'them:11': 'BACK IN TIME' }, head: 'Too slow', sub: 'Every touch gives their team time to shift back across.',
         cam: C([34, 36], 1.3), wait: 1.2 }],
-      11: steal('11', '7', [7.5, 35.5], 'Back into the crowd', 'Their left ala and pivot are right there.'),
-      9: steal('9', '4', [21, 15.5], 'Marked', 'Their fixo is tight on your pivot.'),
+      11: steal('11', '7', [7.5, 35.5], 'Back into the crowd', 'Their left ala and pivo are right there.'),
+      9: steal('9', '4', [21, 15.5], 'Marked', 'Their fixo is tight on your pivo.'),
       1: say('Too safe', 'Back to the keeper, when your right ala was alone on the right?', C([25, 72], 1.25))
     } },
 
-  'Into the pivot': {
+  'Into the pivo': {
     intro: { start: { ball: 'us:11', us: { 11: [7, 40], 9: [22, 21], 4: [24, 54], 7: [44, 33] }, them: { 7: [12, 42], 4: [24, 15], 9: [26, 44], 11: [38, 28] } },
       cam: C([14, 30], 1.4),
       steps: [
         { t: 1.5, us: { 11: [6, 33], 9: [19, 16], 4: [24, 49], 7: [45, 28] }, them: { 7: [10.5, 37], 4: [22.5, 11.5], 9: [25, 40], 11: [39, 24] }, tag: { 'us:9': GOOD('ON YOUR SIDE') },
-          head: 'Your pivot gets in front of their fixo', sub: 'The pivot is on your side of the defender. Look at the diagonal.', cam: C([15, 24], 1.4) },
+          head: 'Your pivo gets in front of their fixo', sub: 'The pivo is on your side of the defender. Look at the diagonal.', cam: C([15, 24], 1.4) },
         { t: 1, cam: W_, head: '' }] },
     after: {
-      9: [{ t: 1.1, us: { 11: [13, 24] }, pass: 'us:11', pd: .45, tag: { 'us:9': GOOD('SKIPPED THEM') }, head: 'Into the pivot',
-          sub: 'One pass skipped their left ala and their pivot. The pivot lays it back to you, facing the goal…', cam: C([16, 20], 1.45) },
-        { t: .5, shot: [22.3, -1], head: 'Into the pivot', sub: '…and you shoot.', wait: 1.1 }],
-      4: say('Too safe', 'Safe, but the diagonal into the pivot was on.', C([16, 40], 1.3)),
-      carry0: [{ t: .9, them: { 4: [11, 16] }, tag: { 'them:4': 'SLIDES ACROSS' }, head: 'Into the corner', sub: 'Their fixo slides across, and the pass to the pivot is gone.',
+      9: [{ t: 1.1, us: { 11: [13, 24] }, pass: 'us:11', pd: .45, tag: { 'us:9': GOOD('SKIPPED THEM') }, head: 'Into the pivo',
+          sub: 'One pass skipped their left ala and their pivo. The pivo lays it back to you, facing the goal…', cam: C([16, 20], 1.45) },
+        { t: .5, shot: [22.3, -1], head: 'Into the pivo', sub: '…and you shoot.', wait: 1.1 }],
+      4: say('Too safe', 'Safe, but the diagonal into the pivo was on.', C([16, 40], 1.3)),
+      carry0: [{ t: .9, them: { 4: [11, 16] }, tag: { 'them:4': 'SLIDES ACROSS' }, head: 'Into the corner', sub: 'Their fixo slides across, and the pass to the pivo is gone.',
         cam: C([12, 20], 1.55), wait: 1.2 }],
       shoot: say('No angle', 'From out wide, their keeper covers that easily.', C([16, 14], 1.4))
     } },
@@ -776,7 +776,7 @@ const MOTION = {
       shoot: say('Switch and shoot', 'The switch left their right ala a step behind, so you shot first time, before the block could come.', C([30, 14], 1.4), { tag: { 'them:11': 'TOO LATE' } }),
       carry0: [{ t: .7, them: { 11: [32, 21.5] }, tag: { 'them:11': 'BLOCK' }, head: 'One touch too many', sub: 'You took it inside, and their right ala arrived to block the shot.',
         cam: C([33, 19], 1.6, .45), wait: 1.2 }],
-      9: steal('9', '4', [20.5, 10.5], 'Marked', 'Their fixo is right on your pivot. You had the shot.'),
+      9: steal('9', '4', [20.5, 10.5], 'Marked', 'Their fixo is right on your pivo. You had the shot.'),
       4: say('Too safe', 'Back to the fixo, after the switch had opened the shot?', C([32, 30], 1.25))
     } },
 
@@ -801,17 +801,17 @@ const MOTION = {
       cam: C([20, 16], 1.4),
       steps: [
         { t: 1.6, us: { 11: [9, 7], 9: [22.5, 12.5], 7: [42, 24], 4: [25, 42] }, them: { 7: [12, 14], 4: [18.5, 9.5], 11: [36, 18], 1: [24, 3], 9: [27, 34] },
-          head: 'Your left ala gets to the end line', sub: 'Your pivot attacks the near post, and their fixo goes with it.', cam: C([22, 12], 1.4) },
+          head: 'Your left ala gets to the end line', sub: 'Your pivo attacks the near post, and their fixo goes with it.', cam: C([22, 12], 1.4) },
         { t: 1, cam: W_, head: '' }] },
     after: {
       zone0: [{ t: .5, tag: { 'us:7': GOOD('FAR POST') }, head: 'Far post run', sub: 'The ball was on the far wing, so you attacked the far post. The low ball across the goal went past everyone…',
           cam: C([28, 6], 1.6, .45) },
         { t: .4, shot: [27.5, -1], head: 'Far post run', sub: '…and found you for the tap-in.', wait: 1.1 }],
       zone1: [{ t: 1, pass: [42, 3], head: 'Watching', sub: 'The ball across the goal rolls past everyone, and nobody is at the far post.', cam: C([30, 8], 1.35), wait: 1.2 }],
-      zone2: say('Too crowded', 'Your pivot, their fixo and their keeper are all there.', C([22, 9], 1.6, .45), { tag: { 'them:4': 'CROWD', 'them:1': 'CROWD' } })
+      zone2: say('Too crowded', 'Your pivo, their fixo and their keeper are all there.', C([22, 9], 1.6, .45), { tag: { 'them:4': 'CROWD', 'them:1': 'CROWD' } })
     } },
 
-  /* ---- 4. The pivot ---- */
+  /* ---- 4. The pivo ---- */
   'Lay it off': {
     intro: { start: { ball: 'us:4', us: { 9: [25, 17], 11: [8, 40], 7: [43, 35] }, them: { 4: [25, 12], 9: [31, 44], 7: [12, 44], 11: [38, 30] } },
       cam: C([25, 32], 1.3),
@@ -840,14 +840,14 @@ const MOTION = {
       cam: C([14, 36], 1.45),
       steps: [
         { t: 1.5, pass: 'us:9', pd: .35, face: { 'us:9': 'left' }, us: { 9: [18, 37], 4: [26, 52], 7: [44, 32] }, them: { 4: [19, 31], 7: [9.5, 36], 9: [29, 44], 11: [38, 27] },
-          head: 'You play it into your pivot', sub: 'The pivot came short. Their left ala is still between you and their goal.', cam: C([13, 36], 1.45) },
+          head: 'You play it into your pivo', sub: 'The pivo came short. Their left ala is still between you and their goal.', cam: C([13, 36], 1.45) },
         { t: 1, cam: W_, head: '' }] },
     after: {
       zone0: [{ t: 1, us: { 11: [11, 14] }, them: { 4: [16, 20] }, tag: { 'us:11': GOOD('IN BEHIND') }, head: 'The one-two',
-          sub: 'You passed into the pivot and ran past their left ala. The pivot gave it straight back, and you are in behind…', cam: C([12, 20], 1.45) },
+          sub: 'You passed into the pivo and ran past their left ala. The pivo gave it straight back, and you are in behind…', cam: C([12, 20], 1.45) },
         { t: .5, shot: [22.3, -1], head: 'The one-two', sub: '…two touches, and you are through.', wait: 1.1 }],
       zone1: [{ t: .8, them: { 7: [8.5, 38] }, tag: { 'them:7': 'MARK' }, head: 'Stood still', sub: 'You passed and watched. Their left ala is still in front of you.', cam: C([10, 38], 1.55), wait: 1.2 }],
-      zone2: say('Into the crowd', 'You ran toward the pivot, right into their left ala and their fixo.', C([14, 33], 1.55), { tag: { 'them:7': 'CROWD', 'them:4': 'CROWD' } })
+      zone2: say('Into the crowd', 'You ran toward the pivo, right into their left ala and their fixo.', C([14, 33], 1.55), { tag: { 'them:7': 'CROWD', 'them:4': 'CROWD' } })
     } },
 
   'Turn when you can': {
@@ -893,19 +893,19 @@ const MOTION = {
       cam: C([25, 42], 1.25),
       steps: [
         { t: 1.5, us: { 4: [25, 57], 9: [25, 27], 11: [6, 40], 7: [44, 40] }, them: { 9: [25, 43], 4: [25, 21], 7: [12, 33], 11: [38, 33] }, marks: [{ s: ['them:9', 'us:4'], len: 18 }],
-          head: 'Your fixo wants to play it into you', sub: 'Their pivot is standing right between you and your fixo.', cam: C([25, 40], 1.25), wait: .4 },
+          head: 'Your fixo wants to play it into you', sub: 'Their pivo is standing right between you and your fixo.', cam: C([25, 40], 1.25), wait: .4 },
         { t: 1, cam: W_, head: '', marks: [] }] },
     after: {
       zone0: [{ t: .9, them: { 4: [20.5, 21.5] }, tag: { 'them:4': 'FOLLOWS', 'us:9': GOOD('FOUND') }, head: 'Show for it',
-          sub: 'You slid out from behind their pivot, so your fixo found you. Their fixo has to follow…', cam: C([22, 26], 1.4) },
+          sub: 'You slid out from behind their pivo, so your fixo found you. Their fixo has to follow…', cam: C([22, 26], 1.4) },
         { t: 1.1, pass: 'us:7', pd: .5, us: { 7: [34, 16] }, tag: { 'us:7': GOOD('IN BEHIND') }, head: 'Show for it', sub: '…which opens the space behind it for your right ala.', cam: C([28, 16], 1.4) },
         { t: .5, shot: [28, -1], wait: 1.1 }],
       zone1: [{ t: .9, them: { 4: [29.5, 21.5] }, tag: { 'them:4': 'FOLLOWS', 'us:9': GOOD('FOUND') }, head: 'Show for it',
-          sub: 'You slid out from behind their pivot, so your fixo found you. Their fixo has to follow…', cam: C([28, 26], 1.4) },
+          sub: 'You slid out from behind their pivo, so your fixo found you. Their fixo has to follow…', cam: C([28, 26], 1.4) },
         { t: 1.1, pass: 'us:11', pd: .5, us: { 11: [16, 16] }, tag: { 'us:11': GOOD('IN BEHIND') }, head: 'Show for it', sub: '…which opens the space behind it for your left ala.', cam: C([22, 16], 1.4) },
         { t: .5, shot: [22.3, -1], wait: 1.1 }],
-      zone2: say('Hidden', 'Their pivot is right in the line between you and your fixo.', C([25, 38], 1.3), { marks: [{ s: ['them:9', 'us:4'], len: 18 }], wait: 1.4 }),
-      zone3: say('Too deep', 'You came all the way back, right next to their pivot. Now nobody is up front.', C([25, 32], 1.2),
+      zone2: say('Hidden', 'Their pivo is right in the line between you and your fixo.', C([25, 38], 1.3), { marks: [{ s: ['them:9', 'us:4'], len: 18 }], wait: 1.4 }),
+      zone3: say('Too deep', 'You came all the way back, right next to their pivo. Now nobody is up front.', C([25, 32], 1.2),
         { hatch: [{ pts: [[15, 8], [35, 8], [35, 30], [15, 30]], c: 'bad' }], wait: 1.4 })
     } },
 
@@ -937,7 +937,7 @@ const MOTION = {
           sub: 'Their keeper and their fixo were at the near post, so you pulled it back into the space your fixo ran into…', cam: C([24, 14], 1.5, .45) },
         { t: .5, shot: [27.5, -1], head: 'The cut-back', sub: '…first-time shot.', wait: 1.1 }],
       4: say('Good', 'Right player, but your fixo is running in. Put it into the space the fixo is running into.', C([22, 22], 1.35)),
-      9: steal('9', '4', [22.5, 9], 'Marked', 'Their fixo is right on your pivot at the near post.'),
+      9: steal('9', '4', [22.5, 9], 'Marked', 'Their fixo is right on your pivo at the near post.'),
       shoot: say('No angle', 'From the end line, their keeper covers the whole near post.', C([17, 6], 1.6, .45))
     } },
 
@@ -951,10 +951,10 @@ const MOTION = {
     after: {
       lead0: [{ t: 1, us: { 4: [8, 12] }, them: { 4: [16, 8], 1: [22, 3] }, tag: { 'us:4': GOOD('IN BEHIND') }, head: 'Make it two against one',
           sub: 'Their left ala stepped to you, so you slipped it down the line. The fixo is in behind…', cam: C([12, 15], 1.45) },
-        { t: .8, pass: 'us:9', head: 'Make it two against one', sub: '…and squares it for your pivot.', cam: C([20, 10], 1.5, .45) },
+        { t: .8, pass: 'us:9', head: 'Make it two against one', sub: '…and squares it for your pivo.', cam: C([20, 10], 1.5, .45) },
         { t: .5, shot: [27.5, -1], wait: 1.1 }],
       4: say('Good', 'Right idea, but your fixo is running. Put it in front of the fixo, down the line.', C([8, 30], 1.4)),
-      9: steal('9', '4', [22.5, 10.5], 'Marked', 'Their fixo is right on your pivot.'),
+      9: steal('9', '4', [22.5, 10.5], 'Marked', 'Their fixo is right on your pivo.'),
       carry0: [{ t: .5, pass: 'them:7', tag: { 'them:7': 'TACKLE' }, head: 'Into their left ala', sub: 'Their left ala was waiting for exactly that.', cam: C([13, 25], 1.6, .45), wait: 1.2 }],
       shoot: say('Too far', 'Way too far, with their left ala right in front of you.', C([14, 22], 1.25))
     } },
@@ -964,7 +964,7 @@ const MOTION = {
       cam: C([20, 16], 1.3),
       steps: [
         { t: 1.6, us: { 11: [9, 6], 9: [22.5, 10], 7: [33, 7], 4: [25, 46] }, them: { 7: [12.5, 14], 4: [19, 7.5], 11: [36, 12], 1: [23, 3], 9: [27, 38] },
-          head: 'Your left ala gets to the end line', sub: 'Your pivot attacks the near post and your right ala the far post.', cam: C([22, 14], 1.3) },
+          head: 'Your left ala gets to the end line', sub: 'Your pivo attacks the near post and your right ala the far post.', cam: C([22, 14], 1.3) },
         { t: 1, cam: W_, head: '' }] },
     after: {
       zone0: [{ t: .6, tag: { 'us:4': GOOD('TIME TO SHOOT') }, head: 'Arrive late', sub: 'Everyone ran at the goal, so you arrived late at the top of the area…', cam: C([24, 14], 1.5, .45) },
@@ -979,15 +979,15 @@ const MOTION = {
       cam: C([28, 24], 1.35),
       steps: [
         { t: 1.6, us: { 7: [31, 15], 9: [18, 15], 11: [8, 40], 4: [25, 55] }, them: { 4: [30, 28], 9: [24, 32], 1: [28, 8], 7: [12, 34], 11: [37, 30] },
-          tag: { 'them:1': 'RUSHES OUT' }, head: "You're through on goal", sub: 'Their keeper rushes out at you, and your pivot runs alongside.', cam: C([25, 14], 1.4) },
+          tag: { 'them:1': 'RUSHES OUT' }, head: "You're through on goal", sub: 'Their keeper rushes out at you, and your pivo runs alongside.', cam: C([25, 14], 1.4) },
         { t: 1, cam: W_, head: '' }] },
     after: {
-      9: [{ t: .5, shot: [23, -1], tag: { 'us:9': GOOD('OPEN GOAL') }, head: 'Square it', sub: 'Their keeper came out at you, so you squared it to your pivot. Open goal.',
+      9: [{ t: .5, shot: [23, -1], tag: { 'us:9': GOOD('OPEN GOAL') }, head: 'Square it', sub: 'Their keeper came out at you, so you squared it to your pivo. Open goal.',
         cam: C([22, 9], 1.5, .45), wait: 1.2 }],
-      lead0: [{ t: .5, shot: [24, -1], tag: { 'us:9': GOOD('OPEN GOAL') }, head: 'Square it', sub: 'Their keeper came out at you, so you rolled it across in front of your pivot. Open goal.',
+      lead0: [{ t: .5, shot: [24, -1], tag: { 'us:9': GOOD('OPEN GOAL') }, head: 'Square it', sub: 'Their keeper came out at you, so you rolled it across in front of your pivo. Open goal.',
         cam: C([22, 8], 1.5, .45), wait: 1.2 }],
       carry0: [{ t: .5, pass: 'them:1', tag: { 'them:1': 'SMOTHERS' }, head: 'Into the keeper', sub: 'Their keeper smothers it.', cam: C([29, 9], 1.6, .45), wait: 1.2 }],
-      shoot: say('Risky', 'The keeper rushed out and covered most of the goal. Your pivot had an open net.', C([25, 12], 1.5, .45), { tag: { 'them:1': 'SAVED' } }),
+      shoot: say('Risky', 'The keeper rushed out and covered most of the goal. Your pivo had an open net.', C([25, 12], 1.5, .45), { tag: { 'them:1': 'SAVED' } }),
       4: say('Too safe', 'Back, when you were through on goal?', C([27, 34], 1.2))
     } },
 
@@ -997,16 +997,16 @@ const MOTION = {
       cam: C([24, 46], 1.15),
       steps: [
         { t: 1.6, us: { 11: [16, 40], 9: [33, 38], 4: [24, 64], 7: [42, 58] }, them: { 4: [21, 32], 7: [12, 56], 9: [24, 58], 11: [38, 64] }, tag: { 'them:4': 'STEPS UP' },
-          head: 'Counterattack!', sub: 'Only their fixo is back, and your pivot is with you. Their fixo steps toward you.', cam: C([24, 38], 1.25) },
+          head: 'Counterattack!', sub: 'Only their fixo is back, and your pivo is with you. Their fixo steps toward you.', cam: C([24, 38], 1.25) },
         { t: 1, cam: W_, head: '' }] },
     after: {
       lead0: [{ t: 1, us: { 9: [30, 14] }, them: { 1: [24, 4] }, tag: { 'us:9': GOOD('THROUGH') }, head: 'Two against one',
-          sub: 'Their fixo stepped to you, so you slipped it into the space ahead of your pivot. The pivot is through…', cam: C([28, 16], 1.4) },
+          sub: 'Their fixo stepped to you, so you slipped it into the space ahead of your pivo. The pivo is through…', cam: C([28, 16], 1.4) },
         { t: .5, shot: [28, -1], head: 'Two against one', sub: '…and scores.', wait: 1.1 }],
-      9: say('Good', 'Right player, but the pivot is running. Put it in front of the pivot.', C([30, 34], 1.35)),
+      9: say('Good', 'Right player, but the pivo is running. Put it in front of the pivo.', C([30, 34], 1.35)),
       7: say('Too safe', 'Back to the right ala, with two of you against one?', C([34, 50], 1.2)),
       carry0: [{ t: .5, pass: 'them:4', tag: { 'them:4': 'TACKLE' }, head: 'Into their fixo', sub: 'You ran straight into the only defender.', cam: C([20, 31], 1.6, .45), wait: 1.2 }],
-      carry1: [{ t: .8, them: { 4: [15, 26] }, tag: { 'them:4': 'SHOWS YOU WIDE' }, head: 'Too wide', sub: 'Their fixo shows you wide, away from goal, and your pivot is out of the play.',
+      carry1: [{ t: .8, them: { 4: [15, 26] }, tag: { 'them:4': 'SHOWS YOU WIDE' }, head: 'Too wide', sub: 'Their fixo shows you wide, away from goal, and your pivo is out of the play.',
         cam: C([14, 27], 1.5), wait: 1.2 }],
       shoot: say('Too far', 'Way too far, with two of you against one.', C([20, 24], 1.2))
     } },
@@ -1032,14 +1032,14 @@ const MOTION = {
       cam: C([36, 26], 1.3),
       steps: [
         { t: 1.6, us: { 4: [34, 40], 9: [26, 13], 11: [8, 18] }, them: { 9: [20, 32], 4: [25, 8], 7: [11, 14], 11: [42, 15] }, tag: { 'them:4': 'MARK', 'them:7': 'MARK' },
-          head: 'Kick-in to us near their area', sub: 'Their players mark your pivot and left ala. Your fixo is running up from behind.', cam: C([34, 24], 1.3) },
+          head: 'Kick-in to us near their area', sub: 'Their players mark your pivo and left ala. Your fixo is running up from behind.', cam: C([34, 24], 1.3) },
         { t: 1, cam: W_, head: '' }] },
     after: {
       lead0: [{ t: .6, us: { 9: [23, 12] }, them: { 1: [23.5, 3.5] }, tag: { 'us:4': GOOD('FIRST TIME'), 'them:4': 'MARK' }, head: 'Kick-in for the fixo',
-          sub: 'Their players marked the pivot and the left ala, so you played it into your fixo, arriving from behind…', cam: C([28, 20], 1.4) },
+          sub: 'Their players marked the pivo and the left ala, so you played it into your fixo, arriving from behind…', cam: C([28, 20], 1.4) },
         { t: .5, shot: [27, -1], head: 'Kick-in for the fixo', sub: '…for a first-time shot.', wait: 1.1 }],
       4: say('Good', 'Right player, but your fixo is running in. Put it into the run.', C([36, 34], 1.35)),
-      9: steal('9', '4', [25.5, 10.5], 'Marked', 'Their fixo is right on your pivot.')
+      9: steal('9', '4', [25.5, 10.5], 'Marked', 'Their fixo is right on your pivo.')
     } },
 
   'Corner to the far post': {
@@ -1055,7 +1055,7 @@ const MOTION = {
         { t: .4, shot: [27, -1], head: 'Corner to the far post', sub: '…at the far post, where nobody followed.', wait: 1.1 }],
       7: say('Good', 'Right player, but the right ala is moving. Put it at the far post, in front of the run.', C([34, 10], 1.45)),
       9: steal('9', '1', [20.5, 6.5], 'Marked', 'Their keeper comes and claims it at the near post.'),
-      4: steal('4', '9', [24.5, 23.5], 'Marked', 'Their pivot is right on your fixo at the top of the area.')
+      4: steal('4', '9', [24.5, 23.5], 'Marked', 'Their pivo is right on your fixo at the top of the area.')
     } },
 
   'Power play': {
@@ -1063,7 +1063,7 @@ const MOTION = {
       cam: C([25, 40], 1.1),
       steps: [
         { t: 1.8, us: { 1: [33, 38], 4: [14, 36], 11: [5, 20], 7: [45, 20], 9: [25, 13] }, them: { 9: [20, 32], 7: [11, 24], 11: [37, 25], 4: [25, 8.5] },
-          tag: { 'us:1': GOOD('FIFTH ATTACKER') }, head: 'Power play', sub: 'Your keeper comes up to make it five against four. Their pivot and left ala are on you and your left ala.', cam: C([25, 30], 1.2) },
+          tag: { 'us:1': GOOD('FIFTH ATTACKER') }, head: 'Power play', sub: 'Your keeper comes up to make it five against four. Their pivo and left ala are on you and your left ala.', cam: C([25, 30], 1.2) },
         { t: 1, cam: W_, head: '' }] },
     after: {
       1: [{ t: .9, them: { 11: [38, 36] }, tag: { 'them:11': 'PRESS' }, head: 'Power play', sub: 'You moved it across the top, so their right ala has to choose: your keeper or your right ala…',
@@ -1071,8 +1071,8 @@ const MOTION = {
         { t: 1, pass: 'us:7', pd: .1, us: { 7: [44, 16] }, tag: { 'us:7': GOOD('FREE') }, head: 'Power play', sub: '…their right ala went to the keeper, so the right ala on the far side is free.', cam: C([38, 16], 1.4) },
         { t: .5, shot: [28, -1], wait: 1.1 }],
       11: steal('11', '7', [8, 22.5], 'Marked', 'Their left ala is right on your left ala.'),
-      carry0: [{ t: .5, pass: 'them:9', tag: { 'them:9': 'TACKLE' }, head: 'Into their pivot', sub: 'Their pivot is right there…', cam: C([19, 31], 1.6, .45), wait: .6 },
-        { t: 1.3, shot: [25, 101], head: 'Into their pivot', sub: '…and with our keeper up the court, our goal is empty.', cam: W_, wait: 1 }],
+      carry0: [{ t: .5, pass: 'them:9', tag: { 'them:9': 'TACKLE' }, head: 'Into their pivo', sub: 'Their pivo is right there…', cam: C([19, 31], 1.6, .45), wait: .6 },
+        { t: 1.3, shot: [25, 101], head: 'Into their pivo', sub: '…and with our keeper up the court, our goal is empty.', cam: W_, wait: 1 }],
       shoot: { replace: true, steps: [{ t: .5, pass: 'them:9', tag: { 'them:9': 'BLOCK' }, head: 'Blocked', sub: 'Through their whole diamond? It hits a defender.',
         cam: C([17, 34], 1.5, .45), wait: 1.2 }] }
     } }

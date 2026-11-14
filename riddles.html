@@ -532,8 +532,8 @@ const SETS = FUTSAL ? (window.FUTSAL_SETS || []) : POSITIONS.concat(window.EXTRA
 const posInfo = n => SETS.find(p => p.n === n) || (FUTSAL ? SETS[0] : POSITIONS.find(p => p.n === '6'));
 // futsal players go by role, not number (the data still numbers them like the 9v9 players who do the same
 // job). Left and right are as you see the court: their 7 plays on our left, so it's their left ala.
-const ROLE = { '1': 'the keeper', '4': 'the fixo', '11': 'the left ala', '7': 'the right ala', '9': 'the pivot' };
-const ROLE_THEM = { '1': 'keeper', '4': 'fixo', '7': 'left ala', '11': 'right ala', '9': 'pivot' };
+const ROLE = { '1': 'the keeper', '4': 'the fixo', '11': 'the left ala', '7': 'the right ala', '9': 'the pivo' };
+const ROLE_THEM = { '1': 'keeper', '4': 'fixo', '7': 'left ala', '11': 'right ala', '9': 'pivo' };
 const BADGE = { '1': 'GK', '4': 'FIXO', '7': 'ALA', '11': 'ALA', '9': 'PIVO' };
 const puckText = n => posInfo(n).short || n;
 const setTitle = (n = SET) => posInfo(n).varied ? posInfo(n).title : n === '1' ? 'the keeper' : `the ${n}`;
